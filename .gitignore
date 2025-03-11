@@ -1,0 +1,10 @@
+__pycache__
+# runtime_data
+.env
+
+.idea
+.vscode
+.VSCodeCounter
+
+credentials.json
+# dataset

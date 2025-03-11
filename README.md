@@ -1,0 +1,228 @@
+# Interactive Sign Language Engagement (ISLE) - Backend module
+A+ will be in our hands.
+
+## Initialization
+
+### Install dependencies
+```
+pip install -r requirements.txt
+```
+
+### Setup `.env` file
+
+### Run server
+```
+python server.py
+```
+Default port is `8000`.
+
+## API
+- Run file `function_test.py` to test a specific function.
+
+### Documents (examples)
+#### Make PDF models
+- Request (form-data, POST `/upload/pdf`)
+```
+    "file": <file>          # PDF file
+```
+- Response (JSON)
+```
+{
+    "id": <model_id>,       # Document ID
+    "text": <pdf text>      # Scanned text 
+}
+```
+
+#### Make YouTube transcript models
+- Request (form-data, POST `/upload/yt`)
+```
+    "id": <youtube id>      # YouTube video ID (e.g: 8j20gSdBPy4)
+```
+- Response (JSON)
+```
+{
+    "id": <model_id>,       # Document ID
+    "text": <yt text>       # YouTube's transcript text
+}
+```
+
+#### Read model list
+- Request (form-data, POST `/doc/read`)
+```
+    <empty>
+```
+- Response (JSON)
+```
+{
+    "msg": <status>,            # "ok"
+    "data": [
+        {
+            "id": <id>,         # Document ID
+            "name": <name>,     # Document name (title)
+            "type": <type>      # Document type ("yt", "pdf", "topic")
+            "processing_status": <float> # Represented as a float in range [0,1].
+        },
+        {
+            ...
+        }
+    ]
+}
+```
+
+#### Read Markdown topic
+- Request (form-data, POST `/doc/md`)
+```
+    "id": <model_id>,       # Document Markdown ID
+```
+- Response (JSON)
+```
+{
+    "msg": <status>,            # "ok", "err"
+    "data": <markdown content>  # Markdown content
+}
+```
+
+### Progress tracking
+- Client event (Event name: `post-prog`)
+    + Request completion rate of a document.
+```
+<id>                # <document_id>: Document related
+```
+
+- Server event (Event name: `get-prog`)
+    + Respond with the completion rate of a document.
+    + This event will trigger when the rate changes, or when the client requested with `post-prog`.
+```
+<id>                # <document_id>: Document related
+<completion_rate>   # Represented as a float in range [0,1].
+```
+
+### Task/Note
+#### Create Task
+- Request (form-data, POST `/task/create`)
+```
+    "name": <name>          # Task's name
+    "details": <details>    # Task's details
+    "type": <type>          # Task's type (daily, one-time, ...)
+    "time": <time>          # Task's time (seconds [0-86399], or UNIX time)
+    "priority": <priority>  # Task's priority
+```
+- Response (JSON)
+```
+{
+    "msg": <status>         # "ok"
+}
+```
+#### Read Tasks
+- Request (form-data, POST `/task/read`)
+```
+    <empty>
+```
+- Response (JSON)
+```
+{
+    "msg": <status>,        # "ok"
+    "data": [
+        {
+            "name": <name>          # Task's name
+            "details": <details>    # Task's details
+            "type": <type>          # Task's type (daily, one-time, ...)
+            "time": <time>          # Task's time (seconds [0-86399], or UNIX time)
+            "priority": <priority>  # Task's priority
+        },
+        {
+            ...
+        }
+    ]
+}
+```
+
+#### Create Note
+- Request (form-data, POST `/note/create`)
+```
+    "name": <name>          # Note's name
+    "details": <details>    # Note's details
+    "priority": <priority>  # Note's priority
+```
+- Response (JSON)
+```
+{
+    "msg": <status>         # "ok"
+}
+```
+#### Read Notes
+- Request (form-data, POST `/note/read`)
+```
+    <empty>
+```
+- Response (JSON)
+```
+{
+    "msg": <status>,        # "ok"
+    "data": [
+        {
+            "name": <name>          # Note's name
+            "details": <details>    # Note's details
+            "priority": <priority>  # Note's priority
+        },
+        {
+            ...
+        }
+    ]
+}
+```
+
+### Question-related
+#### Ask model question/ask chatbot
+- Client event (Event name: `post-msg`)
+    + Send the message to `id`.
+```
+<id>                # "chat": Chatbot related, <document_id>: Document related
+<msg>               # User messages
+```
+
+- Server event (Event name: `get-msg`)
+    + Represent the message.
+```
+<id>                # "chat": Chatbot related, <document_id>: Document related
+<sender>            # 0: AI | 1: User
+
+{                   # AI's response as an object
+    "msg": <msg>,   # AI's response message
+    "type": <type>  # Type of response ("normal": normal chat, "yt": auto-function youtube, "topic": auto-function markdown)
+    "data" <data>   # Additional data ("normal": "", "yt"/"topic": Document ID)
+}                   
+```
+
+#### Load previous messages
+- Request (form-data, POST `/msg/read`)
+```
+    <id>                # "chat": Chatbot related, <document_id>: Document related
+    <num>               # number of messages need to fetch
+```
+- Response (JSON)
+```
+{
+    "msg": <status>,        # "ok"
+    "data": [
+        [
+            <sender>,       # 0: AI | 1: User
+            {                   # AI's response as an object
+                "msg": <msg>,   # AI's response message
+                "type": <type>  # Type of response ("normal": normal chat, "yt": auto-function youtube, "topic": auto-function markdown)
+                "data" <data>   # Additional data ("normal": "", "yt": Document ID)
+            }    
+        ],
+        [
+            ...
+        ]
+    ]
+}
+```
+
+### Other event
+- Server event (Event name: `get-join`)
+    + Notify if you have successfully connect to the server.
+```
+connected
+```
