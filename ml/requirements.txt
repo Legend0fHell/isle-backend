@@ -1,0 +1,6 @@
+python-socketio
+uvicorn
+numpy
+pandas
+scikit-learn
+python-dotenv
