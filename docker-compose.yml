@@ -1,0 +1,94 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    env_file:
+      - .env # Load .env file from project root
+    # If you have a requirements.txt for the api, uncomment the next line
+    # command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    # volumes:
+    #   - ./api:/app # Mount the api directory for hot-reloading (development)
+    expose:
+      - "8000"
+    depends_on:
+      - db # API depends on the database
+    networks:
+      - isle-network
+
+  site:
+    build:
+      context: ./site
+      dockerfile: Dockerfile
+    env_file:
+      - .env # Load .env file from project root
+    # command: npm run dev # Or your specific command to run the Next.js dev server
+    # volumes:
+    #  - ./site:/app # Mount the site directory for hot-reloading (development)
+    #  - /app/node_modules # Avoids overriding node_modules from host
+    #  - /app/.next # Avoids overriding .next from host
+    expose:
+      - "3000"
+    # depends_on:
+    #   - api # If your frontend needs the API to be up first
+    networks:
+      - isle-network
+
+  ml:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    env_file:
+      - .env # Load .env file from project root
+    # command: python main.py # Command to run the ML WebSocket server
+    volumes:
+      - ./ml:/app # Mount the ml directory (useful if you want to update models without rebuilding)
+      # Ensure your models are copied to ml/models_store on the host
+      # Or, manage models as part of the Docker image build process
+    expose:
+      - "15100"
+    networks:
+      - isle-network
+
+  db:
+    image: postgres:17-bookworm
+    env_file:
+      - .env # Loads POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Persist data
+    networks:
+      - isle-network
+    # No ports exposed to the host by default.
+    # If you need to access the DB from your host machine during development, uncomment and use:
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      api: # Nginx depends on API
+        condition: service_healthy # Or service_started if API doesn't have a healthcheck
+      site: # Nginx depends on Site
+        condition: service_started # Assuming site starts quickly or has no healthcheck
+      ml: # Nginx depends on ML service
+        condition: service_started # Assuming ML service starts quickly or has no healthcheck
+      db: # Nginx itself doesn't directly depend on DB, but API does.
+        condition: service_healthy
+    networks:
+      - isle-network
+
+volumes: # Define the named volume for data persistence
+  pgdata:
+
+networks:
+  isle-network:
+    driver: bridge 
