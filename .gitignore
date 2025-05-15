@@ -8,3 +8,11 @@ runtime_data
 
 credentials.json
 dataset
+
+*.pkl
+*.tflite
+*.csv
+*.png
+
+venv
+install*
