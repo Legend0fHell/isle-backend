@@ -11,14 +11,14 @@ from api.routers import (
     asl_reference,
 )
 
-# Khởi tạo app
+
 app = FastAPI(
     title="ASL Learning API",
     description="API backend cho hệ thống học ngôn ngữ ký hiệu ASL.",
     version="1.0.0"
 )
 
-# Cấu hình CORS (nếu cần kết nối từ frontend)
+
 origins = [
     "http://localhost",
     "http://localhost:3000", 
