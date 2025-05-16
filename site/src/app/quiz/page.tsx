@@ -67,7 +67,7 @@ const QuizPage = () => {
                     <button
                         className="w-[222px] h-[68px] bg-[#000000] text-white shadow-[0px_10px_20px_rgba(0,0,0,0.3)] rounded-lg hover:bg-[#FFFFFF] hover:text-black hover:shadow-[0px_10px_20px_rgba(0,0,0,0.5)]"
                         style={{ fontSize: "24px", fontWeight: 400 }}
-                        onClick={() => window.location.href = "/movement-check"}
+                        onClick={() => window.location.href = "/result"}
                     >
                         Next Quiz!
                     </button>
