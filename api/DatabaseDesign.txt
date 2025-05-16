@@ -1,0 +1,88 @@
+# Users
+PK  user_id: UUID
+    email: varchar(150) unique
+    user_name: varchar(150)
+    password: varchar(255)
+    created_at: timestamp default now()
+    last_login: timestamp
+
+// ta có nhiều course để luyên tập(tập 10 cái từ dễ đến khó), mỗi course gồm nhiều lesson 
+# courses
+PK  course_id: UUID 
+    name: varchar(250)
+    description: Text 
+    difficulty_level: varchar(200) // "easy", "medium", "hard"
+    created_at: timestamp default now()
+
+// user_course_enrollments
+enrollment_id: UUID 
+FK  course_id: UUID -> courses
+FK  user_id: UUID -> users 
+    enrolled_at: timestamp default now()
+    completed_at: timestamp default None // None -> chưa làm 
+    progress: float default 0 // Số câu đã hoàn thành / Tổng số câu
+
+
+// mỗi course gồm nhiều quesion, có 2 loại question.
+# questions
+PK  question_id: UUID
+FK  course_id: UUID -> courses
+    question_type: varchar(50) -- 'input' (hand sign input), 'choice' (trắc nghiệm)
+    question_order: int
+
+//
+# input_questions
+PK  question_id: UUID -- FK đến questions
+    target_text: text -- Ví dụ: "hi", hoặc "a"
+    text_type: varchar(20) -- 'character', 'word', 'phrase'
+//
+# choice_questions
+PK  question_id: UUID -- FK đến questions
+    image_url: text -- ảnh tay ký hiệu
+    correct_answer: varchar(10)
+    options: text[] -- ví dụ: ['a', 'b', 'c', 'd']
+
+
+// Chi tiết câu trả lời từ user
+# practice_sessions
+PK  session_id: UUID
+FK  course_id: UUID -> courses
+FK  question_id: UUID -> questions
+FK  user_id: UUID -> users
+    question_type: varchar(50) -- copy lại từ questions
+    started_at: timestamp default now()
+    completed_at: timestamp default null
+   
+
+
+// ta lưu một bảng detected signs, Lưu kết quả nhận diện từ AI/MediaPipe, đây không thuộc learning module, nội dung nhận diện là tự do
+// ta có thêm detection mỗi khi có một kí tự được nhận diện
+# detected_signs
+PK  detection_id: UUID 
+FK  user_id: UUID -> users 
+    detected_char: varchar(10)
+    current_user_text: text // hiểu đơn giản là toàn bộ nội dung người dùng đã nhập đến thời điểm hiện tại, nhiều chữ tạo thành 1 từ hoặc 1 câu
+    image_data: text[] // url ảnh, ảnh nhận diện được từ người dùng, mình tự hỏi ta lưu nhiều ảnh được không nhỉ?
+    created_at: timestamp default now()
+
+// Ta lưu các gợi ý của hệ thống auto suggest
+PK FK   detection_id: UUID -> detection_signs 
+        suggested_text: Text[] // có thể có nhiều gợi ý 
+        accepted_text: text default None // từ gợi ý mà người dùng chọn
+        accepted_at: timestamp default now()
+
+// Ta lưu các gợi ý sửa đổi của hệ thống quickfix
+PK  fix_id: UUID 
+FK  detection_id: UUID -> detected_signs
+    misspelling_words: text // từ viết sai, từ viết sai ở đây là kiểm tra ở current_user_text của detected_signs, ta có thể có nhiều từ viết sai trong một câu => nhiều qh cùng detection_id(ko vấn đề)
+    quickfix_suggests: text[] // danh sách các từ gợi ý sửa đổi 
+    chosen_suggest: text default None // từ được chọn
+
+// Ta lưu từ điển tra cứu nhanh hình ảnh tương ứng với mỗi kí hiệu
+# ASL_Alphabet_Reference
+PK  letter: varchar(10) // mỗi kí tự đều độc nhất 
+    image_url: text
+    description: text default ""
+    tutorial_tips : text default "" // hướng dẫn bằng lời cách thực hiện kí hiệu
+
+
