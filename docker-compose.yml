@@ -21,16 +21,14 @@ services:
       context: ./site
       dockerfile: Dockerfile
     env_file:
-      - .env # Load .env file from project root
-    # command: npm run dev # Or your specific command to run the Next.js dev server
-    # volumes:
-    #  - ./site:/app # Mount the site directory for hot-reloading (development)
-    #  - /app/node_modules # Avoids overriding node_modules from host
-    #  - /app/.next # Avoids overriding .next from host
+      - .env
     expose:
       - "3000"
-    # depends_on:
-    #   - api # If your frontend needs the API to be up first
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    volumes:
+      - ./site:/app
     networks:
       - isle-network
 
@@ -75,13 +73,13 @@ services:
     ports:
       - "80:80"
     depends_on:
-      api: # Nginx depends on API
-        condition: service_healthy # Or service_started if API doesn't have a healthcheck
-      site: # Nginx depends on Site
-        condition: service_started # Assuming site starts quickly or has no healthcheck
-      ml: # Nginx depends on ML service
-        condition: service_started # Assuming ML service starts quickly or has no healthcheck
-      db: # Nginx itself doesn't directly depend on DB, but API does.
+      api:
+        condition: service_healthy
+      site:
+        condition: service_started
+      ml:
+        condition: service_started
+      db:
         condition: service_healthy
     networks:
       - isle-network
