@@ -13,6 +13,29 @@ const MovementCheckingModePage = () => {
     const [cameraError, setCameraError] = useState<string | null>(null);
     const handsRef = useRef<Hands | null>(null);
 
+    // Function to convert landmarks to string, tạm thôi :)))
+    const landmarkstoString = (landmarks: any) => {
+        if (!landmarks) return '';
+        return "abcsd4e"
+    }
+
+    function randomword(str: string) {
+        const words = str.split(', ');
+        const randomIndex = Math.floor(Math.random() * words.length);
+        return words[randomIndex];
+    }
+
+    // BE lo hàm này nhé, hàm này là để lấy kết quả riel từ landmarks
+    const getUserOutput = (landmarks: any) => {
+        return randomword(landmarkstoString(landmarks));
+    }
+
+    // BE lo hàm này nhé, hàm này là để lấy kết quả từ data
+    const getAnswer = (data: any) => {
+        const answer = data.answer;
+        return answer;
+    }
+
     useEffect(() => {
         let handsInstance: Hands | null = null;
         let cameraInstance: Camera | null = null;
@@ -124,7 +147,7 @@ const MovementCheckingModePage = () => {
 
                     <div className="absolute top-[65.32px] left-[0px] w-[367px] h-[68px] bg-[#E6E6E6] rounded-lg">
                         <span className="absolute top-[12px] left-[24px] w-[319px] h-[36px] text-[24px] text-black align-left align-top">
-                            Example...
+                            {handsRef.current && getUserOutput(handsRef) ? getUserOutput(handsRef.current) : 'Example...'} { /* để tạm thôi */}
                         </span>
                     </div>
                 </div>
@@ -139,7 +162,7 @@ const MovementCheckingModePage = () => {
 
                     <div className="absolute top-[65.32px] left-[0px] w-[367px] h-[68px] bg-[#E6E6E6] rounded-lg">
                         <span className="absolute top-[12px] left-[24px] w-[319px] h-[36px] text-[24px] text-black align-left align-top">
-                            Example...
+                            {getAnswer('data') ? getAnswer('data') : 'Example...'} { /* để tạm thôi */}
                         </span>
                     </div>
                 </div>

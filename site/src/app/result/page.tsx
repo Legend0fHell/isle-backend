@@ -29,7 +29,7 @@ const ResultPage = () => {
                     style={{ fontWeight: 800, fontFamily: 'Inter' }}>
                     YOUR SCORE:</h2>
                 <p className="text-5xl font-bold text-purple-400 py-2 font-jersey10">
-                    88/100
+                    88/100 {/* cần p có funct để tính đấy */}
                 </p>
 
                 <div className="mt-8 py-6">

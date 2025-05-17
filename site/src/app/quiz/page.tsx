@@ -3,8 +3,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 
+// Utility function to get a random integer between min and max (inclusive)
+function randomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const QuizPage = () => {
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+    const [correctAnswer] = useState<number>(randomNumber(0, 3)); // set random thôi :)))
 
     return (
         <main>
@@ -57,7 +63,11 @@ const QuizPage = () => {
                         </>
                     ) : (
                         <div className="col-span-2">
-                            <button className="bg-[#d4d4d4] p-4 rounded text-left w-full">Your answer is correct!</button>
+                            {selectedAnswer === correctAnswer ? (
+                                <p className="text-green-500 text-center mb-4">Correct!</p>
+                            ) : (
+                                <p className="text-red-500 text-center mb-4">Wrong! The correct answer is option {correctAnswer + 1}.</p>
+                            )}
                         </div>
                     )}
                 </div>
