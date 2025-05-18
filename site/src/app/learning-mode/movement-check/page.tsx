@@ -2,8 +2,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { loadHandsModule } from '@/components/useHands';
 import React from "react";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
 import type { Hands, Results } from "@mediapipe/hands";
 import type { Camera } from "@mediapipe/camera_utils";
 
@@ -113,7 +111,6 @@ const MovementCheckingModePage = () => {
 
     return (
         <div>
-            <Navbar />
             <section className="relative top-[80px] left-[90px] w-[874px] h-[289px] gap-[40px] horizontal-layout align-top align-left">
                 <div className="absolute top-[0px] left-[0px] w-[874px] h-[173px] vertical-layout align-top-left gap-[24px]">
                     <span className="absolute top-[0px] left-[0px] w-[874px] h-[77px] text-[64px] text-black align-left align-top font-bold"
@@ -126,7 +123,7 @@ const MovementCheckingModePage = () => {
                 </div>
             </section>
 
-            <section className="absolute top-[480px] left-[90px] w-[367x] h-[290px]">
+            <section className="relative top-[80px] left-[90px] w-[367x] h-[290px]">
                 <div className="absolute top-[0px] left-[913px] w-[367px] h-[290px]">
                     <span className="absolute top-[0px] left-[0.5px] w-[367px] h-[52.09px]"
                         style={{ fontSize: '44px', fontWeight: 600 }}>
@@ -138,7 +135,7 @@ const MovementCheckingModePage = () => {
                 </div>
             </section>
 
-            <section className="absolute top-[804px] left-[90px] w-[367px] h-[133px]">
+            <section className="relative top-[114px] left-[90px] w-[367px] h-[133px]">
                 <div className="absolute top-[0px] left-[913px] w-[367px] h-[290px]">
                     <span className="absolute top-[0px] left-[0.5px] w-[367px] h-[52.09px]"
                         style={{ fontSize: '44px', fontWeight: 600 }}>
@@ -153,7 +150,7 @@ const MovementCheckingModePage = () => {
                 </div>
             </section>
 
-            <section className="absolute top-[965px] left-[90px] w-[400px] h-[133px]">
+            <section className="relative top-[148px] left-[90px] w-[400px] h-[133px]">
                 <div className="absolute top-[0px] left-[913px] w-[400px] h-[290px]">
                     <span className="absolute top-[0px] left-[0.5px] w-[400px] h-[52.09px]"
                         style={{ fontSize: '44px', fontWeight: 600 }}>
@@ -168,15 +165,7 @@ const MovementCheckingModePage = () => {
                 </div>
             </section>
 
-            <button
-                className="absolute top-[1181px] left-[609px] w-[222px] h-[68px]  bg-[#000000] text-white shadow-[0px_10px_20px_rgba(0,0,0,0.3)] rounded-lg hover:bg-[#FFFFFF] hover:text-black hover:shadow-[0px_10px_20px_rgba(0,0,0,0.5)]"
-                style={{ fontSize: "24px", fontWeight: 400 }}
-                onClick={() => window.location.href = "/quiz"}
-            >
-                Next Quiz!
-            </button>
-
-            <div className="absolute top-[497px] left-[90px] w-[867px] h-[604px] rounded-lg shadow-lg">
+            <div className="absolute top-[383px] left-[90px] w-[867px] h-[604px] rounded-lg shadow-lg">
                 {cameraError ? (
                     <div className="bg-red-100 text-red-700 p-4 rounded-lg">
                         {cameraError}
@@ -196,9 +185,6 @@ const MovementCheckingModePage = () => {
                         />
                     </>
                 )}
-            </div>
-            <div className="absolute top-[1400px] left-[90px]">
-                <Footer />
             </div>
         </div>
     );

@@ -1,7 +1,5 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
-import Navbar from '@/components/navbar';
-import Footer from '@/components/footer';
 
 // Utility function to get a random integer between min and max (inclusive)
 function randomNumber(min: number, max: number): number {
@@ -72,31 +70,9 @@ const QuizPage = () => {
                     )}
                 </div>
 
-                {/* Next Quiz Button */}
-                <div className="flex justify-center">
-                    <button
-                        className="w-[222px] h-[68px] bg-[#000000] text-white shadow-[0px_10px_20px_rgba(0,0,0,0.3)] rounded-lg hover:bg-[#FFFFFF] hover:text-black hover:shadow-[0px_10px_20px_rgba(0,0,0,0.5)]"
-                        style={{ fontSize: "24px", fontWeight: 400 }}
-                        onClick={() => window.location.href = "/result"}
-                    >
-                        Next Quiz!
-                    </button>
-                </div>
-                <br />
-                <br />
-                <br />
-
             </div>
         </main>
     );
 }
 
-export default function Page() {
-    return (
-        <div>
-            <Navbar />
-            <QuizPage />
-            <Footer />
-        </div>
-    );
-}
+export default QuizPage;

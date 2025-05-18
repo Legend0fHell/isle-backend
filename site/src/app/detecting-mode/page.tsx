@@ -8,40 +8,28 @@ import Footer from "@/components/footer";
 import Link from "next/link";
 import type { Hands, Results } from "@mediapipe/hands";
 import type { Camera } from "@mediapipe/camera_utils";
-import { X } from "lucide-react"
-import { get } from 'http';
+import { X } from "lucide-react";
+import {
+    sendDetection,
+    formatLandmarksForAPI,
+    getImageDataFromCanvas,
+    DetectedSignCreate,
+    FullDetectionResult
+} from "models/detections";
 
 const DetectingModePage = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [cameraError, setCameraError] = useState<string | null>(null);
     const handsRef = useRef<Hands | null>(null);
-    const [showPopup, setShowPopup] = useState(true)
+    const [showPopup, setShowPopup] = useState(true);
+    const [detectionResult, setDetectionResult] = useState<string>("Example...");
+    const [suggestionResult, setSuggestionResult] = useState<string>("Example...");
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [currentUserText, setCurrentUserText] = useState<string>("");
 
     const closePopup = () => {
-        setShowPopup(false)
-    }
-
-    // Function to convert landmarks to string, tạm thôi :)))
-    const landmarkstoString = (landmarks: any) => {
-        if (!landmarks) return '';
-        return "abcds4e"
-    }
-
-    function randomword(str: string) {
-        const words = str.split(', ');
-        const randomIndex = Math.floor(Math.random() * words.length);
-        return words[randomIndex];
-    }
-
-    // BE lo hàm này nhé, hàm này là để lấy kết quả dự đoán( do Quân làm ) từ landmarks
-    const getExpectedOutput = (landmarks: any) => {
-        return randomword(landmarkstoString(landmarks));
-    }
-
-    // BE lo hàm này nhé, hàm này là để lấy kết quả riel từ landmarks
-    const getUserOutput = (landmarks: any) => {
-        return randomword(landmarkstoString(landmarks));
+        setShowPopup(false);
     }
 
     useEffect(() => {
@@ -50,11 +38,44 @@ const DetectingModePage = () => {
             const iframeSrc = iframe.src
             iframe.src = iframeSrc
         }
-    }, [showPopup])
+    }, [showPopup]);
+
+    const processDetection = async (landmarks: any) => {
+        if (isProcessing || !landmarks) return;
+
+        setIsProcessing(true);
+
+        try {
+            // Lấy dữ liệu hình ảnh từ canvas
+            const imageData = getImageDataFromCanvas(canvasRef.current);
+
+            // Chuẩn bị dữ liệu để gửi đến API
+            const detectionData: DetectedSignCreate = {
+                user_email: "user@example.com", // Thay thế bằng email của người dùng thực
+                detected_character: "?", // Để trống, sẽ được xác định bởi backend
+                current_user_text: currentUserText,
+                image_data: imageData ? [imageData] : undefined
+            };
+
+            // Gửi dữ liệu đến API
+            const result = await sendDetection(detectionData);
+
+            // Cập nhật giao diện với kết quả nhận được
+            setDetectionResult(result.detection.detected_character);
+            setSuggestionResult(result.auto_suggest.suggested_text);
+
+        } catch (error) {
+            console.error("Lỗi xử lý nhận dạng:", error);
+        } finally {
+            setIsProcessing(false);
+        }
+    };
 
     useEffect(() => {
         let handsInstance: Hands | null = null;
         let cameraInstance: Camera | null = null;
+        let lastProcessTime = 0;
+        const PROCESS_INTERVAL = 1000; // 1 giây giữa các lần xử lý ( bn ay nhe, toi quen r :>>>> )
 
         const setupHands = async () => {
             const modules = await loadHandsModule();
@@ -86,12 +107,19 @@ const DetectingModePage = () => {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
 
-                    if (results.multiHandLandmarks) {
+                    if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
                         for (const landmarks of results.multiHandLandmarks) {
                             Draw.drawConnectors(ctx, landmarks, HAND_CONNECTIONS,
                                 { color: '#00FF00', lineWidth: 2 });
                             Draw.drawLandmarks(ctx, landmarks,
                                 { color: '#FF0000', lineWidth: 1, radius: 2 });
+                        }
+
+                        // Xử lý nhận dạng theo khoảng thời gian
+                        const now = Date.now();
+                        if (now - lastProcessTime > PROCESS_INTERVAL) {
+                            lastProcessTime = now;
+                            processDetection(results.multiHandLandmarks);
                         }
                     }
 
@@ -169,7 +197,7 @@ const DetectingModePage = () => {
                         Detecting Mode
                     </span>
                     <span className="absolute top-[110px] left-[0px] w-[874px] h-[72px] text-[24px] text-black align-left align-middle opacity-50">
-                        ISLE features hand sign detection for accurate and seamless recognition. Let’s turn on your webcam and try it out now !
+                        ISLE features hand sign detection for accurate and seamless recognition. Let's turn on your webcam and try it out now !
                     </span>
                 </div>
             </section>
@@ -183,7 +211,7 @@ const DetectingModePage = () => {
 
                     <div className="absolute top-[65.32px] left-[0px] w-[367px] h-[224.68px] bg-[#E6E6E6] rounded-lg">
                         <span className="absolute top-[12px] left-[24px] w-[319px] h-[201px] text-[24px] text-black align-left align-top">
-                            {handsRef.current && getUserOutput(handsRef) ? getUserOutput(handsRef.current) : 'Example...'} { /* để tạm thôi */}
+                            {detectionResult}
                         </span>
                     </div>
                 </div>
@@ -198,7 +226,7 @@ const DetectingModePage = () => {
 
                     <div className="absolute top-[65.32px] left-[0px] w-[367px] h-[224.68px] bg-[#E6E6E6] rounded-lg">
                         <span className="absolute top-[12px] left-[24px] w-[319px] h-[201px] text-[24px] text-black align-left align-top">
-                            {handsRef.current && getExpectedOutput(handsRef) ? getExpectedOutput(handsRef.current) : 'Example...'} { /* để tạm thôi */}
+                            {suggestionResult}
                         </span>
                     </div>
                 </div>
