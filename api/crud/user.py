@@ -1,45 +1,51 @@
-from sqlalchemy.orm import Session
-from api.models.user import User
-from api.schemas.user import UserCreate, UserLogin
-from fastapi import HTTPException, status
-from sqlalchemy.exc import IntegrityError
 import uuid
 from datetime import datetime
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException, status
+
+from api.models.user import User
+from api.models.user import UserCreate, UserLogin, UserUpdate
 
 
-# Lấy user theo ID
+
+# --- Helper Functions --- #
+
+def get_user_by_field(db: Session, field: str, value: str):
+    if field == "email":
+        return db.query(User).filter(User.email == value).first()
+    elif field == "username":
+        return db.query(User).filter(User.user_name == value).first()
+    elif field == "id":
+        return db.query(User).filter(User.user_id == value).first()
+    raise ValueError("Invalid user field")
+
+# --- Core CRUD Logic --- #
+
 def get_user(db: Session, user_id: str):
-    return db.query(User).filter(User.user_id == user_id).first()
+    return get_user_by_field(db, "id", user_id)
 
-
-# Lấy user theo email
 def get_user_by_email(db: Session, email: str):
-    return db.query(User).filter(User.email == email).first()
+    return get_user_by_field(db, "email", email)
 
-
-# Lấy user theo username
 def get_user_by_username(db: Session, username: str):
-    return db.query(User).filter(User.user_name == username).first()
+    return get_user_by_field(db, "username", username)
 
-
-# Lấy nhiều user (có phân trang)
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
 
-
-# Tạo user mới
 def create_user(db: Session, user_data: UserCreate):
-    existing_user = db.query(User).filter(User.email == user_data.email).first()
-    if existing_user:
+    if get_user_by_email(db, user_data.email):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+            detail="Email already registered."
         )
+
     new_user = User(
-        user_id=uuid.uuid4(),
+        user_id=str(uuid.uuid4()),
         email=user_data.email,
         user_name=user_data.user_name,
-        password=user_data.password, 
+        password=user_data.password,
         created_at=datetime.utcnow(),
     )
     db.add(new_user)
@@ -49,27 +55,40 @@ def create_user(db: Session, user_data: UserCreate):
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered (race condition)"
+            detail="Integrity error during user creation (possible race condition)."
         )
     db.refresh(new_user)
     return new_user
 
+def update_user(db: Session, user_data: UserUpdate):
+    user = db.query(User).filter(User.user_id == user_data.user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id {user_data.user_id} not found"
+        )
+    
+    """ 
+    for field, value in data.dict(exclude_unset=True).items():
+        setattr(db_letter, field, value)
+    """
+    for field, value in user_data.dict(exclude_unset=True).items():
+        setattr(user, field, value)
+    
+    db.commit()
+    db.refresh(user)
+    
+    return user
+        
+    
 
-# Xác thực user đăng nhập
-"""
-# Schema to login
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str 
-"""
+
 def authenticate_user(db: Session, login_data: UserLogin):
     user = get_user_by_email(db, login_data.email)
-    if user and user.password == login_data.password:
+    if user and login_data.password == user.password:
         return user
     return None
 
-
-# Xoá user
 def delete_user(db: Session, user_id: str):
     db_user = get_user(db, user_id)
     if db_user:
@@ -77,7 +96,5 @@ def delete_user(db: Session, user_id: str):
         db.commit()
     return db_user
 
-
-# Lấy tất cả user
 def get_all_users(db: Session):
     return db.query(User).all()

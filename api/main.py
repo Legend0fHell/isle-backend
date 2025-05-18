@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # Import individual router modules from the .routers package (api/routers/)
 # Ensure api/routers/__init__.py exists.
 # Example: if you have api/routers/users.py containing a router named 'router'
-from .routers import users, courses, questions, practice, detections, asl_reference 
+from .routers import users, questions, asl_characters, progress
 # You might need to adjust these imports based on the exact filenames and 
 # how you expose the router object within each file (e.g., is it always named 'router'?).
 # Or, your api/routers/__init__.py could import and expose them, e.g.:
@@ -35,11 +35,10 @@ app.add_middleware(
 # Include routers from the imported modules
 # This assumes each imported module (users, courses, etc.) has an attribute 'router'
 app.include_router(users.router, tags=["Users"])
-app.include_router(courses.router, tags=["Courses"])
+app.include_router(progress.router, tags=["Progress"])
 app.include_router(questions.router, tags=["Questions"])
-app.include_router(practice.router, tags=["Practice"])
-app.include_router(detections.router, tags=["Detections"])
-app.include_router(asl_reference.router, tags=["ASL Reference"])
+app.include_router(asl_characters.router, tags=["ASL Characters"])
+
 
 @app.get("/")
 def read_root():
