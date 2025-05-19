@@ -37,7 +37,7 @@ async def handle_hand_sign_detection(sid, data):
     # Save the timestamp of the request in milliseconds
     start_time = time.time() * 1000
     
-    landmarks = json.loads(data).get('landmarks')
+    landmarks = data.get('landmarks')
 
     if landmarks is None: # landmarks can be an empty list if no hand detected
         log_warning(f"Client {sid}: 'landmarks' field missing in req_handsign payload. No action taken.", verbose)
@@ -51,6 +51,10 @@ async def handle_hand_sign_detection(sid, data):
         predicted_char, max_prob = hand_sign_recognizer.predict(landmarks)
     except Exception as e:
         log_error(f"Client {sid}: Error during hand sign prediction: {e}. No action taken for client.", verbose)
+        return # Silent: Do not emit to client
+
+    if max_prob < 0.2:
+        log_warning(f"Client {sid}: Hand sign prediction probability is too low ({max_prob}). No action taken for client.", verbose)
         return # Silent: Do not emit to client
 
     # Calculate the inference time in milliseconds
@@ -67,7 +71,7 @@ async def handle_hand_sign_detection(sid, data):
 @sio_server.on('req_autocomp')
 async def handle_auto_completion(sid, data):
     log_received_message(sid, 'req_autocomp', data, verbose)
-    current_text = json.loads(data).get('text')
+    current_text = data.get('text')
 
     if current_text is None:
         log_warning(f"Client {sid}: 'text' field missing in req_autocomp payload. No action taken.", verbose)
@@ -90,7 +94,7 @@ if __name__ == "__main__":
     log_info(f"Starting ML WebSocket server on {host}:{port}")
     log_info(f"Verbose logging: {verbose}", verbose)
     # Ensure models are loaded (or at least attempted to load)
-    
+
     _ = hand_sign_recognizer 
     _ = auto_complete_model
     uvicorn.run("main:sio_app", host=host, port=port, reload=False) 

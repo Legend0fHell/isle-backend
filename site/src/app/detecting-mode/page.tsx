@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { loadHandsModule } from '@/components/useHands';
 import Image from "next/image";
 import React from "react";
@@ -9,13 +9,8 @@ import Link from "next/link";
 import type { Hands, Results } from "@mediapipe/hands";
 import type { Camera } from "@mediapipe/camera_utils";
 import { X } from "lucide-react";
-import {
-    sendDetection,
-    formatLandmarksForAPI,
-    getImageDataFromCanvas,
-    DetectedSignCreate,
-    FullDetectionResult
-} from "models/detections";
+import { socket, getConnectionState, closeConnectionError, reconnect, ensureSocketConnected } from "models/wsEventListener";
+import { HandSignResponse, formatLandmarksForWebSocket } from "models/resultDetection";
 
 const DetectingModePage = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -23,14 +18,30 @@ const DetectingModePage = () => {
     const [cameraError, setCameraError] = useState<string | null>(null);
     const handsRef = useRef<Hands | null>(null);
     const [showPopup, setShowPopup] = useState(true);
-    const [detectionResult, setDetectionResult] = useState<string>("Example...");
-    const [suggestionResult, setSuggestionResult] = useState<string>("Example...");
-    const [isProcessing, setIsProcessing] = useState(false);
     const [currentUserText, setCurrentUserText] = useState<string>("");
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [suggestionResult, setSuggestionResult] = useState<string>("Example...");
+    
+    // WebSocket state managed in the component for reactivity
+    const [isConnected, setIsConnected] = useState(getConnectionState().isConnected);
+    const [showConnectionError, setShowConnectionError] = useState(getConnectionState().showConnectionError);
+    const [detectionResult, setDetectionResult] = useState<string>("Example...");
 
     const closePopup = () => {
         setShowPopup(false);
     }
+
+    // Handle closing connection error popup
+    const handleCloseConnectionError = useCallback(() => {
+        closeConnectionError();
+        setShowConnectionError(false);
+    }, []);
+
+    // Handle reconnection
+    const handleReconnect = useCallback(() => {
+        reconnect();
+        setShowConnectionError(false);
+    }, []);
 
     useEffect(() => {
         const iframe = document.querySelector("iframe")
@@ -40,32 +51,81 @@ const DetectingModePage = () => {
         }
     }, [showPopup]);
 
+    // Setup WebSocket connection and event listeners
+    useEffect(() => {
+        // Make sure socket is connected (this is handled by wsEventListener, but we check here too)
+        ensureSocketConnected();
+
+        // Update local state when connection state changes
+        const updateConnectionState = () => {
+            const state = getConnectionState();
+            setIsConnected(state.isConnected);
+            setShowConnectionError(state.showConnectionError);
+        };
+
+        // Local event handlers
+        const handleConnect = () => {
+            updateConnectionState();
+        };
+
+        const handleDisconnect = () => {
+            updateConnectionState();
+        };
+
+        const handleHandsignResponse = (data: HandSignResponse) => {
+            console.log('Hand sign detected:', data);
+            if (data && data.pred) {
+                setDetectionResult(data.pred);
+            }
+        };
+
+        // Add local event listeners
+        socket.on('connect', handleConnect);
+        socket.on('disconnect', handleDisconnect);
+        socket.on('res_handsign', handleHandsignResponse);
+
+        // Initial check
+        updateConnectionState();
+
+        // Cleanup local listeners on unmount
+        return () => {
+            socket.off('connect', handleConnect);
+            socket.off('disconnect', handleDisconnect);
+            socket.off('res_handsign', handleHandsignResponse);
+        };
+    }, []);
+
+    // When a detection result is received, update the user's text
+    useEffect(() => {
+        if (detectionResult && detectionResult !== "Example...") {
+            setCurrentUserText(prev => prev + detectionResult);
+        }
+    }, [detectionResult]);
+
+    // Handler for sending hand landmarks
+    const sendHandLandmarks = useCallback((landmarks: any[]) => {
+        if (!isConnected) return;
+
+        const formattedData = formatLandmarksForWebSocket(landmarks);
+        if (formattedData) {
+            socket.emit('req_handsign', formattedData);
+        }
+    }, [isConnected]);
+
     const processDetection = async (landmarks: any) => {
-        if (isProcessing || !landmarks) return;
+        if (isProcessing || !landmarks || !isConnected) return;
 
         setIsProcessing(true);
 
         try {
-            // Lấy dữ liệu hình ảnh từ canvas
-            const imageData = getImageDataFromCanvas(canvasRef.current);
-
-            // Chuẩn bị dữ liệu để gửi đến API
-            const detectionData: DetectedSignCreate = {
-                user_email: "user@example.com", // Thay thế bằng email của người dùng thực
-                detected_character: "?", // Để trống, sẽ được xác định bởi backend
-                current_user_text: currentUserText,
-                image_data: imageData ? [imageData] : undefined
-            };
-
-            // Gửi dữ liệu đến API
-            const result = await sendDetection(detectionData);
-
-            // Cập nhật giao diện với kết quả nhận được
-            setDetectionResult(result.detection.detected_character);
-            setSuggestionResult(result.auto_suggest.suggested_text);
-
+            // Send landmarks via WebSocket
+            console.log("Sending landmarks to WebSocket");
+            sendHandLandmarks(landmarks);
+            
+            // For demonstration - simple auto-suggestion based on current text
+            setSuggestionResult(currentUserText + "...");
         } catch (error) {
-            console.error("Lỗi xử lý nhận dạng:", error);
+            console.error("Error processing detection:", error);
         } finally {
             setIsProcessing(false);
         }
@@ -75,7 +135,7 @@ const DetectingModePage = () => {
         let handsInstance: Hands | null = null;
         let cameraInstance: Camera | null = null;
         let lastProcessTime = 0;
-        const PROCESS_INTERVAL = 1000; // 1 giây giữa các lần xử lý ( bn ay nhe, toi quen r :>>>> )
+        const PROCESS_INTERVAL = parseInt(process.env.MEDIAPIPE_PROCESS_INTERVAL || '250'); // Process interval in ms
 
         const setupHands = async () => {
             const modules = await loadHandsModule();
@@ -115,7 +175,7 @@ const DetectingModePage = () => {
                                 { color: '#FF0000', lineWidth: 1, radius: 2 });
                         }
 
-                        // Xử lý nhận dạng theo khoảng thời gian
+                        // Process detection at intervals
                         const now = Date.now();
                         if (now - lastProcessTime > PROCESS_INTERVAL) {
                             lastProcessTime = now;
@@ -142,8 +202,8 @@ const DetectingModePage = () => {
 
             cameraInstance = camera;
             camera.start().catch((err: unknown) => {
-                setCameraError('Không thể truy cập webcam. Vui lòng cho phép quyền truy cập camera!');
-                console.error('Lỗi camera:', err);
+                setCameraError('Cannot access webcam. Please allow camera permissions!');
+                console.error('Camera error:', err);
             });
         };
 
@@ -183,6 +243,33 @@ const DetectingModePage = () => {
                         <div className="flex justify-center">
                             <button onClick={closePopup} className="px-4 py-2 text-white bg-black rounded-lg shadow-md hover:bg-white hover:text-black hover:shadow-lg">
                                 SKIP
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showConnectionError && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    <div className="relative w-full max-w-md rounded-xl bg-red-50 p-6 shadow-2xl animate-in fade-in duration-300">
+                        <button
+                            onClick={handleCloseConnectionError}
+                            className="absolute right-4 top-4 rounded-full p-1 text-gray-500 hover:bg-red-100"
+                        >
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Close</span>
+                        </button>
+
+                        <h3 className="mb-4 text-xl font-semibold text-red-700">Connection Lost</h3>
+                        <p className="mb-4 text-red-600">
+                            The connection to the hand sign recognition service has been lost. Please check your internet connection.
+                        </p>
+                        <div className="flex justify-center">
+                            <button 
+                                onClick={handleReconnect} 
+                                className="px-4 py-2 text-white bg-red-700 rounded-lg shadow-md hover:bg-red-800"
+                            >
+                                Reconnect
                             </button>
                         </div>
                     </div>
