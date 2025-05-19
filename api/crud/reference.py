@@ -16,7 +16,18 @@ class ASLCharacter(Base):
 """
 
 def get_all_letters(db: Session):
-    return db.query(ASLCharacter).all()
+    results = []
+    letters =  db.query(ASLCharacter).all()
+    for letter in letters:
+        results.append(
+            {
+                "char_name": str.upper(letter.char_name),
+                "char_image_url": letter.char_image_url,
+                "char_tutorial_text": letter.char_tutorial_text,
+                "char_tutorial_url": letter.char_tutorial_url
+            }
+        )
+    return results
 
 def get_letter(db: Session, letter: str):
     asl_letter = db.query(ASLCharacter).filter(func.lower(func.trim(ASLCharacter.char_name)) == letter.strip().lower()).first()

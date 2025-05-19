@@ -68,6 +68,7 @@ def update_course(db: Session, course_data: CourseUpdate):
         setattr(course, field, value)
         
     db.commit()
+    db.refresh(course)
     
     return course
 
@@ -147,6 +148,7 @@ def update_lesson(db: Session, lesson_data: LessonUpdate):
     for field, value in lesson_data.dict(exclude_unset=True).items():
         setattr(lesson, field, value)
     db.commit()
+    db.refresh(lesson)
     return lesson
 
 
@@ -205,7 +207,7 @@ def get_question(db: Session, question_id: UUID):
     return question
         
 def get_question_by_lesson(db: Session, lesson_id: UUID):
-    lesson_questions = db.query(LessonQuestion).filter(LessonQuestion.lesson_id == lesson_id).all()
+    lesson_questions = db.query(LessonQuestion).filter(LessonQuestion.lesson_id == lesson_id).order_by(LessonQuestion.index_in_lesson).all()
     
     if not lesson_questions:
         return None
@@ -213,8 +215,14 @@ def get_question_by_lesson(db: Session, lesson_id: UUID):
     question_ids = [lq.question_id for lq in lesson_questions]
     
     questions = db.query(Question).filter(Question.question_id.in_(question_ids)).all()
-    
-    return questions 
+    results = []
+    for question in questions:
+        results.append({
+            "question_id": question.question_id,
+            "question_type": question.question_type,
+            "question_choice": question.question_choice
+        })
+    return results
 
 def update_question(db: Session, question_data: QuestionUpdate):
     question = db.query(Question).filter(Question.question_id == question_data.question_id).first()
@@ -225,6 +233,7 @@ def update_question(db: Session, question_data: QuestionUpdate):
     for field, value in question_data.dict(exclude_unset=True).items():
         setattr(question, field, value)
     db.commit()
+    db.refresh(question)
     return question
 
 def delete_question(db: Session, question_id: UUID):

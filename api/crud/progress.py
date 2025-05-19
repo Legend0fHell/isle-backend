@@ -6,7 +6,7 @@ from datetime import datetime
 from api.models.user import UserLessonProgress, User
 from api.models.user import LessonProgressCreate, UserAnswerSubmit, UserQuestionAnswer, UserAnswerCreate
 
-from api.models.question import Question, Lesson
+from api.models.question import Question, Lesson, LessonQuestion
 
 
 # --- LessonProgress CRUD --- #
@@ -73,10 +73,18 @@ def get_lesson_progress(db: Session, user_id: UUID, lesson_id: UUID):
 
 
 def get_lesson_progress_by_user(db: Session, user_id: UUID):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
     user_progress = db.query(UserLessonProgress).filter(
         UserLessonProgress.user_id == user_id
     ).all()
-    
+     
     return user_progress 
     
     
@@ -131,8 +139,20 @@ def get_user_question_answer(db: Session, progress_id: UUID, question_id: UUID):
 
 def get_user_question_answers_by_lesson(db: Session, progress_id: UUID):
     answers = db.query(UserQuestionAnswer).filter(UserQuestionAnswer.progress_id == progress_id).all()
+    if not answers:
+        return {"msg": "Progress not found", "data": None}
+    results = []
+    
+    for answer in answers:
+        results.append({
+            "question_id": answer.question_id,
+            "user_choice": answer.user_choice,
+            "is_correct": answer.is_correct
+        }
+        )
         
-    return answers
+    
+    return {"msg": "Success", "data": results}
 
     
     
@@ -179,7 +199,7 @@ def submit_user_answer(db: Session, data: UserAnswerSubmit):
     db.commit()
     db.refresh(user_answer)
 
-    return user_answer
+    return {"msg": "ok", "data": is_correct}
 
 
         
@@ -229,7 +249,41 @@ def track_user_progress(db: Session, user_id: UUID):
         "data": progress_list
     }
     
-        
+
+def get_user_recent_lesson_progress(db: Session, user_id: UUID, lesson_id: UUID):
+    lesson_progress = (
+        db.query(UserLessonProgress)
+        .filter(
+            UserLessonProgress.user_id == user_id,
+            UserLessonProgress.lesson_id == lesson_id
+        )
+        .order_by(UserLessonProgress.last_activity_at.desc())  # assume latest
+        .first()
+    )
+
+    if lesson_progress is None: 
+        return {"msg": "Progress not found", "data": None}
+
+    question_answers = (
+        db.query(UserQuestionAnswer)
+        .filter(UserQuestionAnswer.progress_id == lesson_progress.progress_id)
+        .all()
+    )
+
+    results = [
+        {
+            "question_id": qa.question_id,
+            "user_choice": qa.user_choice,
+            "is_correct": qa.is_correct
+        }
+        for qa in question_answers
+    ]
+
+    return {
+        "msg": "Success",
+        "data": results
+    }
+
     
     
         

@@ -5,8 +5,9 @@ from uuid import UUID
 from api.database import get_db
 from api.models.user import (
     LessonProgressCreate, UserAnswerSubmit, UserAnswerCreate, 
-    UserAnswerRead, LessonProgressRead, UserRead, UserLogin, UserCreate
+    UserAnswerRead, LessonProgressRead, UserRead, UserLogin, UserCreate, User
 )
+from api.models.question import Lesson
 from api.crud import progress as crud
 
 router = APIRouter(
@@ -30,13 +31,13 @@ def start_lesson_progress(data: LessonProgressCreate, db: Session = Depends(get_
         "data": progress
     }
 
-@router.post("/progress/lesson/")
+@router.post("/progress/lesson")
 def get_lesson_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(get_db)):
     """Retrieve progress record for a specific user and lesson"""
     progress = crud.get_lesson_progress(db, user_id, lesson_id)
     if not progress:
         return {
-            "msg": "Get lesson progress",
+            "msg": "No lesson progress found",
             "data": None
         }
     return {
@@ -50,13 +51,13 @@ def get_lesson_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(ge
         }
     } 
 
-@router.get("/progress/user/{user_id}")
+@router.get("/course/progress")
 def get_all_lesson_progress(user_id: UUID, db: Session = Depends(get_db)):
     """Retrieve all lesson progress records for a given user"""
     progress_list = crud.get_lesson_progress_by_user(db, user_id)
-    if not progress_list:
+    if progress_list is None:
         return {
-            "msg": "Get user learning progress",
+            "msg": "No user learning progress found",
             "data": None
         }
     return {
@@ -80,7 +81,7 @@ def create_user_question_answer(data: UserAnswerCreate, db: Session = Depends(ge
     answer = crud.create_user_question_answer(db, data)
     if not answer:
         return {
-            "msg": "User start the question",
+            "msg": "failed, user answer is not tracked",
             "data": None 
         }
     return {
@@ -91,13 +92,13 @@ def create_user_question_answer(data: UserAnswerCreate, db: Session = Depends(ge
         }
     }
 
-@router.get("/progress/answer/{progress_id}/{question_id}")
+@router.get("/progress/answer")
 def get_user_question_answer(progress_id: UUID, question_id: UUID, db: Session = Depends(get_db)):
     """Get user's answer details for a specific question in a progress"""
     answer = crud.get_user_question_answer(db, progress_id, question_id)
-    if not answer:
+    if answer is None:
         return {
-            "msg": "Get answer from user",
+            "msg": "No answer progress found from user",
             "data": None
         }
     return {
@@ -110,46 +111,26 @@ def get_user_question_answer(progress_id: UUID, question_id: UUID, db: Session =
         }
     }
 
-@router.get("/progress/answers/{progress_id}")
+@router.get("/lesson/progress")
 def get_user_question_answers_by_lesson(progress_id: UUID, db: Session = Depends(get_db)):
     """Get all question answers associated with a lesson progress"""
-    answers = crud.get_user_question_answers_by_lesson(db, progress_id)
-    if not answers:
-        return {
-            "msg": "Get questions answers by lesson",
-            "data": None 
-        }
-    return {
-        "msg": "Get questions answers by lesson",
-        "data": [
-            {
-                "progress_id": a.progress_id,
-                "question_id": a.question_id,
-                "user_choice": a.user_choice,
-                "is_correct": a.is_correct
-            } for a in answers
-        ]
-    }
+    return crud.get_user_question_answers_by_lesson(db, progress_id)
+    
+@router.get("/lesson/recent_progress")
+def get_user_recent_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(get_db)):
+    return crud.get_user_recent_lesson_progress(db, user_id, lesson_id)
+    
 
-@router.post("/progress/answer/submit")
+@router.post("/lesson/check")
 def submit_user_answer(data: UserAnswerSubmit, db: Session = Depends(get_db)):
     """Submit user's answer to a question and update correctness"""
-    answer = crud.submit_user_answer(db, data)
-    if not answer: 
+    feedback = crud.submit_user_answer(db, data)
+    if not feedback: 
         return {
-            "msg": "User submit answer",
+            "msg": "Submit failed",
             "data": None 
         }
-    return { 
-        "msg": "User submit answer",   
-        "data": {
-            "progress_id": answer.progress_id,
-            "question_id": answer.question_id,
-            "user_choice": answer.user_choice,
-            "is_correct": answer.is_correct
-        }
-    }
-
+    return feedback
 @router.post("/course/progress")
 def get_user_course_progress(user_id: UUID, db: Session = Depends(get_db)):
     """Get aggregated progress of a user across all lessons in courses"""

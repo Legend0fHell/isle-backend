@@ -14,20 +14,23 @@ router = APIRouter(
 # ----------------------------
 # Create a new user (registration)
 # ----------------------------
-@router.post("/register", response_model=BaseResponse, status_code=status.HTTP_201_CREATED)
-def create_user(user_data: UserCreate, db: Session = Depends(get_db)):
-    """
-    Register a new user with the provided details.
-    """
-    user = user_crud.create_user(db, user_data)
-    if not user:
-        return {"msg": "User register failed", "data": None}
-    return {"msg": "User created successfully", "data": UserData.from_orm(user)}
+@router.post("/register", status_code=status.HTTP_201_CREATED)
+def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    created_user = user_crud.create_user(db, user)
+    if not created_user:
+        return {
+            "msg": "Register failed, email already exists",
+            "data": None
+        }
+    return {
+        "msg": "User register successfully",
+        "data": created_user
+    }
 
 # ----------------------------
 # Retrieve user by ID
 # ----------------------------
-@router.get("/{user_id}/info/", response_model=BaseResponse)
+@router.get("/info")
 def read_user(user_id: UUID, db: Session = Depends(get_db)):
     """
     Get user information by user ID.
@@ -40,7 +43,7 @@ def read_user(user_id: UUID, db: Session = Depends(get_db)):
 # ----------------------------
 # Login user with credentials
 # ----------------------------
-@router.post("/login", response_model=BaseResponse)
+@router.post("/login")
 def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
     """
     Authenticate user credentials and return user info if valid.

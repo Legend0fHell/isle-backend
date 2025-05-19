@@ -6,11 +6,11 @@ from api.models.alphabet import ASLCreate, ASLRead
 from api.database import get_db
 from api.crud import reference as crud
 
-router = APIRouter(prefix="/asl", tags=["ASL Characters"])
+router = APIRouter(prefix="/api", tags=["ASL Characters"])
 
 # --- ASL Characters Endpoints --- #
 
-@router.get("/all/")
+@router.get("/asl")
 def get_all_asl_letters(db: Session = Depends(get_db)):
     """
     Retrieve all ASL letters.
@@ -20,18 +20,21 @@ def get_all_asl_letters(db: Session = Depends(get_db)):
         "data": crud.get_all_letters(db)
     }
 
-@router.get("/{letter}/info")
+@router.get("/asl/info")
 def get_asl_letter(letter: str, db: Session = Depends(get_db)):
     """
     Retrieve details of a specific ASL letter (case-insensitive).
     """
     letter_clean = letter.upper().strip()
+    letter_data = crud.get_letter(db, letter_clean)
+    if letter_data is None:
+        return {"msg": f"No info found for {letter_clean}", "data": None}
     return {
         "msg": f"Get ASL letter info for '{letter_clean}'",
         "data": crud.get_letter(db, letter_clean)
     }
 
-@router.post("/create/")
+@router.post("/asl/create")
 def create_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
     """
     Create a new ASL letter entry.
@@ -41,7 +44,7 @@ def create_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
         "data": crud.create_letter(db, asl_data)
     }
 
-@router.put("/update")
+@router.put("/asl/update")
 def update_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
     """
     Update an existing ASL letter entry.
@@ -51,7 +54,7 @@ def update_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
         "data": crud.update_letter(db, asl_data)
     }
 
-@router.delete("/delete/{letter}")
+@router.delete("/asl/delete")
 def delete_asl_letter(letter: str, db: Session = Depends(get_db)):
     """
     Delete an ASL letter entry by letter (case-insensitive).

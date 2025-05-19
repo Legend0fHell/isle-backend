@@ -52,7 +52,13 @@ def create_user(db: Session, user_data: UserCreate):
         db.rollback()
         return None
     db.refresh(new_user)
-    return new_user
+    
+    return {
+        "user_id": new_user.user_id,
+        "email": new_user.email,
+        "name": new_user.name
+    }
+    
 
 def update_user(db: Session, user_data: UserUpdate):
     user = db.query(User).filter(User.user_id == user_data.user_id).first()
