@@ -22,10 +22,7 @@ def get_letter(db: Session, letter: str):
     asl_letter = db.query(ASLCharacter).filter(func.lower(func.trim(ASLCharacter.char_name)) == letter.strip().lower()).first()
     
     if not asl_letter:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"ASL letter {letter} not found"
-        )
+        return None
         
     return asl_letter
 
@@ -33,11 +30,8 @@ def create_letter(db: Session, alphabet_in: ASLCreate):
     letter = db.query(ASLCharacter).filter( func.lower(func.trim(ASLCharacter.char_name)) == alphabet_in.char_name.strip().lower()).first()
     
     if letter:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"{alphabet_in.char_name} is already available"
-        )
-    
+        return None
+        
     db_letter = ASLCharacter(
         char_name = alphabet_in.char_name,
         char_image_url = alphabet_in.char_image_url,
@@ -66,4 +60,4 @@ def delete_letter(db: Session, letter: str):
     db_letter = get_letter(db, letter)
     db.delete(db_letter)
     db.commit()
-    return {"detail": f"ASL letter '{letter}' deleted successfully"}
+    return f"ASL letter '{letter}' deleted successfully"

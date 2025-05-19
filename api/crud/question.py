@@ -43,10 +43,7 @@ def get_course(db: Session, course_id: UUID):
     course = db.query(Course).filter(Course.course_id == course_id).first()
     
     if not course:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Course with id {course_id} not found"
-        )
+        return None
     
     return course
 
@@ -55,10 +52,7 @@ def get_course_by_name(db: Session, course_name: str):
     course = db.query(Course).filter(Course.course_name == course_name).first()
     
     if not course:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Course with name {course_name} not found"
-        )
+        return None
         
     return course 
 
@@ -67,10 +61,7 @@ def update_course(db: Session, course_data: CourseUpdate):
     course = db.query(Course).filter(Course.course_id == course_data.course_id).first()
     
     if not course:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Course with id {course_data.course_id} not found"
-        )
+        return None
         
     for field, value in course_data.dict(exclude_unset=True).items():
         setattr(course, field, value)
@@ -85,10 +76,7 @@ def delete_course(db: Session, course_id: UUID):
     course = db.query(Course).filter(Course.course_id == course_id).first()
     
     if not course:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Course with id {course_id} not found"
-        )
+        return None
     
     # Delete related CourseLesson entries
     course_lessons = db.query(CourseLesson).filter(CourseLesson.course_id == course_id).all()
@@ -133,10 +121,7 @@ def get_lesson(db: Session, lesson_id: UUID):
     lesson = db.query(Lesson).filter(Lesson.lesson_id == lesson_id).first()
     
     if not lesson:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lesson with id {lesson_id} not found"
-        )
+        return None
         
     return lesson
 
@@ -157,10 +142,7 @@ def update_lesson(db: Session, lesson_data: LessonUpdate):
     lesson = db.query(Lesson).filter(Lesson.lesson_id == lesson_data.lesson_id).first()
     
     if not lesson:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lesson with id {lesson_data.lesson_id} not found"
-        )
+        return None
     for field, value in lesson_data.dict(exclude_unset=True).items():
         setattr(lesson, field, value)
     db.commit()
@@ -170,10 +152,7 @@ def update_lesson(db: Session, lesson_data: LessonUpdate):
 def delete_lesson(db: Session, lesson_id: UUID):
     lesson = db.query(Lesson).filter(Lesson.lesson_id == lesson_id).first()
     if not lesson:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lesson with id {lesson_id} not found"
-        )
+        return None
         
     lesson_questions = db.query(LessonQuestion).filter(LessonQuestion.lesson_id == lesson_id).all()
     
@@ -183,7 +162,7 @@ def delete_lesson(db: Session, lesson_id: UUID):
     db.delete(lesson)
     db.commit()
     
-    return {"detail": f"Lesson with id {lesson_id} deleted successfully"}
+    return f"Lesson with id {lesson_id} deleted successfully"
 
 
 ##### Question ##### 
@@ -220,10 +199,7 @@ def get_question(db: Session, question_id: UUID):
     question = db.query(Question).filter(Question.question_id == question_id).first()
     
     if not question:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Question with id {question_id} not found"
-        )
+        return None
         
     return question
         
@@ -231,7 +207,7 @@ def get_question_by_lesson(db: Session, lesson_id: UUID):
     lesson_questions = db.query(LessonQuestion).filter(LessonQuestion.lesson_id == lesson_id).all()
     
     if not lesson_questions:
-        return []
+        return None
     
     question_ids = [lq.question_id for lq in lesson_questions]
     
@@ -243,10 +219,7 @@ def update_question(db: Session, question_data: QuestionUpdate):
     question = db.query(Question).filter(Question.question_id == question_data.question_id).first()
     
     if not question:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Question with id {question_data.question_id} not found"
-        )
+        return None
         
     for field, value in question_data.dict(exclude_unset=True).items():
         setattr(question, field, value)
@@ -257,10 +230,7 @@ def delete_question(db: Session, question_id: UUID):
     question = db.query(Question).filter(Question.question_id == question_id).first()
     
     if not question:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Question with id {question_id} not found"
-        )
+        return None
         
     lesson_questions = db.query(LessonQuestion).filter(LessonQuestion.question_id == question_id).all()
     for lq in lesson_questions:
@@ -286,18 +256,12 @@ def create_course_lesson(db: Session, cl: CourseLessonCreate):
     course = db.query(Course).filter(Course.course_id == cl.course_id).first()
     
     if not course:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Course with {cl.course_id} not found"
-        )
+        return None
     
     lesson = db.query(Lesson).filter(Lesson.lesson_id == cl.lesson_id).first()
     
     if not lesson:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lesson with {cl.lesson_id} not found"
-        )
+        return None
     
     # Count current lessons in the course
     existing_lessons = db.query(CourseLesson).filter(CourseLesson.course_id == cl.course_id).all()
@@ -332,10 +296,7 @@ def get_course_lessons(db: Session, course_id: UUID):
     course = db.query(Course).filter(Course.course_id == course_id).first()
     
     if not course:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Course with id {course_id} not found"
-        )
+        return None
     
     course_lessons = db.query(CourseLesson).filter(CourseLesson.course_id == course_id).order_by(CourseLesson.index_in_course).all()
     
@@ -352,15 +313,12 @@ def delete_course_lesson(db: Session, course_id: UUID, lesson_id: UUID):
     ).first()
     
     if not cl:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lesson with id {lesson_id} not found in course {course_id}"
-        )
+        return None
         
     db.delete(cl)
     db.commit()
     
-    return {"detail": f"Lesson with id {lesson_id} is removed from Course {course_id}"}
+    return f"Lesson with id {lesson_id} is removed from Course {course_id}"
 
 
 ##### LessonQuestion ##### 
@@ -377,18 +335,12 @@ def create_lesson_question(db: Session, lesson_question: LessonQuestionCreate):
     lesson = db.query(Lesson).filter(Lesson.lesson_id == lesson_question.lesson_id).first()
     
     if not lesson:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lesson with id {lesson_question.lesson_id} not found"
-        )
+        return None
         
     question = db.query(Question).filter(Question.question_id == lesson_question.question_id).first()
     
     if not question:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Question with id {lesson_question.question_id} not found"
-        )
+        return None
     
     # Get existing questions in this lesson
     existing_questions = db.query(LessonQuestion).filter(
@@ -427,10 +379,7 @@ def get_lesson_questions(db: Session, lesson_id: UUID):
     lesson = db.query(Lesson).filter(Lesson.lesson_id == lesson_id).first()
     
     if not lesson:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lesson with id {lesson_id} not found"
-        )
+        return None
         
     # Get all questions in the lesson
     lesson_questions = db.query(LessonQuestion).filter(
@@ -449,14 +398,11 @@ def delete_lesson_questions(db: Session, lesson_id: UUID, question_id: UUID):
         LessonQuestion.question_id == question_id).first()
     
     if not lq:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Question with id {question_id} not found in lesson {lesson_id}"
-        )
+        return None
         
     db.delete(lq)
     db.commit()
     
-    return {"detail": f"Question with id {question_id} is removed from lesson {lesson_id}"}
+    return f"Question with id {question_id} is removed from lesson {lesson_id}"
 
  

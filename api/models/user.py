@@ -142,5 +142,27 @@ class UserRead(BaseModel):
     last_login: datetime
 
     model_config = {
+        "arbitrary_types_allowed": True,
+        "from_attributes": True
+    }
+
+
+
+class UserData(BaseModel):
+    user_id: uuid.UUID
+    email: str
+    name: str
+
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "from_attributes": True  
+    }
+
+
+class BaseResponse(BaseModel):
+    msg: str
+    data: UserData
+    
+    model_config = {
         "arbitrary_types_allowed": True
     }

@@ -26,18 +26,12 @@ def start_lesson_progress(db: Session, data: LessonProgressCreate):
     user = db.query(User).filter(User.user_id == data.user_id).first()
     
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with id {data.user_id} not found"
-        )
+        return None
         
     lesson = db.query(Lesson).filter(Lesson.lesson_id == data.lesson_id).first()
     
     if not lesson:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lesson with id {data.lesson_id} not found"
-        )
+        return None
     
     existing = db.query(UserLessonProgress).filter(
         UserLessonProgress.user_id == data.user_id,
@@ -66,7 +60,7 @@ def get_lesson_progress(db: Session, user_id: UUID, lesson_id: UUID):
     ).first()
     
     if not progress:
-        raise HTTPException(status_code=404, detail="Progress not found")
+        return None
     
     return progress
 
@@ -102,10 +96,7 @@ def create_user_question_answer(db: Session, user_data: UserAnswerCreate):
     question = db.query(Question).filter(Question.question_id == user_data.question_id).first()
         
     if not question:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Question with id {user_data.question_id} not found"
-        )
+        return None
         
     new_user_answer = UserQuestionAnswer(
         progress_id = user_data.progress_id,
@@ -126,10 +117,7 @@ def get_user_question_answer(db: Session, progress_id: UUID, question_id: UUID):
     ).first()
     
     if not answer:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Progress with id {progress_id} not found"
-        )
+        return None
     
     return answer
 
@@ -149,10 +137,7 @@ def submit_user_answer(db: Session, data: UserAnswerSubmit):
     ).first()
 
     if not user_answer:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"UserQuestionAnswer not found for progress_id={data.progress_id}, question_id={data.question_id}"
-        )
+        return None
 
     # Verify question exists
     question = db.query(Question).filter(Question.question_id == data.question_id).first()
@@ -175,10 +160,7 @@ def submit_user_answer(db: Session, data: UserAnswerSubmit):
     ).first()
 
     if not lesson_progress:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"UserLessonProgress with id {data.progress_id} not found"
-        )
+        return None
 
     if is_correct:
         lesson_progress.correct_questions += 1

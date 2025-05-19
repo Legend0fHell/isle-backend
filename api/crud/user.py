@@ -36,11 +36,8 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def create_user(db: Session, user_data: UserCreate):
     if get_user_by_email(db, user_data.email):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered."
-        )
-
+        return None
+    
     new_user = User(
         user_id=str(uuid.uuid4()),
         email=user_data.email,
@@ -53,25 +50,16 @@ def create_user(db: Session, user_data: UserCreate):
         db.commit()
     except IntegrityError:
         db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Integrity error during user creation (possible race condition)."
-        )
+        return None
     db.refresh(new_user)
     return new_user
 
 def update_user(db: Session, user_data: UserUpdate):
     user = db.query(User).filter(User.user_id == user_data.user_id).first()
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with id {user_data.user_id} not found"
-        )
-    
-    """ 
-    for field, value in data.dict(exclude_unset=True).items():
-        setattr(db_letter, field, value)
-    """
+        return None
+   
+   
     for field, value in user_data.dict(exclude_unset=True).items():
         setattr(user, field, value)
     

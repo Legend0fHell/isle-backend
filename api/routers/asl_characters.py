@@ -9,26 +9,42 @@ from api.crud import reference as crud
 router = APIRouter(prefix="/asl", tags=["ASL Characters"])
 
 
-@router.get("/", response_model=List[ASLRead])
+@router.get("/all/")
 def get_all_asl_letters(db: Session = Depends(get_db)):
-    return crud.get_all_letters(db)
+    return {
+        "msg": "Get all asl letters",
+        "data": crud.get_all_letters(db)
+    }
 
 
-@router.get("/{letter}", response_model=ASLRead)
+@router.get("/{letter}/info")
 def get_asl_letter(letter: str, db: Session = Depends(get_db)):
-    return crud.get_letter(db, letter.upper())
+    return {
+        "msg": "Get asl letter info",
+        "data": crud.get_letter(db, letter.upper().strip())
+    }
 
 
-@router.post("/", response_model=ASLRead, status_code=status.HTTP_201_CREATED)
+@router.post("/create/")
 def create_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
-    return crud.create_letter(db, asl_data)
+    return {
+        "msg": "Create new asl letter",
+        "data": crud.create_letter(db, asl_data)
+    }
 
 
-@router.put("/update", response_model=ASLRead)
+@router.put("/update")
 def update_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
-    return crud.update_letter(db, asl_data)
+    return {
+        "msg": "Update asl letter",
+        "data": crud.update_letter(db, asl_data)
+    }
 
 
 @router.delete("/delete/{letter}")
 def delete_asl_letter(letter: str, db: Session = Depends(get_db)):
-    return crud.delete_letter(db, letter.upper())
+    return {
+        "msg": "Delete asl letter",
+        "data": crud.delete_letter(db, letter.upper().strip())
+    }
+
