@@ -56,6 +56,10 @@ def get_lessons_in_course(course_id: UUID, db: Session = Depends(get_db)):
     }
 
 
+@router.get("/course/list/")
+def get_all_lessons(db: Session = Depends(get_db)):
+    return crud.get_all_courses(db)
+
 ##### Lesson Endpoints #####
 @router.post("/lesson/")
 def create_lesson(lesson: LessonCreate, db: Session = Depends(get_db)):

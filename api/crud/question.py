@@ -55,6 +55,7 @@ def get_course_by_name(db: Session, course_name: str):
         return None
         
     return course 
+    
 
 
 def update_course(db: Session, course_data: CourseUpdate):
@@ -406,3 +407,59 @@ def delete_lesson_questions(db: Session, lesson_id: UUID, question_id: UUID):
     return f"Question with id {question_id} is removed from lesson {lesson_id}"
 
  
+
+
+""" 
+Get all courses 
+"""
+def get_all_courses(db: Session):
+    courses = db.query(Course).all()
+    
+    if not courses:
+        return {
+            "msg": "No courses found",
+            "data": []
+        }
+    
+    result = []
+    for course in courses:
+        # Get all CourseLesson entries for this course, ordered by index_in_course
+        course_lessons = (
+            db.query(CourseLesson)
+            .filter(CourseLesson.course_id == course.course_id)
+            .order_by(CourseLesson.index_in_course)
+            .all()
+        )
+        
+        lessons_list = []
+        for cl in course_lessons:
+            # Get the Lesson info for each associated lesson_id
+            lesson = db.query(Lesson).filter(Lesson.lesson_id == cl.lesson_id).first()
+            if lesson:
+                # Count questions linked to this lesson, assuming LessonQuestion links Lesson & Question
+                lesson_num_question = (
+                    db.query(LessonQuestion)
+                    .filter(LessonQuestion.lesson_id == lesson.lesson_id)
+                    .count()
+                )
+                
+                lessons_list.append({
+                    "lesson_id": str(lesson.lesson_id),
+                    "lesson_name": lesson.lesson_name,
+                    "lesson_desc": lesson.lesson_desc,
+                    "lesson_type": lesson.lesson_type,
+                    "lesson_num_question": lesson_num_question,
+                })
+        
+        result.append({
+            "course_id": str(course.course_id),
+            "course_name": course.course_name,
+            "course_desc": course.course_desc,
+            "course_difficulty": course.course_difficulty,
+            "course_lessons": lessons_list,
+        })
+    
+    return {
+        "msg": "success",
+        "data": result,
+    }
