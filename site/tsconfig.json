@@ -28,7 +28,13 @@
       ],
       "models/*": [
         "./models/*"
-      ]
+      ],
+      "types/*": [
+        "./types/*"
+      ],
+      "public": [
+        "./public/*"
+      ],
     }
   },
   "include": [

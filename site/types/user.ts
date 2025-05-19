@@ -3,25 +3,7 @@ type UUID = string;
 
 // ----- User Schemas -----
 
-export interface UserCreate {
-    email: string;          // EmailStr tương đương string
-    name: string;
-    password: string;
-}
-
-export interface UserLogin {
-    email: string;
-    password: string;
-}
-
-export interface UserUpdate {
-    user_id: UUID;
-    email?: string;
-    name?: string;
-    password?: string;
-}
-
-export interface UserRead {
+export interface User {
     user_id: UUID;
     email: string;
     name: string;
@@ -31,12 +13,7 @@ export interface UserRead {
 
 // ----- Lesson Progress -----
 
-export interface LessonProgressCreate {
-    user_id: UUID;
-    lesson_id: UUID;
-}
-
-export interface LessonProgressRead {
+export interface LessonProgress {
     progress_id: UUID;
     user_id: UUID;
     lesson_id: UUID;
@@ -46,18 +23,9 @@ export interface LessonProgressRead {
 
 // ----- User Answer -----
 
-export interface UserAnswerCreate {
-    progress_id: UUID;
-    question_id: UUID;
-}
-
-export interface UserAnswerSubmit {
+export interface UserAnswer {
     progress_id: UUID;
     question_id: UUID;
     user_choice: string;
 }
 
-export interface UserAnswerRead {
-    progress_id: UUID;
-    question_id: UUID;
-}
