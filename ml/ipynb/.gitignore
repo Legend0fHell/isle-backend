@@ -1,2 +1,13 @@
 /keras*
 /asl*
+
+dataset
+
+*.pkl
+*.tflite
+*.csv
+*.png
+*.jpg
+*.json
+
+pass*

@@ -4,7 +4,7 @@ services:
       context: ./api
       dockerfile: Dockerfile
     env_file:
-      - .env # Load .env file from project root
+      - ./api/.env
     # If you have a requirements.txt for the api, uncomment the next line
     # command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     # volumes:
@@ -21,7 +21,7 @@ services:
       context: ./site
       dockerfile: Dockerfile
     env_file:
-      - .env
+      - ./site/.env
     expose:
       - "3000"
     environment:
@@ -37,7 +37,7 @@ services:
       context: ./ml
       dockerfile: Dockerfile
     env_file:
-      - .env # Load .env file from project root
+      - ./ml/.env
     # command: python main.py # Command to run the ML WebSocket server
     volumes:
       - ./ml:/app # Mount the ml directory (useful if you want to update models without rebuilding)
@@ -51,7 +51,7 @@ services:
   db:
     image: postgres:17-bookworm
     env_file:
-      - .env # Loads POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+      - ./api/.env
     volumes:
       - pgdata:/var/lib/postgresql/data # Persist data
     networks:

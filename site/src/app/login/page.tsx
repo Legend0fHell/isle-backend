@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { login, UserLogin } from 'models/auth';
+import { login, UserLogin, UserRead } from 'models/auth'; // Import UserRead
 
 const LoginPage = () => {
     const [credentials, setCredentials] = useState<UserLogin>({
@@ -18,11 +18,14 @@ const LoginPage = () => {
         setError(null);
 
         try {
-            const user = await login(credentials);
-            // Lưu thông tin user vào state/context hoặc localStorage
-            localStorage.setItem('user', JSON.stringify(user));
+            const user: UserRead = await login(credentials); // Sử dụng UserRead
+            // Lưu thông tin user với cấu trúc mới
+            localStorage.setItem('user', JSON.stringify({
+                id: user.user_id, // Đổi thành user_id
+                name: user.user_name,
+                email: user.email
+            }));
 
-            // Chuyển hướng đến dashboard
             window.location.href = '/dashboard';
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi');
@@ -30,6 +33,7 @@ const LoginPage = () => {
             setIsLoading(false);
         }
     };
+
     return (
         <div className="relative w-[1440px] bg-[#FFFFFF]">
             <Image className='absolute top-[0px] left-0 h-screen'
