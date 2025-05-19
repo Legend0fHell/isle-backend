@@ -141,6 +141,25 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 }
 ```
 
+### Đăng ký
+- Request (form-data, POST `/api/user/register`)
+```
+    "name": <name>
+    "email": <email>
+    "password": <text>
+```
+- Response (JSON) -- Table: `User`
+```
+{
+    "msg": <status>
+    "data": {
+        "user_id": <user_id>,
+        "email": <email>,       
+        "name": <name>
+    }
+}
+```
+
 ### Đọc thông tin
 - Request (form-data, GET `/api/user/info`)
 ```
@@ -248,6 +267,35 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
         }, 
         ...
     ]
+}
+```
+
+### Lấy ID tiến độ của bài làm của người dùng
+- Request (form-data, GET `/api/lesson/recent_progress`)
+```
+    "user_id": <user_id>    
+    "lesson_id": <lesson_id>     # ID bài học
+```
+- Response (JSON) -- `List<UserQuestionAnswer>`
+```
+{
+    "msg": <status>
+    "data": {
+        "progress_id": <progress_id>,    # Tiến độ tương ứng
+        [                                   # Lưu ý: Đây là Mảng tiến độ các câu hỏi của progress_id trên
+            {
+                "question_id": <question_id>
+                "user_choice": <lựa chọn>           # Lựa chọn hiện tại của người dùng
+                "is_correct": <true/false>          # Hiện tại đang trả lời đúng hay sai?
+            }, 
+            {
+                "question_id": <question_id>
+                "user_choice": <lựa chọn>           
+                "is_correct": <true/false>          
+            }, 
+            ...
+        ]
+    }
 }
 ```
 
