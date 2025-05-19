@@ -2,25 +2,6 @@
 
 This service provides AI/ML functionalities for the ISLE platform via WebSockets, primarily focusing on hand sign recognition and offering an interface for auto-completion features.
 
-## Functionalities
-
-1.  **Hand Sign Recognition**
-    *   **Input**: Expects an array of 21 hand landmark objects, where each object contains `x`, `y`, and `z` coordinates.
-    *   **Process**: The landmarks are scaled, transformed using PCA, and then fed into a pre-trained Random Forest Classifier.
-    *   **Output**: Predicts the character (A-Z, or special characters like 'space', 'del') represented by the hand sign.
-
-2.  **Auto-Completion (Interface)**
-    *   Currently a placeholder interface. It accepts text input and is designed to return potential auto-completion suggestions.
-    *   The underlying model for this is not yet fully implemented and returns dummy suggestions.
-
-## WebSocket API
-
-The ML service exposes a WebSocket API for real-time communication. Clients should connect to the Nginx endpoint, which proxies to this service.
-
-*   **Server Address (via Nginx)**: `ws://<your_nginx_host_or_domain>/ml/`
-    *   Example (local development): `ws://localhost/ml/`
-*   **Underlying Socket.IO path proxied**: Nginx routes `/ml/` to the ML service's `/socket.io/` path.
-
 ### Connection
 
 *   Upon successful connection, the server emits a `connection_ack` event to the client:
@@ -48,7 +29,12 @@ The ML service exposes a WebSocket API for real-time communication. Clients shou
     *   **Server emits**: `res_handsign` (on successful prediction with valid landmarks)
     *   **Payload**:
         ```json
-        { "prediction": "A" } 
+        {
+            'time': 1747653061912,      // Received timestamp (in ms)
+            'pred': 'F',                // Prediction result
+            'prob': 1.0,                // Probability
+            'infer': 28                 // Inference time (in ms)
+        }
         ```
     *   **Note**: If landmarks are missing, empty, or an error occurs during prediction, the server logs the issue but does *not* send an error message or an empty prediction to the client.
 
@@ -83,13 +69,18 @@ The ML service exposes a WebSocket API for real-time communication. Clients shou
     *   `HAND_SIGN_MODEL_PATH`
     *   `PCA_MODEL_PATH`
     *   `SCALER_MODEL_PATH`
-3.  **Dependencies**: Ensure `python-dotenv` and other dependencies from `ml/requirements.txt` are installed. If using Docker, this is handled by the `ml/Dockerfile`.
+    *   `VERBOSE`
+
 4.  **Run Server (Docker)**:
     *   Build: `docker-compose build ml`
     *   Run: `docker-compose up ml` (or `docker-compose up` for all services)
-5.  **Run Server (Local Development, ensure models are in `ml/models_store` as per .env paths)**:
-    *   Install requirements: `pip install -r ml/requirements.txt`
-    *   Run: `python ml/main.py`
+5.  **Run Server (Local Development)**:
+    *   Change directory to this folder: `cd ml`
+    *   Ensure local files exist:
+        1. `.env` file is being initialized. The example file is `.env.example`.
+        2. Model files are in `models_store` (location in `.env`). There should be 3 files.
+    *   Install requirements: `pip install -r requirements.txt`
+    *   Run the server: `python main.py`
 
 ## Notes
 

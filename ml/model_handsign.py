@@ -36,9 +36,9 @@ class HandSignRecognizer:
 
     def _initialize_model(self):
         try:
-            scaler_model_path = os.getenv("SCALER_MODEL_PATH", "models_store/scaler.pkl")
-            pca_model_path = os.getenv("PCA_MODEL_PATH", "models_store/pca.pkl")
-            hand_sign_model_path = os.getenv("HAND_SIGN_MODEL_PATH", "models_store/rf_model_pca.pkl")
+            scaler_model_path = os.getenv("SCALER_MODEL_PATH", "./models_store/scaler.pkl")
+            pca_model_path = os.getenv("PCA_MODEL_PATH", "./models_store/pca.pkl")
+            hand_sign_model_path = os.getenv("HAND_SIGN_MODEL_PATH", "./models_store/rf_model_pca.pkl")
 
             log_info(f"Loading scaler model from: {scaler_model_path}")
             with open(scaler_model_path, 'rb') as f:
@@ -71,25 +71,13 @@ class HandSignRecognizer:
             log_warning("Landmarks data is empty or not a list in _preprocess_landmarks.")
             return None
         
-        feature_dict = {}
-        for i, landmark in enumerate(landmarks_data):
-            if not isinstance(landmark, dict):
-                log_warning(f"Landmark at index {i} is not a dictionary.")
-                return None # Or skip this landmark
-            feature_dict[f'x{i}'] = landmark.get('x')
-            feature_dict[f'y{i}'] = landmark.get('y')
-            feature_dict[f'z{i}'] = landmark.get('z')
-        
         # Ensure all expected features are present, even if None, for consistent DataFrame columns
         expected_coords = ['x', 'y', 'z']
-        num_landmarks = 21 # Assuming 21 landmarks
-        for i in range(num_landmarks):
-            for coord in expected_coords:
-                key = f'{coord}{i}'
-                if key not in feature_dict:
-                    # This case should ideally not happen if landmarks_data always has 21 landmarks
-                    # but as a safeguard if a landmark was malformed and skipped.
-                    feature_dict[key] = None 
+        
+        # Ensure feature_dict has this exact structure
+        # [f'landmark_{i}_x' for i in range(21)] + [f'landmark_{i}_y' for i in range(21)] + [f'landmark_{i}_z' for i in range(21)]
+
+        feature_dict = {f'landmark_{i}_{coord}': landmarks_data[i].get(coord) for coord in expected_coords for i in range(21) }
         
         df = pd.DataFrame([feature_dict])
         
@@ -100,7 +88,7 @@ class HandSignRecognizer:
             # For now, we proceed, but this is a point of potential failure if scaler/pca can't handle NaNs
         return df
 
-    def predict(self, landmarks_data: list[dict]) -> str | None:
+    def predict(self, landmarks_data: list[dict]) -> tuple[str, float] | None:
         if self._pipeline is None:
             log_error("HandSignRecognizer pipeline is not loaded. Cannot predict.")
             return None
@@ -109,25 +97,24 @@ class HandSignRecognizer:
             return None # Or a specific code for no input
 
         processed_data = self._preprocess_landmarks(landmarks_data)
+        
         if processed_data is None:
             log_warning("Failed to preprocess landmarks. Cannot predict.")
             return None
 
         try:
-            prediction_array = self._pipeline.predict(processed_data)
-            predicted_label = int(prediction_array[0])
-            
-            # Mapping label to character (example)
-            # This mapping needs to match how your model was trained.
-            if 0 <= predicted_label <= 25: # A-Z
-                return chr(ord('A') + predicted_label)
-            elif predicted_label == 26: # Example: space
-                return "_" # Using underscore for space as per previous discussion
-            elif predicted_label == 27: # Example: delete
-                return "-" # Using dash for delete
+            prediction_array = self._pipeline.predict_proba(processed_data)
+            y_single_pred = np.argmax(prediction_array, axis=1)
+            max_prob = prediction_array[0][y_single_pred[0]]
+            pred_char = ""
+            if y_single_pred[0] == 0:
+                pred_char = "delete"
+            elif y_single_pred[0] == 27:
+                pred_char = "space"
             else:
-                log_warning(f"Unknown predicted label: {predicted_label}")
-                return None # Or a default unknown character
+                pred_char = chr(y_single_pred[0] + ord("A") - 1)
+            
+            return pred_char, max_prob
         except Exception as e:
             log_error(f"Error during prediction pipeline: {e}")
             return None
