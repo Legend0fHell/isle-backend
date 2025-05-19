@@ -15,13 +15,13 @@ class User(Base):
     
     user_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column(String(150), unique=True, nullable=False)
-    user_name = Column(String(150), nullable=False)
+    name = Column(String(150), nullable=False)
     password = Column(String(255), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     last_login = Column(DateTime, default=datetime.utcnow)
     
     def __repr__(self):
-        return f"<User(user_id={self.user_id}, user_name={self.user_name}, email={self.email})>"
+        return f"<User(user_id={self.user_id}, name={self.name}, email={self.email})>"
     
     model_config = {
         "arbitrary_types_allowed": True
@@ -60,7 +60,7 @@ class UserQuestionAnswer(Base):
 
 class UserCreate(BaseModel):
     email: EmailStr
-    user_name: str
+    name: str
     password: str
 
     model_config = {
@@ -80,7 +80,7 @@ class UserLogin(BaseModel):
 class UserUpdate(BaseModel):
     user_id: uuid.UUID
     email: Optional[EmailStr] = None
-    user_name: Optional[str] = None
+    name: Optional[str] = None
     password: Optional[str] = None
 
     model_config = {
@@ -137,7 +137,7 @@ class UserAnswerRead(BaseModel):
 class UserRead(BaseModel):
     user_id: uuid.UUID
     email: EmailStr
-    user_name: str
+    name: str
     created_at: datetime
     last_login: datetime
 

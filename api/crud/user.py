@@ -15,7 +15,7 @@ def get_user_by_field(db: Session, field: str, value: str):
     if field == "email":
         return db.query(User).filter(User.email == value).first()
     elif field == "username":
-        return db.query(User).filter(User.user_name == value).first()
+        return db.query(User).filter(User.name == value).first()
     elif field == "id":
         return db.query(User).filter(User.user_id == value).first()
     raise ValueError("Invalid user field")
@@ -44,7 +44,7 @@ def create_user(db: Session, user_data: UserCreate):
     new_user = User(
         user_id=str(uuid.uuid4()),
         email=user_data.email,
-        user_name=user_data.user_name,
+        name=user_data.name,
         password=user_data.password,
         created_at=datetime.utcnow(),
     )
