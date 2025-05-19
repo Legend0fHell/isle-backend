@@ -105,7 +105,7 @@ class HandSignRecognizer:
         try:
             prediction_array = self._pipeline.predict_proba(processed_data)
             y_single_pred = np.argmax(prediction_array, axis=1)
-            max_prob = prediction_array[0][y_single_pred[0]]
+            max_prob = 1/(1+np.exp(-prediction_array[0][y_single_pred[0]]))
             pred_char = ""
             if y_single_pred[0] == 0:
                 pred_char = "delete"

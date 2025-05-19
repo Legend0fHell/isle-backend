@@ -53,7 +53,7 @@ async def handle_hand_sign_detection(sid, data):
         log_error(f"Client {sid}: Error during hand sign prediction: {e}. No action taken for client.", verbose)
         return # Silent: Do not emit to client
 
-    if max_prob < 0.2:
+    if max_prob < float(os.getenv("HANDSIGN_MIN_CONFIDENCE", "0.5")):
         log_warning(f"Client {sid}: Hand sign prediction probability is too low ({max_prob}). No action taken for client.", verbose)
         return # Silent: Do not emit to client
 
