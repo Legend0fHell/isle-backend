@@ -8,23 +8,28 @@ from api.models.user import UserRead, UserLogin, UserCreate
 from api.crud import progress as crud
 
 router = APIRouter(
-    prefix="/progress",
+    prefix="/api",
     tags=["Progress"]
 )
 
 # --- Lesson Progress Endpoints --- #
 
-@router.post("/start")
+@router.post("/progress/start")
 def start_lesson_progress(data: LessonProgressCreate, db: Session = Depends(get_db)):
     progress = crud.start_lesson_progress(db, data)
+    if not progress:
+        return {
+            "msg": "Failed, can't start progress",
+            "data": None
+        }
     return {
-        "msg": "Start lesson, progress id sent",
-        "data": progress.progress_id
+        "msg": "Start lesson successfully!",
+        "data": progress
     }
 
 
 
-@router.get("/lesson/{user_id}/{lesson_id}")
+@router.post("/progress/lesson/")
 def get_lesson_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(get_db)):
     progress = crud.get_lesson_progress(db, user_id, lesson_id)
     if not progress:
@@ -44,7 +49,7 @@ def get_lesson_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(ge
     } 
 
 
-@router.get("/user/{user_id}")
+@router.get("/progress/user/{user_id}")
 def get_all_lesson_progress(user_id: UUID, db: Session = Depends(get_db)):
     progress_list = crud.get_lesson_progress_by_user(db, user_id)
     if not progress_list:
@@ -69,7 +74,7 @@ def get_all_lesson_progress(user_id: UUID, db: Session = Depends(get_db)):
 
 # --- UserQuestionAnswer Endpoints --- #
 
-@router.post("/answer/create")
+@router.post("/progress/answer/create")
 def create_user_question_answer(data: UserAnswerCreate, db: Session = Depends(get_db)):
     answer = crud.create_user_question_answer(db, data)
     if not answer:
@@ -85,7 +90,7 @@ def create_user_question_answer(data: UserAnswerCreate, db: Session = Depends(ge
     }}
 
 
-@router.get("/answer/{progress_id}/{question_id}")
+@router.get("/progress/answer/{progress_id}/{question_id}")
 def get_user_question_answer(progress_id: UUID, question_id: UUID, db: Session = Depends(get_db)):
     answer = crud.get_user_question_answer(db, progress_id, question_id)
     if not answer:
@@ -103,7 +108,7 @@ def get_user_question_answer(progress_id: UUID, question_id: UUID, db: Session =
     }}
 
 
-@router.get("/answers/{progress_id}")
+@router.get("/progress/answers/{progress_id}")
 def get_user_question_answers_by_lesson(progress_id: UUID, db: Session = Depends(get_db)):
     answers = crud.get_user_question_answers_by_lesson(db, progress_id)
     if not answers:
@@ -124,7 +129,7 @@ def get_user_question_answers_by_lesson(progress_id: UUID, db: Session = Depends
     ]}
 
 
-@router.post("/answer/submit")
+@router.post("/progress/answer/submit")
 def submit_user_answer(data: UserAnswerSubmit, db: Session = Depends(get_db)):
     answer = crud.submit_user_answer(db, data)
     if not answer: 
@@ -141,3 +146,9 @@ def submit_user_answer(data: UserAnswerSubmit, db: Session = Depends(get_db)):
         "is_correct": answer.is_correct
     }
     }
+
+@router.post("/course/progress")
+def get_user_course_progress(user_id: UUID, db: Session = Depends(get_db)):
+    return crud.track_user_progress(db, user_id)
+
+    

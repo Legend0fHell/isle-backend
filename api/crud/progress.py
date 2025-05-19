@@ -50,7 +50,13 @@ def start_lesson_progress(db: Session, data: LessonProgressCreate):
     db.add(progress)
     db.commit()
     db.refresh(progress)
-    return progress
+    return {
+        "progress_id": progress.progress_id,
+        "user_id": data.user_id,
+        "lesson_id": data.lesson_id,
+        "last_activity_at": datetime.utcnow(),
+        "correct_question": 0
+    }
 
 
 def get_lesson_progress(db: Session, user_id: UUID, lesson_id: UUID):
@@ -63,6 +69,8 @@ def get_lesson_progress(db: Session, user_id: UUID, lesson_id: UUID):
         return None
     
     return progress
+
+
 
 def get_lesson_progress_by_user(db: Session, user_id: UUID):
     user_progress = db.query(UserLessonProgress).filter(
@@ -175,8 +183,57 @@ def submit_user_answer(db: Session, data: UserAnswerSubmit):
 
 
         
+""" 
+Track user progress 
+
+class UserLessonProgress(Base):
+    __tablename__ = "user_lesson_progress"
+    
+    progress_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), nullable=False)
+    lesson_id = Column(UUID(as_uuid=True), ForeignKey("lessons.lesson_id"), nullable=False)
+    last_activity_at = Column(TIMESTAMP, default=datetime.utcnow)
+    correct_questions = Column(Integer, default=0)
+    
+    model_config = {
+        "arbitrary_types_allowed": True
+    }
+"""    
+def track_user_progress(db: Session, user_id: UUID):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    
+    if not user:
+        return {
+            "msg": "User not found",
+            "data": None 
+        }
+
+    user_progress = (
+        db.query(UserLessonProgress)
+        .filter(UserLessonProgress.user_id == user_id)
+        .order_by(UserLessonProgress.last_activity_at)
+        .all()
+    )
+
+    progress_list = []
+    for progress in user_progress:
+        progress_list.append({
+            "progress_id": progress.progress_id,
+            "lesson_id": progress.lesson_id,
+            "last_activity_at": progress.last_activity_at,
+            "correct_question": progress.correct_questions
+        })
+
+    return {
+        "msg": "Success",
+        "data": progress_list
+    }
+    
+        
     
     
+        
+
     
 
     
