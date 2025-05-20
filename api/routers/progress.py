@@ -23,11 +23,11 @@ def start_lesson_progress(data: LessonProgressCreate, db: Session = Depends(get_
     progress = crud.start_lesson_progress(db, data)
     if not progress:
         return {
-            "msg": "Failed, can't start progress",
+            "msg": "error",
             "data": None
         }
     return {
-        "msg": "Start lesson successfully!",
+        "msg": "ok",
         "data": progress
     }
 
@@ -37,11 +37,11 @@ def get_lesson_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(ge
     progress = crud.get_lesson_progress(db, user_id, lesson_id)
     if not progress:
         return {
-            "msg": "No lesson progress found",
+            "msg": "error",
             "data": None
         }
     return {
-        "msg": "Get lesson progress",
+        "msg": "ok",
         "data": {
             "progress_id": progress.progress_id,
             "user_id": progress.user_id,
@@ -57,11 +57,11 @@ def get_all_lesson_progress(user_id: UUID, db: Session = Depends(get_db)):
     progress_list = crud.get_lesson_progress_by_user(db, user_id)
     if progress_list is None:
         return {
-            "msg": "No user learning progress found",
+            "msg": "error",
             "data": None
         }
     return {
-        "msg": "Get user learning progress",
+        "msg": "ok",
         "data": [
             {
                 "progress_id": p.progress_id,
@@ -81,11 +81,11 @@ def create_user_question_answer(data: UserAnswerCreate, db: Session = Depends(ge
     answer = crud.create_user_question_answer(db, data)
     if not answer:
         return {
-            "msg": "failed, user answer is not tracked",
+            "msg": "error",
             "data": None 
         }
     return {
-        "msg": "User start the question",
+        "msg": "ok",
         "data": {
             "progress_id": answer.progress_id,
             "question_id": answer.question_id
@@ -98,11 +98,11 @@ def get_user_question_answer(progress_id: UUID, question_id: UUID, db: Session =
     answer = crud.get_user_question_answer(db, progress_id, question_id)
     if answer is None:
         return {
-            "msg": "No answer progress found from user",
+            "msg": "error",
             "data": None
         }
     return {
-        "msg": "Get answer from user",
+        "msg": "ok",
         "data": {
             "progress_id": answer.progress_id,
             "question_id": answer.question_id,
@@ -127,7 +127,7 @@ def submit_user_answer(data: UserAnswerSubmit, db: Session = Depends(get_db)):
     feedback = crud.submit_user_answer(db, data)
     if not feedback: 
         return {
-            "msg": "Submit failed",
+            "msg": "error",
             "data": None 
         }
     return feedback

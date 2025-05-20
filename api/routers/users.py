@@ -19,11 +19,11 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     created_user = user_crud.create_user(db, user)
     if not created_user:
         return {
-            "msg": "Register failed, email already exists",
+            "msg": "error",
             "data": None
         }
     return {
-        "msg": "User register successfully",
+        "msg": "ok",
         "data": created_user
     }
 
@@ -37,8 +37,8 @@ def read_user(user_id: UUID, db: Session = Depends(get_db)):
     """
     db_user = user_crud.get_user(db, user_id)
     if db_user is None:
-        return {"msg": "User not found", "data": None}
-    return {"msg": "User found", "data": UserData.from_orm(db_user)}
+        return {"msg": "error", "data": None}
+    return {"msg": "ok", "data": UserData.from_orm(db_user)}
 
 # ----------------------------
 # Login user with credentials
@@ -50,8 +50,8 @@ def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
     """
     user = user_crud.authenticate_user(db, credentials)
     if not user:
-        return {"msg": "Login failed", "data": None}
-    return {"msg": "Login successful", "data": UserData.from_orm(user)}
+        return {"msg": "error", "data": None}
+    return {"msg": "ok", "data": UserData.from_orm(user)}
 
 # ----------------------------
 # Retrieve a list of users (pagination support)
@@ -63,6 +63,6 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """
     users = user_crud.get_users(db, skip=skip, limit=limit)
     return {
-        "msg": "Here comes your users",
+        "msg": "ok",
         "data": [UserData.from_orm(user) for user in users]
     }

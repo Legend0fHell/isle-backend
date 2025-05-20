@@ -140,7 +140,7 @@ def get_user_question_answer(db: Session, progress_id: UUID, question_id: UUID):
 def get_user_question_answers_by_lesson(db: Session, progress_id: UUID):
     answers = db.query(UserQuestionAnswer).filter(UserQuestionAnswer.progress_id == progress_id).all()
     if not answers:
-        return {"msg": "Progress not found", "data": None}
+        return {"msg": "error", "data": None}
     results = []
     
     for answer in answers:
@@ -152,7 +152,7 @@ def get_user_question_answers_by_lesson(db: Session, progress_id: UUID):
         )
         
     
-    return {"msg": "Success", "data": results}
+    return {"msg": "ok", "data": results}
 
     
     
@@ -224,7 +224,7 @@ def track_user_progress(db: Session, user_id: UUID):
     
     if not user:
         return {
-            "msg": "User not found",
+            "msg": "error",
             "data": None 
         }
 
@@ -245,7 +245,7 @@ def track_user_progress(db: Session, user_id: UUID):
         })
 
     return {
-        "msg": "Success",
+        "msg": "ok",
         "data": progress_list
     }
     
@@ -262,7 +262,7 @@ def get_user_recent_lesson_progress(db: Session, user_id: UUID, lesson_id: UUID)
     )
 
     if lesson_progress is None: 
-        return {"msg": "Progress not found", "data": None}
+        return {"msg": "error", "data": None}
 
     question_answers = (
         db.query(UserQuestionAnswer)
@@ -280,7 +280,7 @@ def get_user_recent_lesson_progress(db: Session, user_id: UUID, lesson_id: UUID)
     ]
 
     return {
-        "msg": "Success",
+        "msg": "ok",
         "data": results
     }
 

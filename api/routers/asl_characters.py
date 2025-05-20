@@ -16,7 +16,7 @@ def get_all_asl_letters(db: Session = Depends(get_db)):
     Retrieve all ASL letters.
     """
     return {
-        "msg": "Get all ASL letters",
+        "msg": "ok",
         "data": crud.get_all_letters(db)
     }
 
@@ -28,9 +28,9 @@ def get_asl_letter(letter: str, db: Session = Depends(get_db)):
     letter_clean = letter.upper().strip()
     letter_data = crud.get_letter(db, letter_clean)
     if letter_data is None:
-        return {"msg": f"No info found for {letter_clean}", "data": None}
+        return {"msg": "error", "data": None}
     return {
-        "msg": f"Get ASL letter info for '{letter_clean}'",
+        "msg": "ok",
         "data": crud.get_letter(db, letter_clean)
     }
 
@@ -40,7 +40,7 @@ def create_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
     Create a new ASL letter entry.
     """
     return {
-        "msg": "Create new ASL letter",
+        "msg": "ok",
         "data": crud.create_letter(db, asl_data)
     }
 
@@ -50,7 +50,7 @@ def update_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
     Update an existing ASL letter entry.
     """
     return {
-        "msg": "Update ASL letter",
+        "msg": "ok",
         "data": crud.update_letter(db, asl_data)
     }
 
@@ -61,6 +61,6 @@ def delete_asl_letter(letter: str, db: Session = Depends(get_db)):
     """
     letter_clean = letter.upper().strip()
     return {
-        "msg": f"Delete ASL letter '{letter_clean}'",
+        "msg": "ok",
         "data": crud.delete_letter(db, letter_clean)
     }

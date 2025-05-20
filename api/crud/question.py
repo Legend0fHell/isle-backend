@@ -426,7 +426,7 @@ def get_all_courses(db: Session):
     
     if not courses:
         return {
-            "msg": "No courses found",
+            "msg": "error",
             "data": []
         }
     
@@ -469,6 +469,6 @@ def get_all_courses(db: Session):
         })
     
     return {
-        "msg": "success",
+        "msg": "ok",
         "data": result,
     }
