@@ -40,10 +40,7 @@ const CourseStack = () => {
         let courseData;
         if (responseData && responseData.data) {
           // Nếu API trả về cấu trúc { msg, data }
-          courseData = responseData.data;
-        } else if (Array.isArray(responseData)) {
-          // Nếu API trả về mảng trực tiếp
-          courseData = responseData;
+          courseData = responseData.data
         } else {
           // Trường hợp khác, có thể cần xử lý thêm
           console.error("Unexpected API response format:", responseData);
