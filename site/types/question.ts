@@ -7,6 +7,7 @@ export interface Course {
     course_name: string;
     course_desc: string;
     course_difficulty: number;
+    course_lessons: CourseLesson[];
 }
 
 

@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { LessonProgressRead } from '../types/user';
+import { LessonProgress } from '../types/user';
 
 // Function get user progress
-export const getUserProgress = async (user_id: string, lesson_id: string): Promise<LessonProgressRead[]> => {
+export const getUserProgress = async (user_id: string, lesson_id: string): Promise<LessonProgress[]> => {
     const formdata = new FormData();
     formdata.append("user_id", user_id);
     const requestOptions = {

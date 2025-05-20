@@ -2,7 +2,7 @@ import Image from "next/image"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import ClientOnly from "./client-only"
-import { CourseStacks } from "./page-client"
+import CourseStack from "./page-client"
 
 const DashboardPage = () => {
     return (
@@ -29,9 +29,11 @@ const DashboardPage = () => {
             </div>
 
             <div className="container mx-auto py-20 px-4">
-                <h2 className="text-3xl font-bold mb-12 text-center">My Courses</h2>
+                <h2 className="text-4xl font-bold mb-12 text-center"
+                    style={{ fontWeight: 700 }}>
+                    MY COURSES</h2>
                 <ClientOnly>
-                    <CourseStacks />
+                    <CourseStack />
                 </ClientOnly>
             </div>
 

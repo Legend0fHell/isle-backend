@@ -2,10 +2,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { login, UserLogin, UserRead } from 'models/auth'; // Import UserRead
-
+import { login } from 'models/auth'; // Import UserRead
+import { User } from 'types/user'; // Import UserRead
 const LoginPage = () => {
-    const [credentials, setCredentials] = useState<UserLogin>({
+    const [credentials, setCredentials] = useState<User>({
         email: '',
         password: ''
     });
@@ -18,7 +18,7 @@ const LoginPage = () => {
         setError(null);
 
         try {
-            const user: UserRead = await login(credentials); // Sử dụng UserRead
+            const user: User = await login(credentials, "adu"); // Sử dụng UserRead
             // Lưu thông tin user với cấu trúc mới
             localStorage.setItem('user', JSON.stringify({
                 id: user.user_id, // Đổi thành user_id

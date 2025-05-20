@@ -1,11 +1,7 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { loadHandsModule } from '@/components/useHands';
-import Image from "next/image";
 import React from "react";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
-import Link from "next/link";
 import type { Hands, Results } from "@mediapipe/hands";
 import type { Camera } from "@mediapipe/camera_utils";
 import { X } from "lucide-react";
@@ -21,7 +17,7 @@ const DetectingModePage = () => {
     const [currentUserText, setCurrentUserText] = useState<string>("");
     const [isProcessing, setIsProcessing] = useState(false);
     const [suggestionResult, setSuggestionResult] = useState<string>("Example...");
-    
+
     // WebSocket state managed in the component for reactivity
     const [isConnected, setIsConnected] = useState(getConnectionState().isConnected);
     const [showConnectionError, setShowConnectionError] = useState(getConnectionState().showConnectionError);
@@ -121,7 +117,7 @@ const DetectingModePage = () => {
             // Send landmarks via WebSocket
             console.log("Sending landmarks to WebSocket");
             sendHandLandmarks(landmarks);
-            
+
             // For demonstration - simple auto-suggestion based on current text
             setSuggestionResult(currentUserText + "...");
         } catch (error) {
@@ -265,8 +261,8 @@ const DetectingModePage = () => {
                             The connection to the hand sign recognition service has been lost. Please check your internet connection.
                         </p>
                         <div className="flex justify-center">
-                            <button 
-                                onClick={handleReconnect} 
+                            <button
+                                onClick={handleReconnect}
                                 className="px-4 py-2 text-white bg-red-700 rounded-lg shadow-md hover:bg-red-800"
                             >
                                 Reconnect
@@ -276,7 +272,6 @@ const DetectingModePage = () => {
                 </div>
             )}
 
-            <Navbar />
             <section className="relative top-[80px] left-[90px] w-[874px] h-[289px] gap-[40px] horizontal-layout align-top align-left">
                 <div className="absolute top-[0px] left-[0px] w-[874px] h-[173px] vertical-layout align-top-left gap-[24px]">
                     <span className="absolute top-[0px] left-[0px] w-[874px] h-[77px] text-[64px] text-black align-left align-top font-bold"
@@ -289,7 +284,7 @@ const DetectingModePage = () => {
                 </div>
             </section>
 
-            <section className="absolute top-[480px] left-[90px] w-[1280px] h-[604px]">
+            <section className="relative top-[80px] left-[90px] w-[1280px] h-[604px]">
                 <div className="absolute top-[0px] left-[913px] w-[367px] h-[290px]">
                     <span className="absolute top-[0px] left-[0.5px] w-[367px] h-[52.09px]"
                         style={{ fontSize: '44px', fontWeight: 600 }}>
@@ -304,7 +299,7 @@ const DetectingModePage = () => {
                 </div>
             </section>
 
-            <section className="absolute top-[811px] left-[90px] w-[1280px] h-[604px]">
+            <section className="absolute top-[700px] left-[90px] w-[1280px] h-[604px]">
                 <div className="absolute top-[0px] left-[913px] w-[367px] h-[290px]">
                     <span className="absolute top-[0px] left-[0.5px] w-[367px] h-[52.09px]"
                         style={{ fontSize: '44px', fontWeight: 600 }}>
@@ -319,7 +314,7 @@ const DetectingModePage = () => {
                 </div>
             </section>
 
-            <div className="absolute top-[497px] left-[90px] w-[867px] h-[604px] rounded-lg shadow-lg">
+            <div className="relative top-[-506px] left-[90px] w-[867px] h-[604px] rounded-lg shadow-lg">
                 {cameraError ? (
                     <div className="bg-red-100 text-red-700 p-4 rounded-lg">
                         {cameraError}
@@ -341,66 +336,6 @@ const DetectingModePage = () => {
                 )}
             </div>
 
-            <span className="absolute top-[1284px] left-[90px] w-[625px] h-[44px] text-[40px] text-black"
-                style={{ fontWeight: 600 }}>
-                Other Function
-            </span>
-
-            <section className="absolute top-[1376px] left-[90px] w-[1280px] h-[434px] gap-x-[32px]">
-                <div className="absolute top-[0px] left-[0px] w-[622px] h-[434px]">
-                    <button className='absolute top-[0px] left-[0px] w-[622px] h-[311px] hover:shadow-[0px_10px_20px_rgba(0,0,0,0.5)]'>
-                        <Link href="/learning-mode">
-                            <Image className="rounded-lg"
-                                src='/Learning Mode.png'
-                                alt='Learning Mode'
-                                width={622}
-                                height={311}
-                            />
-                        </Link>
-                    </button>
-
-                    <div className="absolute top-[335px] left-[0px] w-[622px] h-[64px]">
-                        <span className="absolute top-[0px] left-[0px] w-[622px] h-[30px] text-[20px] text-black"
-                            style={{ fontWeight: 600 }}>
-                            Learning Mode
-                        </span>
-
-                        <span className="absolute top-[34px] left-[0px] w-[622px] h-[30px] text-[20px] text-black opacity-50"
-                            style={{ fontWeight: 400 }}>
-                            TO LEARNING MODE
-                        </span>
-                    </div>
-                </div>
-
-                <div className="absolute top-[0px] left-[654px] w-[622px] h-[434px]">
-                    <button className='absolute top-[0px] left-[0px] w-[622px] h-[311px] hover:shadow-[0px_10px_20px_rgba(0,0,0,0.5)]'>
-                        <Link href="/dashboard">
-                            <Image className="rounded-lg"
-                                src='/Back to Homepage.png'
-                                alt='Back to Dashboard'
-                                width={622}
-                                height={311}
-                            />
-                        </Link>
-                    </button>
-
-                    <div className="absolute top-[335px] left-[0px] w-[622px] h-[64px]">
-                        <span className="absolute top-[0px] left-[0px] w-[622px] h-[30px] text-[20px] text-black"
-                            style={{ fontWeight: 600 }}>
-                            Home
-                        </span>
-
-                        <span className="absolute top-[34px] left-[0px] w-[622px] h-[30px] text-[20px] text-black opacity-50"
-                            style={{ fontWeight: 400 }}>
-                            BACK TO DASHBOARD
-                        </span>
-                    </div>
-                </div>
-            </section>
-
-            <div className="absolute top-[1916px] left-[90px]">
-                <Footer />
-            </div>
         </div>
     );
 }

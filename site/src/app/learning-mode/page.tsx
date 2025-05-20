@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react"
-import MovementCheckingModePage from "./movement-check/page"
+import DetectingModePage from "./detecting-mode/page"
 import QuizPage from "./quiz/page"
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
@@ -9,26 +9,28 @@ import Footer from "@/components/footer";
 const LearningModePage = () => {
     // Ham logic viet not sau, sau khi co questions.ts i guess
     const [showPopup, setShowPopup] = useState(false);
-    const [isMovementCheck, setIsMovementCheck] = useState(false);
+    const [isDetectingMode, setIsDetectingMode] = useState(true);
     const [numberOfQuestions, setNumberOfQuestions] = useState(0);
+
+    // can 1 function get so QUEST, 1 function get loai cau hoi, 1 function tra cau hoi user, 1 function check tien do user ( co the nhet sang ben quizpage nho )
 
     const closePopup = () => {
         setShowPopup(false);
     }
 
-    const handleNextQuizClick = () => {
-        // setNumberOfQuestions(prev => prev + 1);
-        setIsMovementCheck(true);
-        console.log("Number of Questions: ", numberOfQuestions);
-    }
+    // const handleNextQuizClick = () => {
+    //     // setNumberOfQuestions(prev => prev + 1);
+    //     setIsMovementCheck(true);
+    //     console.log("Number of Questions: ", numberOfQuestions);
+    // }
 
-    useEffect(() => {
-        if (numberOfQuestions < 10) {
-            setIsMovementCheck(true);
-        } else {
-            setIsMovementCheck(false);
-        }
-    }, [numberOfQuestions]);
+    // useEffect(() => {
+    //     if (numberOfQuestions < 10) {
+    //         setIsMovementCheck(true);
+    //     } else {
+    //         setIsMovementCheck(false);
+    //     }
+    // }, [numberOfQuestions]);
 
     // Stop YouTube video when popup is closed
     useEffect(() => {
@@ -46,7 +48,6 @@ const LearningModePage = () => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm transition-all duration-300">
                     <div className="relative w-full max-w-3xl rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-900 animate-in fade-in zoom-in duration-300">
                         <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Hướng dẫn cách chơi</h3>
-
                         <div className="relative mb-6 overflow-hidden rounded-lg pt-[56.25%]">
                             <iframe
                                 className="absolute inset-0 h-full w-full border-0"
@@ -67,13 +68,12 @@ const LearningModePage = () => {
             )}
 
             {/* Main content */}
-            {isMovementCheck ? <MovementCheckingModePage /> : <QuizPage />}
+            {isDetectingMode ? <DetectingModePage /> : <QuizPage />}
 
             <button
                 className="absolute top-[1181px] left-[609px] w-[222px] h-[68px] bg-[#000000] text-white shadow-[0px_10px_20px_rgba(0,0,0,0.3)] rounded-lg hover:bg-[#FFFFFF] hover:text-black hover:shadow-[0px_10px_20px_rgba(0,0,0,0.5)]"
                 style={{ fontSize: "24px", fontWeight: 400 }}
                 onClick={() => {
-                    handleNextQuizClick();
                     window.location.href = "/learning-mode";
                 }}
             >
@@ -88,10 +88,10 @@ const LearningModePage = () => {
 export default function Page() {
     return (
         <div>
-            <Navbar />
-            <div className="absolute">
-                <LearningModePage />
+            <div className="relative w-full">
+                <Navbar />
             </div>
+            <LearningModePage />
             <div className="absolute top-[1450px] left-[90px]">
                 <Footer />
             </div>

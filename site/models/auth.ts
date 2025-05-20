@@ -1,13 +1,13 @@
-import { UserLogin, UserRead, UserCreate } from '../types/user';
+import { User } from '../types/user';
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/users';
 
 // Function to log in a user
-export const login = async (user: UserLogin): Promise<UserRead> => {
+export const login = async (user: User, password: string): Promise<User> => {
     const formdata = new FormData();
     formdata.append("email", user.email);
-    formdata.append("password", user.password);
+    formdata.append("password", password);
     const requestOptions = {
         method: "POST",
         body: formdata,
@@ -23,11 +23,11 @@ export const login = async (user: UserLogin): Promise<UserRead> => {
 };
 
 // Function to register a new user
-export const register = async (user: UserCreate): Promise<UserRead> => {
+export const register = async (user: User, password: string): Promise<User> => {
     const formdata = new FormData();
     formdata.append("name", user.name);
     formdata.append("email", user.email);
-    formdata.append("password", user.password);
+    formdata.append("password", password);
     const requestOptions = {
         method: "POST",
         body: formdata,
@@ -43,7 +43,7 @@ export const register = async (user: UserCreate): Promise<UserRead> => {
 };
 
 // Function to get user details
-export const getUser = async (user_id: string): Promise<UserRead> => {
+export const getUser = async (user_id: string): Promise<User> => {
     const formdata = new FormData();
     formdata.append("user_id", user_id);
     const requestOptions = {
