@@ -2,6 +2,13 @@
  * Types and utilities for hand sign detection results
  */
 
+// Define a type for landmarks used by MediaPipe
+export interface HandLandmark {
+  x: number;
+  y: number;
+  z: number;
+}
+
 /**
  * Response from the WebSocket server for hand sign detection
  */
@@ -17,18 +24,12 @@ export interface HandSignResponse {
  * @param landmarks Array of hand landmarks from MediaPipe
  * @returns Object with landmarks in the format expected by the WebSocket API
  */
-export function formatLandmarksForWebSocket(landmarks: any[]): { landmarks: any[] } | null {
+export function formatLandmarksForWebSocket(landmarks: HandLandmark[][]): { landmarks: HandLandmark[] } | null {
   if (!landmarks || !landmarks.length) return null;
   
   try {
     const firstHandLandmarks = landmarks[0]; // Use first hand's landmarks
-    // only accept x, y, z coordinates
-    const formattedLandmarks = firstHandLandmarks.map((landmark: any) => ({
-      x: landmark.x,
-      y: landmark.y,
-      z: landmark.z
-    }));
-    return { landmarks: formattedLandmarks };
+    return { landmarks: firstHandLandmarks };
   } catch (error) {
     console.error('Error formatting landmarks for WebSocket:', error);
     return null;

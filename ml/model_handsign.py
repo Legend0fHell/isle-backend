@@ -110,6 +110,8 @@ class HandSignRecognizer:
             if y_single_pred[0] == 0:
                 pred_char = "delete"
             elif y_single_pred[0] == 27:
+                pred_char = "autocmp"
+            elif y_single_pred[0] == 28:
                 pred_char = "space"
             else:
                 pred_char = chr(y_single_pred[0] + ord("A") - 1)

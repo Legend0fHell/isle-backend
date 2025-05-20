@@ -5,8 +5,22 @@ import React from "react";
 import type { Hands, Results } from "@mediapipe/hands";
 import type { Camera } from "@mediapipe/camera_utils";
 import { X } from "lucide-react";
-import { socket, getConnectionState, closeConnectionError, reconnect, ensureSocketConnected } from "models/wsEventListener";
+import { 
+    socket, 
+    getConnectionState, 
+    closeConnectionError, 
+    reconnect, 
+    ensureSocketConnected,
+    subscribeToConnectionState 
+} from "models/wsEventListener";
 import { HandSignResponse, formatLandmarksForWebSocket } from "models/resultDetection";
+
+// Define a type for landmarks to fix the any[] linter error
+interface HandLandmark {
+    x: number;
+    y: number;
+    z: number;
+}
 
 const DetectingModePage = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -30,13 +44,11 @@ const DetectingModePage = () => {
     // Handle closing connection error popup
     const handleCloseConnectionError = useCallback(() => {
         closeConnectionError();
-        setShowConnectionError(false);
     }, []);
 
     // Handle reconnection
     const handleReconnect = useCallback(() => {
         reconnect();
-        setShowConnectionError(false);
     }, []);
 
     useEffect(() => {
@@ -47,27 +59,26 @@ const DetectingModePage = () => {
         }
     }, [showPopup]);
 
-    // Setup WebSocket connection and event listeners
+    // Subscribe to connection state changes
     useEffect(() => {
-        // Make sure socket is connected (this is handled by wsEventListener, but we check here too)
-        ensureSocketConnected();
-
-        // Update local state when connection state changes
-        const updateConnectionState = () => {
-            const state = getConnectionState();
+        // Subscribe to connection state updates
+        const unsubscribe = subscribeToConnectionState((state) => {
+            console.log("Connection state updated:", state);
             setIsConnected(state.isConnected);
             setShowConnectionError(state.showConnectionError);
-        };
+        });
 
-        // Local event handlers
-        const handleConnect = () => {
-            updateConnectionState();
-        };
+        // Ensure socket is connected
+        ensureSocketConnected();
 
-        const handleDisconnect = () => {
-            updateConnectionState();
+        // Clean up subscription on unmount
+        return () => {
+            unsubscribe();
         };
+    }, []);
 
+    // Setup WebSocket event listeners for hand sign detection
+    useEffect(() => {
         const handleHandsignResponse = (data: HandSignResponse) => {
             console.log('Hand sign detected:', data);
             if (data && data.pred) {
@@ -75,18 +86,11 @@ const DetectingModePage = () => {
             }
         };
 
-        // Add local event listeners
-        socket.on('connect', handleConnect);
-        socket.on('disconnect', handleDisconnect);
+        // Add listener for hand sign detection
         socket.on('res_handsign', handleHandsignResponse);
 
-        // Initial check
-        updateConnectionState();
-
-        // Cleanup local listeners on unmount
+        // Cleanup listener on unmount
         return () => {
-            socket.off('connect', handleConnect);
-            socket.off('disconnect', handleDisconnect);
             socket.off('res_handsign', handleHandsignResponse);
         };
     }, []);
@@ -99,17 +103,26 @@ const DetectingModePage = () => {
     }, [detectionResult]);
 
     // Handler for sending hand landmarks
-    const sendHandLandmarks = useCallback((landmarks: any[]) => {
-        if (!isConnected) return;
-
+    const sendHandLandmarks = useCallback((landmarks: HandLandmark[][]) => {
+        if (!isConnected) {
+            console.log("Not connected to WebSocket server. Cannot send landmarks.");
+            return;
+        }
+        
         const formattedData = formatLandmarksForWebSocket(landmarks);
         if (formattedData) {
+            console.log("Emitting req_handsign event");
             socket.emit('req_handsign', formattedData);
+        } else {
+            console.log("Failed to format landmarks data");
         }
     }, [isConnected]);
 
-    const processDetection = async (landmarks: any) => {
-        if (isProcessing || !landmarks || !isConnected) return;
+    const processDetection = async (landmarks: HandLandmark[][]) => {
+        if (isProcessing || !landmarks || !isConnected) {
+            console.log("Skipping detection: processing=", isProcessing, "landmarks=", !!landmarks, "connected=", isConnected);
+            return;
+        }
 
         setIsProcessing(true);
 
@@ -175,7 +188,7 @@ const DetectingModePage = () => {
                         const now = Date.now();
                         if (now - lastProcessTime > PROCESS_INTERVAL) {
                             lastProcessTime = now;
-                            processDetection(results.multiHandLandmarks);
+                            processDetection(results.multiHandLandmarks as unknown as HandLandmark[][]);
                         }
                     }
 
@@ -279,7 +292,7 @@ const DetectingModePage = () => {
                         Detecting Mode
                     </span>
                     <span className="absolute top-[110px] left-[0px] w-[874px] h-[72px] text-[24px] text-black align-left align-middle opacity-50">
-                        ISLE features hand sign detection for accurate and seamless recognition. Let's turn on your webcam and try it out now !
+                        ISLE features hand sign detection for accurate and seamless recognition. Let&apos;s turn on your webcam and try it out now!
                     </span>
                 </div>
             </section>
