@@ -1,5 +1,5 @@
 import os
-# Disable oneDNN optimizations for TensorFlow to avoid small numerical differences in results
+
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 from dotenv import load_dotenv
@@ -20,18 +20,15 @@ def seed_everything(seed=42):
 # Initialize random seeds
 seed_everything()
 
-# Load environment variables from a .env file (if any)
+# Load environment variables from a .env file 
 load_dotenv()
 
-# Path to the directory or model name containing the pretrained GPT-2 model
+# Path to the directory or model name containing the LSTM model
 load_path = "./lstm_autocomplete_model"
 
 
 class AutoCompleteModel:
-    """
-    Singleton class to load and provide auto-complete suggestions using a pretrained GPT-2 model,
-    while exposing an LSTM-like interface.
-    """
+
     _instance = None
 
     def __new__(cls, *args, **kwargs):
@@ -53,7 +50,7 @@ class AutoCompleteModel:
         self._model = None
         self._tokenizer = None
 
-        # Load the pretrained GPT-2 model and tokenizer
+
         self._initialize_model()
 
         self._initialized = True
@@ -61,12 +58,10 @@ class AutoCompleteModel:
     def _initialize_model(self):
         print("Loading LSTM language model...")
 
-        # Load GPT-2 tokenizer and model from the specified path
-        self._tokenizer = GPT2Tokenizer.from_pretrained(load_path)
-        self._model = GPT2LMHeadModel.from_pretrained(load_path).to(self.device)
+        self._tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        self._model = GPT2LMHeadModel.from_pretrained("gpt2").to(self.device)
         self._model.eval()  # Set model to evaluation mode
 
-        # GPT-2 does not have a pad_token_id by default, so set it to eos_token_id for padding
         self._tokenizer.pad_token = self._tokenizer.eos_token
 
     def predict(self, text: str, num_suggestions: int = 3) -> list[str]:
@@ -122,3 +117,18 @@ class AutoCompleteModel:
 
 # Create a singleton instance of the model for use
 auto_complete_model = AutoCompleteModel()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
