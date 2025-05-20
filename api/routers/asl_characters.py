@@ -39,9 +39,16 @@ def create_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
     """
     Create a new ASL letter entry.
     """
+    letter_data = crud.create_letter(db, asl_data)
+    if letter_data is None:
+        return {
+            "msg": "error",
+            "data": None 
+        }
+    
     return {
         "msg": "ok",
-        "data": crud.create_letter(db, asl_data)
+        "data": letter_data
     }
 
 @router.put("/asl/update")

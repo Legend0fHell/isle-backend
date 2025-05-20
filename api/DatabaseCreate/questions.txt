@@ -1,0 +1,204 @@
+{"question_id": "1fabbcfd-ffd4-4af9-8b9d-62bf66d9401a", "question_type": "learn", "question_target": "A", "question_choice": "A"}
+{"question_id": "66b49701-372e-46e2-966a-0d83c0221220", "question_type": "learn", "question_target": "B", "question_choice": "B"}
+{"question_id": "8ddc0d4e-6a7d-48d6-88a5-9306c503ba1e", "question_type": "learn", "question_target": "C", "question_choice": "C"}
+{"question_id": "ac9f73ae-b987-47e5-9a32-5e261d21931e", "question_type": "learn", "question_target": "D", "question_choice": "D"}
+{"question_id": "aff89e7c-6048-4e64-9d7a-f3704db67143", "question_type": "learn", "question_target": "E", "question_choice": "E"}
+{"question_id": "f7e52f3b-beed-4049-9cab-db0f1fa52200", "question_type": "learn", "question_target": "F", "question_choice": "F"}
+{"question_id": "94395aff-7fad-4734-af44-9ba85757aa43", "question_type": "learn", "question_target": "G", "question_choice": "G"}
+{"question_id": "ff768878-82e7-4428-bc1e-902c6b3799f4", "question_type": "learn", "question_target": "H", "question_choice": "H"}
+{"question_id": "74ff9b57-7466-4278-a7dd-68c275fa4c15", "question_type": "learn", "question_target": "I", "question_choice": "I"}
+{"question_id": "503db785-f66d-40b3-b355-25dba2bb83fc", "question_type": "learn", "question_target": "J", "question_choice": "J"}
+{"question_id": "0a0b6a16-3f64-4dd1-9cc2-5225ab55760c", "question_type": "learn", "question_target": "K", "question_choice": "K"}
+{"question_id": "86e574cb-033d-42f7-b22a-4e42c02c362e", "question_type": "learn", "question_target": "L", "question_choice": "L"}
+{"question_id": "c428a5dd-fa83-4ead-8872-8de115ac99e4", "question_type": "learn", "question_target": "M", "question_choice": "M"}
+{"question_id": "8bcef045-7f9c-4fc1-be60-6f8a832f29e4", "question_type": "learn", "question_target": "N", "question_choice": "N"}
+{"question_id": "0e09d7b4-f401-41d9-b933-1bae944de3a4", "question_type": "learn", "question_target": "O", "question_choice": "O"}
+{"question_id": "26099868-3da9-46b7-825d-d8aa78e9f250", "question_type": "learn", "question_target": "P", "question_choice": "P"}
+{"question_id": "c2a6cfe3-6cf2-4ecc-9dd1-4f7d661c0aff", "question_type": "learn", "question_target": "Q", "question_choice": "Q"}
+{"question_id": "5bf9b9a7-bfdd-4758-ba28-7de0e3ea4f84", "question_type": "learn", "question_target": "R", "question_choice": "R"}
+{"question_id": "81a13c4c-ca7e-4bc4-a9c0-ce7da5477ba2", "question_type": "learn", "question_target": "S", "question_choice": "S"}
+{"question_id": "935dd17e-d642-44ab-aa1b-027db310ea1b", "question_type": "learn", "question_target": "T", "question_choice": "T"}
+{"question_id": "5fe39486-8143-4229-a6ba-e5c7ae6aff13", "question_type": "learn", "question_target": "U", "question_choice": "U"}
+{"question_id": "9b85d6f1-8142-4e2c-bd4f-c22877b5261e", "question_type": "learn", "question_target": "V", "question_choice": "V"}
+{"question_id": "d84358f6-c695-4991-86e0-34083844a98f", "question_type": "learn", "question_target": "W", "question_choice": "W"}
+{"question_id": "6db309db-d5ca-4564-bd74-634795a8f916", "question_type": "learn", "question_target": "X", "question_choice": "X"}
+{"question_id": "d474fe15-10d8-4b40-a1c6-7f632c0be7ce", "question_type": "learn", "question_target": "Y", "question_choice": "Y"}
+{"question_id": "df95b746-15de-44d4-b4d6-b7b6afdb32b2", "question_type": "learn", "question_target": "Z", "question_choice": "Z"}
+{"question_id": "1a7d2733-20a3-4af9-9bad-0c80d6707346", "question_type": "detect", "question_target": "A", "question_choice": "A"}
+{"question_id": "dc8ed989-b7e9-4cbe-91c0-b28faf4278d0", "question_type": "detect", "question_target": "B", "question_choice": "B"}
+{"question_id": "7234ce8e-ef4c-44f4-8348-4bb5805d970d", "question_type": "detect", "question_target": "C", "question_choice": "C"}
+{"question_id": "491eef4c-162a-4a7e-bb93-6215cea05204", "question_type": "detect", "question_target": "D", "question_choice": "D"}
+{"question_id": "51fb627a-2e2f-4399-a463-37ab5f71dae6", "question_type": "detect", "question_target": "E", "question_choice": "E"}
+{"question_id": "e7804bc3-e938-4f8d-8771-08473d2b66ca", "question_type": "detect", "question_target": "F", "question_choice": "F"}
+{"question_id": "986556c9-7365-4e17-8851-fc626f2d2665", "question_type": "detect", "question_target": "G", "question_choice": "G"}
+{"question_id": "9df5a683-4f14-42a8-b2de-8c2ba2ccd68b", "question_type": "detect", "question_target": "H", "question_choice": "H"}
+{"question_id": "cbcb2f49-c6e3-456f-b415-1479aff58996", "question_type": "detect", "question_target": "I", "question_choice": "I"}
+{"question_id": "3a0a8222-8d26-467d-a62e-947f36bb637e", "question_type": "detect", "question_target": "J", "question_choice": "J"}
+{"question_id": "9d334140-f53c-4c8e-b53d-bd3498ec2e9e", "question_type": "detect", "question_target": "K", "question_choice": "K"}
+{"question_id": "b42ec9b8-1496-4168-9f14-5ecbd7808e56", "question_type": "detect", "question_target": "L", "question_choice": "L"}
+{"question_id": "2b088081-0577-4bab-9690-c59779afa92c", "question_type": "detect", "question_target": "M", "question_choice": "M"}
+{"question_id": "1b068dd1-fd0e-4beb-9028-709f91df072f", "question_type": "detect", "question_target": "N", "question_choice": "N"}
+{"question_id": "0db19ca5-d9fc-41bd-ba5c-ae1e4e17bf4d", "question_type": "detect", "question_target": "O", "question_choice": "O"}
+{"question_id": "f55419a4-9cbc-4662-8aa0-20b9dbb6d249", "question_type": "detect", "question_target": "P", "question_choice": "P"}
+{"question_id": "c2b269e3-7a09-48e0-822d-fc350103a3bb", "question_type": "detect", "question_target": "Q", "question_choice": "Q"}
+{"question_id": "12f7fdd5-956f-4912-a4a0-44faaeb69db9", "question_type": "detect", "question_target": "R", "question_choice": "R"}
+{"question_id": "1e52203c-7966-40fb-8f88-b604597c2ae7", "question_type": "detect", "question_target": "S", "question_choice": "S"}
+{"question_id": "bd4a3f09-9ac3-4e9b-b623-3496c063b7cf", "question_type": "detect", "question_target": "T", "question_choice": "T"}
+{"question_id": "b50bcd75-e1ff-46bb-b07c-d2a13be08a85", "question_type": "detect", "question_target": "U", "question_choice": "U"}
+{"question_id": "8e645b46-d777-4cdc-834e-14c2728d3b33", "question_type": "detect", "question_target": "V", "question_choice": "V"}
+{"question_id": "1ec360e8-0e58-4e13-b3d5-ff3b40077c30", "question_type": "detect", "question_target": "W", "question_choice": "W"}
+{"question_id": "ccc23775-ae6a-4b95-adf9-8d9c94d43097", "question_type": "detect", "question_target": "X", "question_choice": "X"}
+{"question_id": "d5936b3a-d6b3-460b-994a-fef772e832bb", "question_type": "detect", "question_target": "Y", "question_choice": "Y"}
+{"question_id": "8ce8710e-df30-4fee-b283-6d004797f6a5", "question_type": "detect", "question_target": "Z", "question_choice": "Z"}
+{"question_id": "5e1d3e57-f094-4a33-b312-86de104399a7", "question_type": "choice_to_char", "question_target": "A", "question_choice": "AXHW"}
+{"question_id": "3d5e6ab1-70d2-4a4e-9684-31299226051e", "question_type": "choice_to_char", "question_target": "B", "question_choice": "AWBP"}
+{"question_id": "2f9ebb8f-2ef9-48e5-b99c-b5e8bdfe5b2e", "question_type": "choice_to_char", "question_target": "C", "question_choice": "RGJC"}
+{"question_id": "5a09a33f-6335-4482-9a14-643bee755826", "question_type": "choice_to_char", "question_target": "D", "question_choice": "DLQY"}
+{"question_id": "c3b71703-04f5-45a7-ac45-8a24a6edac6f", "question_type": "choice_to_char", "question_target": "E", "question_choice": "XEQJ"}
+{"question_id": "8e80c7c0-05f6-4b36-b466-9a9ade8a5e40", "question_type": "choice_to_char", "question_target": "F", "question_choice": "FACP"}
+{"question_id": "97937617-c2c0-47d9-a1a2-5efd338e9f21", "question_type": "choice_to_char", "question_target": "G", "question_choice": "KGAE"}
+{"question_id": "d7e7577c-5192-4f79-8075-392155dec054", "question_type": "choice_to_char", "question_target": "H", "question_choice": "HUQO"}
+{"question_id": "7e0a0bfb-2bf9-46de-81b5-6319aeffe08a", "question_type": "choice_to_char", "question_target": "I", "question_choice": "YTIP"}
+{"question_id": "d73abad4-4167-463d-9552-8616dad0a508", "question_type": "choice_to_char", "question_target": "J", "question_choice": "MIFJ"}
+{"question_id": "e2ae0f90-170d-4c84-a11f-84ef59c87e84", "question_type": "choice_to_char", "question_target": "K", "question_choice": "DPKW"}
+{"question_id": "63d507a2-f212-4b3f-8138-5a524c269acf", "question_type": "choice_to_char", "question_target": "L", "question_choice": "VLHJ"}
+{"question_id": "b93817fc-ceca-4efd-9898-0b75b718b2c0", "question_type": "choice_to_char", "question_target": "M", "question_choice": "CFAM"}
+{"question_id": "70d9ed88-246f-4f67-88ed-e870dcd936ff", "question_type": "choice_to_char", "question_target": "N", "question_choice": "MNUP"}
+{"question_id": "7f56f89c-43dd-450f-a5aa-55924c7767e3", "question_type": "choice_to_char", "question_target": "O", "question_choice": "BOEN"}
+{"question_id": "14ee34a9-400b-494e-8845-ed1403fbae75", "question_type": "choice_to_char", "question_target": "P", "question_choice": "OPVB"}
+{"question_id": "03cb22a6-ae32-48a3-bc8e-8addf4607269", "question_type": "choice_to_char", "question_target": "Q", "question_choice": "PTQU"}
+{"question_id": "706b11a2-73f1-45dc-bc94-e3050f5467fe", "question_type": "choice_to_char", "question_target": "R", "question_choice": "GRHV"}
+{"question_id": "2165e9ce-ca68-47e1-80ef-f690c63a37d5", "question_type": "choice_to_char", "question_target": "S", "question_choice": "ASKN"}
+{"question_id": "6dec23af-ad5f-4645-913a-8c199d4059d3", "question_type": "choice_to_char", "question_target": "T", "question_choice": "AUWT"}
+{"question_id": "069529eb-3c49-4691-8872-6e29b30ea21c", "question_type": "choice_to_char", "question_target": "U", "question_choice": "DUXQ"}
+{"question_id": "d01d5969-1e06-4a2e-87a4-a1da89a1f280", "question_type": "choice_to_char", "question_target": "V", "question_choice": "UMKV"}
+{"question_id": "2ac6d099-8f45-4d40-bb84-940547032ba3", "question_type": "choice_to_char", "question_target": "W", "question_choice": "SBJW"}
+{"question_id": "9c120519-05bb-4c49-a71a-b82b7452ffc7", "question_type": "choice_to_char", "question_target": "X", "question_choice": "CWOX"}
+{"question_id": "482d2885-786a-4a88-abf7-a92474d19ef6", "question_type": "choice_to_char", "question_target": "Y", "question_choice": "RTAY"}
+{"question_id": "21ac061c-769d-4188-bdfb-c023e4cf8fd2", "question_type": "choice_to_char", "question_target": "Z", "question_choice": "KWOZ"}
+{"question_id": "8ddd761a-d162-4164-a7bc-893c5c715438", "question_type": "choice_to_image", "question_target": "A", "question_choice": "TMUA"}
+{"question_id": "bd876194-b876-4202-9339-f96aafa80a52", "question_type": "choice_to_image", "question_target": "B", "question_choice": "FQDB"}
+{"question_id": "bc4b7b94-7b6c-4ef2-aaa7-e302374691e5", "question_type": "choice_to_image", "question_target": "C", "question_choice": "QYCJ"}
+{"question_id": "a8c5e6a8-d02c-4b84-afb2-7120b6e8df6e", "question_type": "choice_to_image", "question_target": "D", "question_choice": "LRDV"}
+{"question_id": "4b444d89-3039-4622-9186-a059083a60d0", "question_type": "choice_to_image", "question_target": "E", "question_choice": "VBJE"}
+{"question_id": "54c79b83-d261-4015-b924-05e062c24903", "question_type": "choice_to_image", "question_target": "F", "question_choice": "KFZQ"}
+{"question_id": "81587eed-b194-478b-8780-1eba87a3ea7d", "question_type": "choice_to_image", "question_target": "G", "question_choice": "AFYG"}
+{"question_id": "93707f6d-75ae-4397-9162-5e2ca91d11b6", "question_type": "choice_to_image", "question_target": "H", "question_choice": "UHJE"}
+{"question_id": "e2680b0a-df11-4e70-ae73-c71ce7fce4b2", "question_type": "choice_to_image", "question_target": "I", "question_choice": "IXYD"}
+{"question_id": "6fa5b175-893b-4a4d-b1d1-87088701d6cf", "question_type": "choice_to_image", "question_target": "J", "question_choice": "EJFR"}
+{"question_id": "207394df-505a-473e-93ee-553bb1d9a1ec", "question_type": "choice_to_image", "question_target": "K", "question_choice": "KCWL"}
+{"question_id": "ecfc6c0b-94f2-4c46-99d4-f3947b53a68e", "question_type": "choice_to_image", "question_target": "L", "question_choice": "LKUH"}
+{"question_id": "723d0e03-fc51-44df-9f15-82312aa933d0", "question_type": "choice_to_image", "question_target": "M", "question_choice": "HGJM"}
+{"question_id": "65e68808-bf13-4af2-b890-a5b863c62aa6", "question_type": "choice_to_image", "question_target": "N", "question_choice": "VMNI"}
+{"question_id": "096e4fb6-313c-4b79-be81-ad0c342a4a4c", "question_type": "choice_to_image", "question_target": "O", "question_choice": "OUZN"}
+{"question_id": "15da826f-d88d-4a45-a208-afa366a1f5a3", "question_type": "choice_to_image", "question_target": "P", "question_choice": "NLPB"}
+{"question_id": "a5e37c73-6692-4bd0-a184-c8eb3ca15824", "question_type": "choice_to_image", "question_target": "Q", "question_choice": "BDQX"}
+{"question_id": "ff6f8191-bdd7-4531-a22b-f32d9f984faa", "question_type": "choice_to_image", "question_target": "R", "question_choice": "XFRH"}
+{"question_id": "c313a363-291a-4be1-8739-a3c1682f663d", "question_type": "choice_to_image", "question_target": "S", "question_choice": "KVJS"}
+{"question_id": "528b2e0c-3063-46c9-b444-cb385c2a4595", "question_type": "choice_to_image", "question_target": "T", "question_choice": "FZTY"}
+{"question_id": "2131a3d2-b650-4b45-ad67-5f5bb4f54681", "question_type": "choice_to_image", "question_target": "U", "question_choice": "XRJU"}
+{"question_id": "9f1a8280-b4bb-4faf-b397-a3ac23ffac37", "question_type": "choice_to_image", "question_target": "V", "question_choice": "YHUV"}
+{"question_id": "47a0b39f-1197-472f-9270-795ad743f05c", "question_type": "choice_to_image", "question_target": "W", "question_choice": "NWJM"}
+{"question_id": "222a01eb-7f3a-4dd7-b431-1644bb06b934", "question_type": "choice_to_image", "question_target": "X", "question_choice": "RXKO"}
+{"question_id": "f7819b74-3103-40e8-996b-0c1e3b4ea1ae", "question_type": "choice_to_image", "question_target": "Y", "question_choice": "WZVY"}
+{"question_id": "48a17ccb-a037-4e50-b721-dea5d1d3d6ad", "question_type": "choice_to_image", "question_target": "Z", "question_choice": "BZCU"}
+{"question_id": "e3e22c8e-79ee-4630-bcbc-2bf7b49aed97", "question_type": "detect", "question_target": "TRACK", "question_choice": "TRACK"}
+{"question_id": "3fd559ec-6352-4b57-ba87-e81526a01804", "question_type": "detect", "question_target": "SEX", "question_choice": "SEX"}
+{"question_id": "8f58beca-0eb2-40ee-aed4-7263cb0fedec", "question_type": "detect", "question_target": "POINT", "question_choice": "POINT"}
+{"question_id": "e3162510-1907-4389-a389-05aa72e74de1", "question_type": "detect", "question_target": "HALF AND HALF", "question_choice": "HALF AND HALF"}
+{"question_id": "5508498d-4e0f-44ab-9351-e69136bf0d73", "question_type": "detect", "question_target": "WATER SYSTEM", "question_choice": "WATER SYSTEM"}
+{"question_id": "5ce05970-f8fe-4d40-ae1c-0a3825ac3faa", "question_type": "detect", "question_target": "GO DOWN", "question_choice": "GO DOWN"}
+{"question_id": "78047e27-4e90-4a75-b415-80f5b5e5237f", "question_type": "detect", "question_target": "STAND", "question_choice": "STAND"}
+{"question_id": "a02acb9d-3602-4ffb-aabb-be64ffccd4d4", "question_type": "detect", "question_target": "CARD", "question_choice": "CARD"}
+{"question_id": "a6c064b5-9067-4a80-9ff0-4d6622e2e7f7", "question_type": "detect", "question_target": "OPEN", "question_choice": "OPEN"}
+{"question_id": "7831235d-4ddc-45ad-bb50-0896e061a931", "question_type": "detect", "question_target": "FEEL", "question_choice": "FEEL"}
+{"question_id": "a14fd148-32b8-4ebd-9ac8-82fd5a005b7d", "question_type": "detect", "question_target": "DEEP", "question_choice": "DEEP"}
+{"question_id": "e2d33d61-e646-422e-b29c-184417044cb5", "question_type": "detect", "question_target": "DRIVE", "question_choice": "DRIVE"}
+{"question_id": "e19ea497-da59-460e-b1f0-1dbfb5f891d0", "question_type": "detect", "question_target": "DIFFERENCE", "question_choice": "DIFFERENCE"}
+{"question_id": "b9f6940b-b6ab-496e-a259-27875298e7c3", "question_type": "detect", "question_target": "LAW", "question_choice": "LAW"}
+{"question_id": "05e94c30-93c6-4d01-b2c9-1d4bca1cffd7", "question_type": "detect", "question_target": "PLAY", "question_choice": "PLAY"}
+{"question_id": "71a7f36a-50db-4c2b-ba7b-8998ca5edf6a", "question_type": "detect", "question_target": "OPEN", "question_choice": "OPEN"}
+{"question_id": "33077610-3be7-4eba-ad07-0f7f0f31ec8a", "question_type": "detect", "question_target": "READY", "question_choice": "READY"}
+{"question_id": "b385406d-8541-4af7-89e7-30ac79c8446f", "question_type": "detect", "question_target": "LEAVE", "question_choice": "LEAVE"}
+{"question_id": "5e2b1608-afff-4bb3-80b2-dbe3fde169d9", "question_type": "detect", "question_target": "FOLLOW UP", "question_choice": "FOLLOW UP"}
+{"question_id": "0b00c2ff-3129-4646-86e0-34d018efbd12", "question_type": "detect", "question_target": "AWAY", "question_choice": "AWAY"}
+{"question_id": "4b81f005-6fd2-4f55-85cb-4bffb03d596b", "question_type": "detect", "question_target": "COME CLOSE", "question_choice": "COME CLOSE"}
+{"question_id": "0be45123-3a81-4ab4-9447-857b5ca298ff", "question_type": "detect", "question_target": "START", "question_choice": "START"}
+{"question_id": "08e68557-ad31-40b9-9e74-2184d1564a91", "question_type": "detect", "question_target": "ARMY", "question_choice": "ARMY"}
+{"question_id": "4de759a8-4d47-46df-b471-4443d57add63", "question_type": "detect", "question_target": "COMPLETE", "question_choice": "COMPLETE"}
+{"question_id": "4440f30a-5ab0-40a8-959d-8c1f906c3a9f", "question_type": "detect", "question_target": "WESTERN", "question_choice": "WESTERN"}
+{"question_id": "f220aa35-e347-4a8e-89c8-781de143695f", "question_type": "detect", "question_target": "GIVE", "question_choice": "GIVE"}
+{"question_id": "3341afbb-b48e-4a83-840f-744a62fa581c", "question_type": "detect", "question_target": "PRESENT", "question_choice": "PRESENT"}
+{"question_id": "d34a3cf2-ae0b-4e19-a8cf-308fed2475a3", "question_type": "detect", "question_target": "SAY", "question_choice": "SAY"}
+{"question_id": "2b4dd9cf-b223-490f-864a-578a21224946", "question_type": "detect", "question_target": "DECEMBER", "question_choice": "DECEMBER"}
+{"question_id": "d84667a4-07f4-4a1a-a470-2c2b4a4cf993", "question_type": "detect", "question_target": "COVER", "question_choice": "COVER"}
+{"question_id": "7a7c16fa-2fd7-47e2-af46-b92f3b3d2d6e", "question_type": "detect", "question_target": "BALL", "question_choice": "BALL"}
+{"question_id": "3b68b831-8aba-4f3a-9b2f-b16cbdfea62f", "question_type": "detect", "question_target": "SECOND GUESS", "question_choice": "SECOND GUESS"}
+{"question_id": "1d793a6c-78ce-4597-b494-7ed0d5258c8e", "question_type": "detect", "question_target": "GET ACROSS", "question_choice": "GET ACROSS"}
+{"question_id": "bcc6dbd9-a898-42e9-a570-51083bfe2737", "question_type": "detect", "question_target": "THINK", "question_choice": "THINK"}
+{"question_id": "ab477690-36d0-4d67-8a2c-901b7a19d7db", "question_type": "detect", "question_target": "LEAGUE", "question_choice": "LEAGUE"}
+{"question_id": "20f34f07-5aa6-4496-97d5-0a986393f9ef", "question_type": "detect", "question_target": "NAME", "question_choice": "NAME"}
+{"question_id": "8e24dcee-4f35-48b9-bb9b-a4e781119349", "question_type": "detect", "question_target": "ON", "question_choice": "ON"}
+{"question_id": "a6077ad7-3516-4e67-a5cf-67eb3f05592d", "question_type": "detect", "question_target": "CHARGE", "question_choice": "CHARGE"}
+{"question_id": "2a55e0f3-1575-454e-8c8c-670c5f7f43e2", "question_type": "detect", "question_target": "BASED", "question_choice": "BASED"}
+{"question_id": "845bd643-7720-4e01-8087-b9c9c6863531", "question_type": "detect", "question_target": "CHARGE", "question_choice": "CHARGE"}
+{"question_id": "7cbc7882-5177-4f07-9817-24bb5fcff9cb", "question_type": "detect", "question_target": "SEEING", "question_choice": "SEEING"}
+{"question_id": "a4863f67-006c-427c-bf3d-4a6b68004408", "question_type": "detect", "question_target": "STAND", "question_choice": "STAND"}
+{"question_id": "48cfde42-8ce2-43d8-a779-be6b04ed48ec", "question_type": "detect", "question_target": "FEDERAL", "question_choice": "FEDERAL"}
+{"question_id": "323421e2-4e98-4a45-887d-237483040a7a", "question_type": "detect", "question_target": "HARD TIME", "question_choice": "HARD TIME"}
+{"question_id": "40eeb8cd-565e-4b79-bf05-946b06d6478c", "question_type": "detect", "question_target": "FRENCH", "question_choice": "FRENCH"}
+{"question_id": "c1b5361e-2b36-465d-b947-3116cf0a8447", "question_type": "detect", "question_target": "CUT", "question_choice": "CUT"}
+{"question_id": "1c848067-7c57-49e5-94db-42aaf7bed80d", "question_type": "detect", "question_target": "BECOME", "question_choice": "BECOME"}
+{"question_id": "445547dc-4040-47c4-8da1-67064c76b9e8", "question_type": "detect", "question_target": "RANGE", "question_choice": "RANGE"}
+{"question_id": "f68a1266-de39-4984-8e6d-7df1e51f970a", "question_type": "detect", "question_target": "DOWN", "question_choice": "DOWN"}
+{"question_id": "85a318fe-ec48-4a86-801f-3903db7c3bd7", "question_type": "detect", "question_target": "FOUR", "question_choice": "FOUR"}
+{"question_id": "3c29c315-c5da-4b23-9404-c4a00d82c573", "question_type": "detect", "question_target": "PAY UP", "question_choice": "PAY UP"}
+{"question_id": "c2d07f79-8b19-426e-ae14-a37f14ae7256", "question_type": "detect", "question_target": "TAX", "question_choice": "TAX"}
+{"question_id": "47ed39a0-760a-4f67-9e5f-9221ac43a2de", "question_type": "detect", "question_target": "DIE OUT", "question_choice": "DIE OUT"}
+{"question_id": "317cb39c-2582-4aeb-b08d-d4e201045faf", "question_type": "detect", "question_target": "PERSONAL", "question_choice": "PERSONAL"}
+{"question_id": "45726c93-cc93-497f-a294-dbc01feab476", "question_type": "detect", "question_target": "ANSWER", "question_choice": "ANSWER"}
+{"question_id": "8c14869f-fa20-481b-947a-d9ed0ae85147", "question_type": "detect", "question_target": "UNION", "question_choice": "UNION"}
+{"question_id": "339af552-df63-499d-ae8f-4a69f06b0ff7", "question_type": "detect", "question_target": "CUP", "question_choice": "CUP"}
+{"question_id": "efa1226d-a3ba-4451-8aa7-7f38cade6151", "question_type": "detect", "question_target": "CHARGE", "question_choice": "CHARGE"}
+{"question_id": "31167433-956a-4921-b95d-3db068be762d", "question_type": "detect", "question_target": "VISIT", "question_choice": "VISIT"}
+{"question_id": "4e660bb2-2503-4dc5-9b9f-63029c6b18dc", "question_type": "detect", "question_target": "BLACK", "question_choice": "BLACK"}
+{"question_id": "7a52901f-df34-42bf-8e5c-37e7a87164bc", "question_type": "detect", "question_target": "LA", "question_choice": "LA"}
+{"question_id": "fb8bdc98-0fdf-4788-82fc-3daa7e00d9df", "question_type": "detect", "question_target": "MAN", "question_choice": "MAN"}
+{"question_id": "59476d54-0333-42a5-80f2-1e394ea8cfa1", "question_type": "detect", "question_target": "MIDDLE", "question_choice": "MIDDLE"}
+{"question_id": "2873063d-55b7-4bcb-ac20-04d670d82675", "question_type": "detect", "question_target": "BODY", "question_choice": "BODY"}
+{"question_id": "27483639-6980-45f4-bb7f-7c6843515826", "question_type": "detect", "question_target": "WEST", "question_choice": "WEST"}
+{"question_id": "98bb8f8f-d5f2-4f2c-bbec-9d5303d8f292", "question_type": "detect", "question_target": "INTERNET", "question_choice": "INTERNET"}
+{"question_id": "4a30e05f-5986-4c14-85c1-5c66fc19ea9d", "question_type": "detect", "question_target": "AFTER", "question_choice": "AFTER"}
+{"question_id": "601b7c3a-ddc4-4ed9-9a0a-c8101e06f7f7", "question_type": "detect", "question_target": "HEAD", "question_choice": "HEAD"}
+{"question_id": "27254eef-5786-4ca6-9af9-47436aa5e00e", "question_type": "detect", "question_target": "GOOD", "question_choice": "GOOD"}
+{"question_id": "5567bf04-a60c-4e91-964e-530f58e9c292", "question_type": "detect", "question_target": "CUT", "question_choice": "CUT"}
+{"question_id": "d31ac165-e318-4faa-a618-748d212df68a", "question_type": "detect", "question_target": "READY MADE", "question_choice": "READY MADE"}
+{"question_id": "b25d7178-224f-4755-99d5-b96422b0eaf9", "question_type": "detect", "question_target": "SECOND READING", "question_choice": "SECOND READING"}
+{"question_id": "e0e72494-0d6f-4f93-ae5d-acac191f161f", "question_type": "detect", "question_target": "FALL", "question_choice": "FALL"}
+{"question_id": "bd8b25ea-4322-459e-af88-792d8fdce6a8", "question_type": "detect", "question_target": "HOPE", "question_choice": "HOPE"}
+{"question_id": "cc2d2356-1b72-4d5c-b7ea-b2fe4dbeaa8a", "question_type": "detect", "question_target": "SAY", "question_choice": "SAY"}
+{"question_id": "21b7f547-249b-49a0-aab9-d36d2384b5c1", "question_type": "detect", "question_target": "WALK IN", "question_choice": "WALK IN"}
+{"question_id": "5c708152-6c3a-414f-b086-4674782cbcad", "question_type": "detect", "question_target": "READY MADE", "question_choice": "READY MADE"}
+{"question_id": "83481da5-a754-42c2-aa16-df85d0fa567d", "question_type": "detect", "question_target": "PRESENT", "question_choice": "PRESENT"}
+{"question_id": "0b83a797-599a-4cb1-85d4-64015f5fa064", "question_type": "detect", "question_target": "WRITE", "question_choice": "WRITE"}
+{"question_id": "25dce720-ba64-403f-ba2e-54c760ea4769", "question_type": "detect", "question_target": "MATTER TO", "question_choice": "MATTER TO"}
+{"question_id": "cfeba91e-cb38-427a-9d5f-a595bd55b160", "question_type": "detect", "question_target": "FIELD", "question_choice": "FIELD"}
+{"question_id": "e921caf4-7f4f-49fd-a688-600db4bb51d2", "question_type": "detect", "question_target": "EFFECT", "question_choice": "EFFECT"}
+{"question_id": "d76f5cff-8bb6-4118-bd7a-8d10c75ba429", "question_type": "detect", "question_target": "GROWTH", "question_choice": "GROWTH"}
+{"question_id": "a04c57b1-c636-49c3-8346-e5fa7622ea51", "question_type": "detect", "question_target": "WEIGHT", "question_choice": "WEIGHT"}
+{"question_id": "a5d0f09c-1b4b-4f15-b6af-9c10cca92cae", "question_type": "detect", "question_target": "END MAN", "question_choice": "END MAN"}
+{"question_id": "0fb2251c-9e8f-4c82-9a65-ba9a373cff0d", "question_type": "detect", "question_target": "MARCH", "question_choice": "MARCH"}
+{"question_id": "eb9c7655-de1a-4671-ad97-b0e7de8b480b", "question_type": "detect", "question_target": "TEST", "question_choice": "TEST"}
+{"question_id": "1fde5a02-e30d-413d-b310-5da65336318d", "question_type": "detect", "question_target": "ONE", "question_choice": "ONE"}
+{"question_id": "73fda288-b224-4161-989d-e6b07e3a9f58", "question_type": "detect", "question_target": "AIR", "question_choice": "AIR"}
+{"question_id": "029b9e06-6fd1-4897-ac4a-eb68ccb09fb2", "question_type": "detect", "question_target": "BUSINESS SCHOOL", "question_choice": "BUSINESS SCHOOL"}
+{"question_id": "b091b650-6681-49dd-a940-626db41adb6f", "question_type": "detect", "question_target": "LIGHT", "question_choice": "LIGHT"}
+{"question_id": "195fa521-1d8e-46ab-948d-64ed5c0e97e2", "question_type": "detect", "question_target": "STAND FOR", "question_choice": "STAND FOR"}
+{"question_id": "b9f42f7e-671a-4e4b-a9ad-321fa86841a5", "question_type": "detect", "question_target": "BODY", "question_choice": "BODY"}
+{"question_id": "b21a9420-fca6-4281-9b5f-70c7996fefd5", "question_type": "detect", "question_target": "WRITTEN", "question_choice": "WRITTEN"}
+{"question_id": "a4e434c1-1424-4e4a-b893-98cfedeb1f50", "question_type": "detect", "question_target": "BOX IN", "question_choice": "BOX IN"}
+{"question_id": "08752ee4-e8af-43e2-9bca-b390f8a72d3a", "question_type": "detect", "question_target": "TAX", "question_choice": "TAX"}
+{"question_id": "45a23a4c-6f5a-4dc5-865e-45375e3519ff", "question_type": "detect", "question_target": "SEE", "question_choice": "SEE"}
+{"question_id": "de46379e-6dc1-4644-b6de-c526e9fb2674", "question_type": "detect", "question_target": "YES", "question_choice": "YES"}
+{"question_id": "94ee6213-e8d9-4e5b-a564-347986684cb6", "question_type": "detect", "question_target": "LEARN", "question_choice": "LEARN"}
+{"question_id": "59960dbc-5bcf-4664-b8dc-ee7486d93156", "question_type": "detect", "question_target": "RIGHT HAND", "question_choice": "RIGHT HAND"}

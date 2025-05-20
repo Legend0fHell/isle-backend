@@ -53,7 +53,12 @@ def create_letter(db: Session, alphabet_in: ASLCreate):
     db.add(db_letter)
     db.commit()
     db.refresh(db_letter)
-    return db_letter
+    return {
+        "char_name": db_letter.char_name,
+        "char_image_url": db_letter.char_image_url,
+        "char_tutorial_text": db_letter.char_tutorial_text,
+        "char_tutorial_url": db_letter.char_tutorial_url
+    }
 
 
 def update_letter(db: Session, data: ASLCreate):
