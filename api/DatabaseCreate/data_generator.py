@@ -1,12 +1,22 @@
 import json
+import os
+from dotenv import load_dotenv
 import psycopg2
-# Connect to the PostgreSQL database
+from urllib.parse import urlparse
+# Load environment variables from .env file
+load_dotenv()
+
+# Parse DATABASE_URL
+db_url = os.getenv("DATABASE_URL")
+parsed_url = urlparse(db_url)
+
+# Connect using parsed info
 conn = psycopg2.connect(
-    host="localhost",
-    database="asl_db",
-    user="postgres",
-    password="minhquan0409",
-    port="5432"
+    database=parsed_url.path[1:],  # remove leading '/'
+    user=parsed_url.username,
+    password=parsed_url.password,
+    host=parsed_url.hostname,
+    port=parsed_url.port
 )
 
 # Create a cursor object
