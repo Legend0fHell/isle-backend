@@ -2,15 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
-from api.models.alphabet import ASLCreate, ASLRead
-from api.database import get_db
-from api.crud import reference as crud
+from models.alphabet import ASLCreate, ASLRead
+from database import get_db
+from crud import reference as crud
 
-router = APIRouter(prefix="/api", tags=["ASL Characters"])
+router = APIRouter(prefix="/asl", tags=["ASL Characters"])
 
 # --- ASL Characters Endpoints --- #
 
-@router.get("/asl")
+@router.get("/")
 def get_all_asl_letters(db: Session = Depends(get_db)):
     """
     Retrieve all ASL letters.
@@ -20,7 +20,7 @@ def get_all_asl_letters(db: Session = Depends(get_db)):
         "data": crud.get_all_letters(db)
     }
 
-@router.get("/asl/info")
+@router.get("/info")
 def get_asl_letter(letter: str, db: Session = Depends(get_db)):
     """
     Retrieve details of a specific ASL letter (case-insensitive).
@@ -34,7 +34,7 @@ def get_asl_letter(letter: str, db: Session = Depends(get_db)):
         "data": crud.get_letter(db, letter_clean)
     }
 
-@router.post("/asl/create")
+@router.post("/create")
 def create_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
     """
     Create a new ASL letter entry.
@@ -51,7 +51,7 @@ def create_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
         "data": letter_data
     }
 
-@router.put("/asl/update")
+@router.put("/update")
 def update_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
     """
     Update an existing ASL letter entry.
@@ -61,7 +61,7 @@ def update_asl_letter(asl_data: ASLCreate, db: Session = Depends(get_db)):
         "data": crud.update_letter(db, asl_data)
     }
 
-@router.delete("/asl/delete")
+@router.delete("/delete")
 def delete_asl_letter(letter: str, db: Session = Depends(get_db)):
     """
     Delete an ASL letter entry by letter (case-insensitive).

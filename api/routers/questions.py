@@ -2,16 +2,16 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-from api.models.question import (
+from models.question import (
     QuestionCreate, QuestionRead, QuestionUpdate,
 )
-from api.database import get_db
-import api.crud.question as crud
+from database import get_db
+import crud.question as crud
 
-router = APIRouter(prefix="/api", tags=["Questions"])
+router = APIRouter(prefix="/question", tags=["Questions"])
 
 # Question endpoints
-@router.post("/question/")
+@router.post("/")
 def create_question(question: QuestionCreate, db: Session = Depends(get_db)):
     question_data = crud.create_question(db, question)
     if question_data is None:

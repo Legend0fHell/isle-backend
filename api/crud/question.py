@@ -1,14 +1,12 @@
 from sqlalchemy.orm import Session
 
-from api.models.question import Question, Course, Lesson
-from api.models.question import CourseLesson, LessonQuestion
-
-from api.models.question import QuestionCreate, QuestionRead, QuestionDelete, QuestionUpdate
-from api.models.question import CourseCreate, CourseRead, CourseDelete, CourseUpdate 
-from api.models.question import LessonCreate, LessonRead, LessonUpdate, LessonDelete
-
-from api.models.question import CourseLessonCreate, CourseLessonRead, CourseLessonDelete
-from api.models.question import LessonQuestionCreate, LessonQuestionRead, LessonQuestionDelete
+from models.question import Question, Course, Lesson
+from models.question import CourseLesson, LessonQuestion
+from models.question import QuestionCreate, QuestionRead, QuestionDelete, QuestionUpdate
+from models.question import CourseCreate, CourseRead, CourseDelete, CourseUpdate 
+from models.question import LessonCreate, LessonRead, LessonUpdate, LessonDelete
+from models.question import CourseLessonCreate, CourseLessonRead, CourseLessonDelete
+from models.question import LessonQuestionCreate, LessonQuestionRead, LessonQuestionDelete
    
 import uuid 
 from sqlalchemy.dialects.postgresql import UUID

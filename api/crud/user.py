@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
-from api.models.user import User
-from api.models.user import UserCreate, UserLogin, UserUpdate
+from models.user import User
+from models.user import UserCreate, UserLogin, UserUpdate
 
 
 

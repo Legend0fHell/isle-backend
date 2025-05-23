@@ -2,11 +2,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { signUp, UserCreate } from 'models/auth';
+import { register, User } from 'models/user';
+
+// Define a signup credentials interface
+interface SignupCredentials {
+    name: string;
+    email: string;
+    password: string;
+}
 
 const SignupPage = () => {
-    const [userData, setUserData] = useState<UserCreate>({
-        user_name: '',
+    const [userData, setUserData] = useState<SignupCredentials>({
+        name: '',
         email: '',
         password: ''
     });
@@ -19,21 +26,27 @@ const SignupPage = () => {
         setError(null);
 
         // Basic validation
-        if (!userData.user_name || !userData.email || !userData.password) {
-            setError('Vui lòng điền đầy đủ thông tin');
+        if (!userData.name || !userData.email || !userData.password) {
+            setError('Please fill in all required fields');
             setIsLoading(false);
             return;
         }
 
         try {
-            const newUser = await signUp(userData);
-            // Xử lý sau khi đăng ký thành công
-            console.log('Đăng ký thành công:', newUser);
+            // Create a User object with the required fields
+            const userToRegister: Partial<User> = {
+                name: userData.name,
+                email: userData.email
+            };
+            
+            // Call register with user object and password separately
+            const newUser = await register(userToRegister as User, userData.password);
+            console.log('Registration successful:', newUser);
 
-            // Chuyển hướng đến trang login
+            // Redirect to login page
             window.location.href = '/login';
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Đăng ký thất bại');
+            setError(err instanceof Error ? err.message : 'Registration failed');
         } finally {
             setIsLoading(false);
         }
@@ -53,16 +66,15 @@ const SignupPage = () => {
                 </span>
 
                 <form onSubmit={handleSubmit}>
-                    <span className="absolute top-[0px] left-[103px] text-black w-[289px] h-[58px]"
-                        style={{ fontSize: "48px", fontWeight: 700 }}>
-                        Get Started.
-                    </span>
-
                     <div className="absolute top-[100px] left-[0px] w-[495px] h-[219px]">
                         {/* Name Input */}
+                        <span className="absolute top-[0px] left-[10px] text-black w-[50px] h-[19px]"
+                            style={{ fontSize: "16px", fontWeight: 400 }}>
+                            Name
+                        </span>
                         <input
-                            value={userData.user_name}
-                            onChange={(e) => setUserData({ ...userData, user_name: e.target.value })}
+                            value={userData.name}
+                            onChange={(e) => setUserData({ ...userData, name: e.target.value })}
                             className="absolute top-[28px] left-[10px] w-[470px] h-[19px] text-black outline-none"
                             placeholder="Enter your name"
                             type="text"
@@ -71,6 +83,10 @@ const SignupPage = () => {
                         <div className="absolute top-[51px] left-[0px] w-[470px] h-[2px] bg-[#15186D]" />
 
                         {/* Email Input */}
+                        <span className="absolute top-[84px] left-[10px] text-black w-[50px] h-[19px]"
+                            style={{ fontSize: "16px", fontWeight: 400 }}>
+                            Email
+                        </span>
                         <input
                             value={userData.email}
                             onChange={(e) => setUserData({ ...userData, email: e.target.value })}
@@ -82,6 +98,10 @@ const SignupPage = () => {
                         <div className="absolute top-[135px] left-[0px] w-[470px] h-[2px] bg-[#15186D]" />
 
                         {/* Password Input */}
+                        <span className="absolute top-[168px] left-[10px] text-black w-[80px] h-[19px]"
+                            style={{ fontSize: "16px", fontWeight: 400 }}>
+                            Password
+                        </span>
                         <input
                             value={userData.password}
                             onChange={(e) => setUserData({ ...userData, password: e.target.value })}
@@ -92,6 +112,12 @@ const SignupPage = () => {
                         />
                         <div className="absolute top-[219px] left-[0px] w-[470px] h-[2px] bg-[#15186D]" />
                     </div>
+
+                    {error && (
+                        <div className="absolute top-[330px] left-[0px] w-[495px] text-center text-red-500" style={{ fontSize: "14px" }}>
+                            {error}
+                        </div>
+                    )}
 
                     <button
                         type="submit"
@@ -113,7 +139,7 @@ const SignupPage = () => {
                     </Link>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }
 

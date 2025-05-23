@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from api.models.alphabet import ASLCharacter
-from api.models.alphabet import ASLCreate, ASLRead
+from models.alphabet import ASLCharacter
+from models.alphabet import ASLCreate, ASLRead
 from sqlalchemy import func
 
 from fastapi import HTTPException, status

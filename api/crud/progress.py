@@ -3,10 +3,10 @@ from fastapi import HTTPException, status
 from uuid import UUID
 from datetime import datetime
 
-from api.models.user import UserLessonProgress, User
-from api.models.user import LessonProgressCreate, UserAnswerSubmit, UserQuestionAnswer, UserAnswerCreate
+from models.user import UserLessonProgress, User
+from models.user import LessonProgressCreate, UserAnswerSubmit, UserQuestionAnswer, UserAnswerCreate
 
-from api.models.question import Question, Lesson, LessonQuestion
+from models.question import Question, Lesson, LessonQuestion
 
 
 # --- LessonProgress CRUD --- #

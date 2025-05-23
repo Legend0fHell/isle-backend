@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-from api.database import get_db
-from api.models.user import (
+from database import get_db
+from models.user import (
     LessonProgressCreate, UserAnswerSubmit, UserAnswerCreate, 
     UserAnswerRead, LessonProgressRead, UserRead, UserLogin, UserCreate, User
 )
-from api.models.question import Lesson
-from api.crud import progress as crud
+from models.question import Lesson
+from crud import progress as crud
 
 router = APIRouter(
     prefix="/api",

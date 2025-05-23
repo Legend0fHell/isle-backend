@@ -2,10 +2,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { login } from 'models/auth'; // Import UserRead
-import { User } from 'types/user'; // Import UserRead
+import { login, User } from 'models/user';
+
+// Define a proper login credentials type
+interface LoginCredentials {
+    email: string;
+    password: string;
+}
+
 const LoginPage = () => {
-    const [credentials, setCredentials] = useState<User>({
+    const [credentials, setCredentials] = useState<LoginCredentials>({
         email: '',
         password: ''
     });
@@ -18,17 +24,19 @@ const LoginPage = () => {
         setError(null);
 
         try {
-            const user: User = await login(credentials, "adu"); // Sử dụng UserRead
-            // Lưu thông tin user với cấu trúc mới
+            // Call login with separate email and password parameters
+            const user: User = await login(credentials.email, credentials.password);
+            
+            // Store user info in localStorage (without password)
             localStorage.setItem('user', JSON.stringify({
-                id: user.user_id, // Đổi thành user_id
-                name: user.user_name,
+                id: user.user_id,
+                name: user.name,
                 email: user.email
             }));
 
             window.location.href = '/dashboard';
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi');
+            setError(err instanceof Error ? err.message : 'An error occurred during login');
         } finally {
             setIsLoading(false);
         }
@@ -77,6 +85,12 @@ const LoginPage = () => {
                         <div className="absolute top-[135px] left-[0px] w-[470px] h-[2px] bg-[#15186D]" />
                     </div>
 
+                    {error && (
+                        <div className="absolute top-[400px] left-[0px] w-[495px] text-center text-red-500" style={{ fontSize: "14px" }}>
+                            An error occured: {error}!
+                        </div>
+                    )}
+
                     <button
                         type="submit"
                         disabled={isLoading}
@@ -97,8 +111,6 @@ const LoginPage = () => {
                     </Link>
                 </div>
             </div>
-
-
         </div>
     );
 }

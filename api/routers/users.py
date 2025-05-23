@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-from api.database import get_db
-from api.models.user import UserCreate, UserLogin, UserUpdate, BaseResponse, UserData
-from api.crud import user as user_crud
+from database import get_db
+from models.user import UserCreate, UserLogin, UserUpdate, BaseResponse, UserData
+from crud import user as user_crud
 
 router = APIRouter(
-    prefix="/api/user",
+    prefix="/user",
     tags=["Users"]
 )
 
@@ -48,6 +48,7 @@ def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
     """
     Authenticate user credentials and return user info if valid.
     """
+    print(credentials)
     user = user_crud.authenticate_user(db, credentials)
     if not user:
         return {"msg": "error", "data": None}

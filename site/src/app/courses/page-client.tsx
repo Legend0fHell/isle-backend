@@ -5,7 +5,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { ChevronDown, ChevronUp } from "lucide-react"
-import { Course, CourseLesson } from "types/question"
+import { Course, CourseLesson, getAllCourses } from "models/course"
 
 
 const CourseStack = () => {
@@ -27,46 +27,37 @@ const CourseStack = () => {
 
   const fetchCourses = async () => {
     setLoading(true)
+    setError(null) // Reset error state before fetching
 
-    fetch(`https://8694-171-224-181-214.ngrok-free.app/api/course/list/`, {
-      method: "GET",
-      redirect: "follow"
-    })
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log("Raw API response:", responseData);
+    try {
+      const courseData = await getAllCourses();
+      console.log("Processed courses:", courseData);
+      setCourses(courseData);
 
-        // Kiểm tra cấu trúc response và lấy mảng courses đúng cách
-        let courseData;
-        if (responseData && responseData.data) {
-          // Nếu API trả về cấu trúc { msg, data }
-          courseData = responseData.data
-        } else {
-          // Trường hợp khác, có thể cần xử lý thêm
-          console.error("Unexpected API response format:", responseData);
-          setError("Định dạng dữ liệu không đúng");
-          courseData = [];
-        }
-
-        console.log("Processed courses:", courseData);
-        setCourses(courseData);
-
-        // Initialize expanded state for all courses
-        const initialExpandedState: { [key: string]: boolean } = {};
-        courseData.forEach((course: Course) => {
-          initialExpandedState[course.course_id] = false;
-        });
-        setExpandedCourses(initialExpandedState);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching courses:", error);
+      // Initialize expanded state for all courses
+      const initialExpandedState: { [key: string]: boolean } = {};
+      courseData.forEach((course: Course) => {
+        initialExpandedState[course.course_id] = false;
+      });
+      setExpandedCourses(initialExpandedState);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      if (error instanceof Error) {
+        setError(error.message);  
+      } else {
         setError("Lỗi khi tải dữ liệu khóa học");
-        setLoading(false);
-      })
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
-  const getLessons = async () => {
+  useEffect(() => {
+    fetchCourses()
+  }, [])
+
+  useEffect(() => {
+    if (courses.length == 0) return;
     // Reset courseslessons trước khi thêm mới để tránh trùng lặp
     setCoursesLessons([]);
 
@@ -76,16 +67,6 @@ const CourseStack = () => {
         setCoursesLessons(prev => [...prev, ...course.course_lessons])
       }
     })
-  }
-
-  useEffect(() => {
-    fetchCourses()
-  }, [])
-
-  useEffect(() => {
-    if (courses.length > 0) {
-      getLessons()
-    }
   }, [courses])
 
   if (loading) {

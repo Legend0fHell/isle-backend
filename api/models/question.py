@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, TIMESTAMP, Integer, ForeignKey, Text, ARRAY, Enum, UniqueConstraint
 from pydantic import BaseModel
 from typing import Optional
-from api.database import Base
+from database import Base
 import enum
 from sqlalchemy.orm import relationship
 import uuid

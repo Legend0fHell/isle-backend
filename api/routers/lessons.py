@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-from api.models.question import (
+from models.question import (
     LessonCreate, LessonRead, LessonUpdate,
     LessonQuestionCreate, LessonQuestionRead,
 )
-from api.database import get_db
-import api.crud.question as crud
+from database import get_db
+import crud.question as crud
 
 router = APIRouter(prefix="/api", tags=["Lessons"])
 

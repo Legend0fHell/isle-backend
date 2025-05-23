@@ -110,7 +110,7 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 
 # API
 ## Lưu ý
-- Mọi đầu vào sẽ được gửi dưới dạng Form-Data, từ client gửi tới server.
+- Mọi đầu vào sẽ được gửi dưới dạng JSON, từ client gửi tới server.
 - Mọi đầu ra sẽ có dạng JSON:
 ```
 {
@@ -124,7 +124,7 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 
 ## User module
 ### Đăng nhập
-- Request (form-data, POST `/api/user/login`)
+- Request (JSON, POST `/user/login`)
 ```
     "email": <email>
     "password": <text>
@@ -142,7 +142,7 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 ```
 
 ### Đăng ký
-- Request (form-data, POST `/api/user/register`)
+- Request (JSON, POST `/user/register`)
 ```
     "name": <name>
     "email": <email>
@@ -161,7 +161,7 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 ```
 
 ### Đọc thông tin
-- Request (form-data, GET `/api/user/info`)
+- Request (JSON, GET `/user/info`)
 ```
     "user_id": <user_id>
 ```
@@ -179,7 +179,7 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 
 ## Course module
 ### Đọc danh sách các Bài học trong toàn bộ Khóa học
-- Request (form-data, GET `/api/course/list`)
+- Request (JSON, GET `/course/list`)
 ```
     <không có gì>
 ```
@@ -219,7 +219,7 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 ```
 
 ### Lấy tiến độ làm bài của người dùng
-- Request (form-data, GET `/api/course/progress`)
+- Request (JSON, GET `/course/progress`)
 ```
     "user_id": <user_id>
 ```
@@ -246,7 +246,7 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 
 ## Lesson module
 ### Đọc nội dung các Câu hỏi trong một Bài học
-- Request (form-data, GET `/api/lesson/list`)
+- Request (JSON, GET `/lesson/list`)
 ```
     "lesson_id": <lesson_id>
 ```
@@ -271,7 +271,7 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 ```
 
 ### Lấy ID tiến độ của bài làm của người dùng
-- Request (form-data, GET `/api/lesson/recent_progress`)
+- Request (JSON, GET `/lesson/recent_progress`)
 ```
     "user_id": <user_id>    
     "lesson_id": <lesson_id>     # ID bài học
@@ -300,9 +300,9 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 ```
 
 ### Lấy tiến độ từng câu hỏi của người dùng
-- Request (form-data, GET `/api/lesson/progress`)
+- Request (JSON, GET `/lesson/progress`)
 ```
-    "progress_id": <progress_id>    # ID tiến độ, cái này sẽ có nếu gọi `/api/lesson/list`.
+    "progress_id": <progress_id>    # ID tiến độ, cái này sẽ có nếu gọi `/lesson/list`.
 ```
 - Response (JSON) -- `List<UserQuestionAnswer>`
 ```
@@ -325,7 +325,7 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 ```
 
 ### Kiểm tra đáp án câu hỏi
-- Request (form-data, POST `/api/lesson/check`)
+- Request (JSON, POST `/lesson/check`)
 ```
     "progress_id": <id của tiến độ>
     "question_id": <id câu hỏi cần check>
@@ -342,7 +342,7 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 ## ASL module
 
 ### Lấy thông tin của TOÀN BỘ ký tự ASL
-- Request (form-data, GET `/api/asl`)
+- Request (JSON, GET `/asl`)
 ```
     <không có gì>
 ```

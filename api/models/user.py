@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, TIMESTAMP, BOOLEAN
 from pydantic import EmailStr, BaseModel
-from api.database import Base
+from database import Base
 from datetime import datetime
 from typing import Optional
 import uuid

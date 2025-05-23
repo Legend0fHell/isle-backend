@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const ws_url = process.env.WEBSOCKET_URL || "http://localhost:15100";
+const ws_url = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
 export const socket = io(ws_url, { autoConnect: false });
 
 // Debug info

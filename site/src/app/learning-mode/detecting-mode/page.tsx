@@ -13,14 +13,11 @@ import {
     ensureSocketConnected,
     subscribeToConnectionState 
 } from "models/wsEventListener";
-import { HandSignResponse, formatLandmarksForWebSocket } from "models/resultDetection";
-
-// Define a type for landmarks to fix the any[] linter error
-interface HandLandmark {
-    x: number;
-    y: number;
-    z: number;
-}
+import { 
+    HandSignResponse, 
+    formatLandmarksForWebSocket,
+    MediaPipeLandmarks
+} from "models/resultDetection";
 
 const DetectingModePage = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -103,7 +100,7 @@ const DetectingModePage = () => {
     }, [detectionResult]);
 
     // Handler for sending hand landmarks
-    const sendHandLandmarks = useCallback((landmarks: HandLandmark[][]) => {
+    const sendHandLandmarks = useCallback((landmarks: MediaPipeLandmarks) => {
         if (!isConnected) {
             console.log("Not connected to WebSocket server. Cannot send landmarks.");
             return;
@@ -118,9 +115,8 @@ const DetectingModePage = () => {
         }
     }, [isConnected]);
 
-    const processDetection = async (landmarks: HandLandmark[][]) => {
+    const processDetection = async (landmarks: MediaPipeLandmarks) => {
         if (isProcessing || !landmarks || !isConnected) {
-            console.log("Skipping detection: processing=", isProcessing, "landmarks=", !!landmarks, "connected=", isConnected);
             return;
         }
 
@@ -128,7 +124,6 @@ const DetectingModePage = () => {
 
         try {
             // Send landmarks via WebSocket
-            console.log("Sending landmarks to WebSocket");
             sendHandLandmarks(landmarks);
 
             // For demonstration - simple auto-suggestion based on current text
@@ -144,7 +139,7 @@ const DetectingModePage = () => {
         let handsInstance: Hands | null = null;
         let cameraInstance: Camera | null = null;
         let lastProcessTime = 0;
-        const PROCESS_INTERVAL = parseInt(process.env.MEDIAPIPE_PROCESS_INTERVAL || '250'); // Process interval in ms
+        const PROCESS_INTERVAL = parseInt(process.env.NEXT_PUBLIC_MEDIAPIPE_PROCESS_INTERVAL || '250'); // Process interval in ms
 
         const setupHands = async () => {
             const modules = await loadHandsModule();
@@ -188,7 +183,8 @@ const DetectingModePage = () => {
                         const now = Date.now();
                         if (now - lastProcessTime > PROCESS_INTERVAL) {
                             lastProcessTime = now;
-                            processDetection(results.multiHandLandmarks as unknown as HandLandmark[][]);
+                            // Cast MediaPipe landmarks to our expected type
+                            processDetection(results.multiHandLandmarks as unknown as MediaPipeLandmarks);
                         }
                     }
 
