@@ -60,7 +60,6 @@ const DetectingModePage = () => {
     useEffect(() => {
         // Subscribe to connection state updates
         const unsubscribe = subscribeToConnectionState((state) => {
-            console.log("Connection state updated:", state);
             setIsConnected(state.isConnected);
             setShowConnectionError(state.showConnectionError);
         });
@@ -77,7 +76,6 @@ const DetectingModePage = () => {
     // Setup WebSocket event listeners for hand sign detection
     useEffect(() => {
         const handleHandsignResponse = (data: HandSignResponse) => {
-            console.log('Hand sign detected:', data);
             if (data && data.pred) {
                 setDetectionResult(data.pred);
             }
@@ -218,7 +216,8 @@ const DetectingModePage = () => {
             if (cameraInstance) cameraInstance.stop();
             if (handsInstance) handsInstance.close();
         };
-    }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isConnected]);
 
     return (
         <div>
