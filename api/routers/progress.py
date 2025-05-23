@@ -7,11 +7,11 @@ from models.user import (
     LessonProgressCreate, UserAnswerSubmit, UserAnswerCreate, 
     UserAnswerRead, LessonProgressRead, UserRead, UserLogin, UserCreate, User
 )
+from models.question import GetLessonProgress
 from models.question import Lesson
 from crud import progress as crud
 
 router = APIRouter(
-    prefix="/api",
     tags=["Progress"]
 )
 
@@ -75,7 +75,7 @@ def get_all_lesson_progress(user_id: UUID, db: Session = Depends(get_db)):
 
 # --- User Question Answer Endpoints --- #
 
-@router.post("/progress/answer/create")
+@router.post("/user-answer/create")
 def create_user_question_answer(data: UserAnswerCreate, db: Session = Depends(get_db)):
     """Create a new user question answer record (start answering a question)"""
     answer = crud.create_user_question_answer(db, data)
@@ -92,7 +92,7 @@ def create_user_question_answer(data: UserAnswerCreate, db: Session = Depends(ge
         }
     }
 
-@router.get("/progress/answer")
+@router.get("/user/answer")
 def get_user_question_answer(progress_id: UUID, question_id: UUID, db: Session = Depends(get_db)):
     """Get user's answer details for a specific question in a progress"""
     answer = crud.get_user_question_answer(db, progress_id, question_id)
@@ -111,12 +111,13 @@ def get_user_question_answer(progress_id: UUID, question_id: UUID, db: Session =
         }
     }
 
-@router.get("/lesson/progress")
-def get_user_question_answers_by_lesson(progress_id: UUID, db: Session = Depends(get_db)):
+@router.post("/lesson/progress")
+def get_user_question_answers_by_lesson(progress: GetLessonProgress, db: Session = Depends(get_db)):
     """Get all question answers associated with a lesson progress"""
+    progress_id = progress.progress_id
     return crud.get_user_question_answers_by_lesson(db, progress_id)
     
-@router.get("/lesson/recent_progress")
+@router.post("/lesson/recent_progress")
 def get_user_recent_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(get_db)):
     return crud.get_user_recent_lesson_progress(db, user_id, lesson_id)
     

@@ -233,3 +233,7 @@ class LessonQuestionDelete(BaseModel):
     model_config = {
         "arbitrary_types_allowed": True
     }
+
+
+class GetLessonProgress(BaseModel):
+    progress_id: uuid.UUID 

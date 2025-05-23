@@ -158,7 +158,6 @@ class UserData(BaseModel):
         "from_attributes": True  
     }
 
-
 class BaseResponse(BaseModel):
     msg: str
     data: UserData
