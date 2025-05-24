@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, UTC
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
@@ -43,7 +43,7 @@ def create_user(db: Session, user_data: UserCreate):
         email=user_data.email,
         name=user_data.name,
         password=user_data.password,
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(UTC),
     )
     db.add(new_user)
     try:
