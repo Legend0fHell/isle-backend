@@ -102,3 +102,46 @@ export const getLessonProgress = async (progress_id: string): Promise<UserQuesti
     }
 };
 
+// Function to mark lesson progress as complete
+export const completeLessonProgress = async (progress_id: string): Promise<void> => {
+    try {
+        const response = await fetch(`${API_URL}/progress/${progress_id}/complete`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+                // Add Authorization header if your API requires it
+            },
+            // No body needed for this example, but you might send one
+        });
+
+        if (!response.ok) {
+            // Attempt to parse error message from backend if available
+            let errorMessage = `HTTP error! status: ${response.status}`;
+            try {
+                const errorData = await response.json();
+                if (errorData && errorData.detail) {
+                    errorMessage = `Error: ${errorData.detail}`;
+                } else if (errorData && errorData.message) {
+                    errorMessage = `Error: ${errorData.message}`;
+                }
+            } catch (_e) {
+                // Ignore if response is not JSON or other parsing error
+                console.error('Error parsing error response:', _e);
+            }
+            throw new Error(errorMessage);
+        }
+
+        // For a POST request that completes something, usually there isn't a detailed body response
+        // unless it's returning the updated resource or a success message.
+        // If your API returns a specific success message or data, handle it here.
+        console.log(`Lesson progress ${progress_id} marked as complete.`);
+        // Example: const data: ApiResponse<any> = await response.json(); 
+        // return handleApiResponse(data); // if you expect a body
+        return; // If no specific data is returned on success other than status 200/204
+
+    } catch (error) {
+        console.error('Error completing lesson progress:', error);
+        throw error;
+    }
+};
+
