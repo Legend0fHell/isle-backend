@@ -50,7 +50,7 @@ const HintPopup: React.FC<HintPopupProps> = ({ characterName, onClose, isOpen })
                                 <iframe 
                                     width="100%" 
                                     height="100%" 
-                                    src={`https://www.youtube.com/embed/${videoId}`}
+                                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&rel=0&controls=0`}
                                     title={`YouTube video player for ${characterData.char_name}`} 
                                     frameBorder="0" 
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 

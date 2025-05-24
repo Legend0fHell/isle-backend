@@ -21,19 +21,40 @@ const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({
     const questionTargetCharacter = getCharacter(question.question_target);
     const choiceCharacters = question.question_choice.split('').map(char => getCharacter(char));
 
+    // Reset state when question changes
+    useEffect(() => {
+        setSelectedChoice(null);
+        setFeedback(null);
+    }, [question.question_id]);
+
+    // Set initial state from currentAnswerData only if it matches the current question
     useEffect(() => {
         if (currentAnswerData) {
             setSelectedChoice(currentAnswerData.user_choice);
-            setFeedback({ choice: currentAnswerData.user_choice, is_correct: currentAnswerData.is_correct });
+            setFeedback({ 
+                choice: currentAnswerData.user_choice, 
+                is_correct: currentAnswerData.is_correct 
+            });
         }
     }, [currentAnswerData]);
 
     const handleChoiceClick = async (choice: string) => {
-        if (feedback) return; // Don't allow changing answer after submission feedback is shown from currentAnswerData
-
+        // Allow reattempting even after getting it wrong
         setSelectedChoice(choice);
-        await onAnswerSubmit(question.question_id, choice);
-        // The LessonPage will update currentAnswerData, which will trigger the useEffect above to show persistent feedback.
+        
+        try {
+            await onAnswerSubmit(question.question_id, choice);
+            // Check if it's the right answer
+            const isCorrect = choice === question.question_target;
+            setFeedback({ choice, is_correct: isCorrect });
+        } catch (err) {
+            console.error("Error submitting answer:", err);
+        }
+    };
+
+    const handleRetry = () => {
+        setSelectedChoice(null);
+        setFeedback(null);
     };
 
     if (aslLoading) {
@@ -54,26 +75,23 @@ const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({
 
     const getButtonClass = (choiceValue: string) => {
         const baseClass = "p-3 m-2 border-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-150 w-full md:w-auto md:min-w-[100px]";
-        if (!selectedChoice && !feedback) return `${baseClass} bg-white hover:bg-gray-100`; // Neutral state
+        
+        if (!selectedChoice) return `${baseClass} bg-white hover:bg-gray-100`; // Neutral state
         
         const isSelected = selectedChoice === choiceValue;
-        const isCorrectChoice = choiceValue === question.question_target;
-
-        if (feedback && feedback.choice === choiceValue) { // Persisted feedback from currentAnswerData
+        
+        if (isSelected && feedback) {
+            // Show correct/incorrect for the selected choice only
             return `${baseClass} ${feedback.is_correct ? 'bg-green-500 text-white ring-green-600' : 'bg-red-500 text-white ring-red-600'}`;
         }
-        if (isSelected && !feedback) { // Immediate selection before API response reflected in currentAnswerData
-             // This state is temporary, as currentAnswerData will update and feedback will take over
+        
+        if (isSelected && !feedback) {
+            // Immediate selection before response
             return `${baseClass} bg-blue-200 ring-blue-400`;
-        }
-        // For non-selected items after an answer has been persisted via currentAnswerData
-        if (feedback && feedback.choice !== choiceValue && isCorrectChoice) {
-            return `${baseClass} bg-green-200 text-green-700`; // Highlight correct answer if user chose wrong
         }
 
         return `${baseClass} bg-white hover:bg-gray-100`;
     };
-
 
     return (
         <div className="choice-question p-4 space-y-6 text-center">
@@ -104,7 +122,7 @@ const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({
                         <button
                             key={charChoice}
                             onClick={() => handleChoiceClick(charChoice)}
-                            disabled={!!feedback} // Disable after feedback is shown from currentAnswerData
+                            disabled={selectedChoice === charChoice && feedback?.is_correct === true} // Only disable when correct
                             className={`${getButtonClass(charChoice)} flex flex-col justify-center items-center p-2`}
                         >
                             {question.question_type === 'choice_to_image' && choiceImagePath ? (
@@ -126,10 +144,21 @@ const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({
             </div>
 
             {feedback && (
-                <div className={`mt-6 p-3 rounded-lg text-lg font-medium ${feedback.is_correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {feedback.is_correct ? 'Correct!' : 'Incorrect.'}
-                    {currentAnswerData && ` You selected "${currentAnswerData.user_choice}".`}
-                    {!feedback.is_correct && ` The correct answer was "${question.question_target}".`}
+                <div className="mt-6 flex flex-col items-center">
+                    <div className={`p-3 rounded-lg text-lg font-medium ${feedback.is_correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        {feedback.is_correct 
+                            ? 'Correct!' 
+                            : 'Incorrect. Try again!'}
+                    </div>
+                    
+                    {!feedback.is_correct && (
+                        <button
+                            onClick={handleRetry}
+                            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                        >
+                            Try Again
+                        </button>
+                    )}
                 </div>
             )}
         </div>

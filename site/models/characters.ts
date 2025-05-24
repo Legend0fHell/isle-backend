@@ -20,7 +20,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const getASLCharacters = async (): Promise<ASLCharacter[]> => {
     try {
         const response = await fetch(`${API_URL}/asl`, {
-            method: "GET",
+            method: "POST",
         });
 
         if (!response.ok) {
