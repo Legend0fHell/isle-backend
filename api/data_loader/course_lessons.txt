@@ -21,3 +21,7 @@
 {"course_lesson_id": "ce0c19a4-17da-428d-8124-5a1d10363ebb", "course_id": "c40f31d4-7ffa-4b1f-8814-7d7cb0317028", "lesson_id": "b0599786-ad5f-4ddd-b6b7-6c3d1759272e", "index_in_course": 2}
 {"course_lesson_id": "fc9604ee-568e-4739-b9a3-55b80e758148", "course_id": "c40f31d4-7ffa-4b1f-8814-7d7cb0317028", "lesson_id": "2fb6efd3-041f-4cfd-b684-f9824d5d3dce", "index_in_course": 3}
 {"course_lesson_id": "6bd7237c-4b8a-4361-9cb1-2d309b89b3c8", "course_id": "c40f31d4-7ffa-4b1f-8814-7d7cb0317028", "lesson_id": "e8f4d1e1-67f7-4229-8922-f604d77fe8b9", "index_in_course": 4}
+{"course_lesson_id": "30130767-0900-4ffe-9e68-aaf098382d7d", "course_id": "5206fef3-8800-48fd-b4f7-d8a9180710cc", "lesson_id": "c65d8325-c930-4002-9b8e-1add74d71c7b", "index_in_course": 0}
+{"course_lesson_id": "a2449369-dcfe-4b95-a8a8-b3e674936de4", "course_id": "5206fef3-8800-48fd-b4f7-d8a9180710cc", "lesson_id": "fa01686a-8d68-4715-9ced-6c9ec0653993", "index_in_course": 1}
+{"course_lesson_id": "c18db663-824e-4099-9e89-920c7da31564", "course_id": "5206fef3-8800-48fd-b4f7-d8a9180710cc", "lesson_id": "20e4f4fc-304c-4937-ad96-5c9322c9c485", "index_in_course": 2}
+{"course_lesson_id": "2409c1d3-ac11-4aac-9717-55739ac37315", "course_id": "5206fef3-8800-48fd-b4f7-d8a9180710cc", "lesson_id": "e3005940-c1ce-49cf-9e56-bcf753893844", "index_in_course": 3}

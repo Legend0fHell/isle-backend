@@ -10,33 +10,37 @@
 {"lesson_id": "586990d7-630f-4121-8381-791721eb6c17", "lesson_name": "Learn Group M to Q", "lesson_desc": "Learn how to sign the letters M, Q in ASL.", "lesson_type": "learn"}
 {"lesson_id": "c8bdf4db-5584-4291-aaf3-e2b68792dbde", "lesson_name": "Learn Group Q to U", "lesson_desc": "Learn how to sign the letters Q, U in ASL.", "lesson_type": "learn"}
 {"lesson_id": "ee45266e-4b83-4fe6-81c5-8459887e62eb", "lesson_name": "Learn Group U to Z", "lesson_desc": "Learn how to sign the letters U, Z in ASL.", "lesson_type": "learn"}
-{"lesson_id": "e77556ab-b453-4fd2-93a5-fc2ab2af4a90", "lesson_name": "Learn Vowels", "lesson_desc": "Learn how to sign the vowels A, E, I, O, and U in ASL.", "lesson_type": "practice_low"}
-{"lesson_id": "fb1559f2-557e-4ab8-b241-466696b8a6aa", "lesson_name": "Learn Consonants 1", "lesson_desc": "Learn how to sign the consonants B, C, D, F, G, H, and J in ASL.", "lesson_type": "practice_low"}
-{"lesson_id": "524bc609-2035-47e8-9b22-7ffc3385afd8", "lesson_name": "Learn Consonants 2", "lesson_desc": "Learn how to sign the consonants K, L, M, N, P, Q, and R in ASL.", "lesson_type": "practice_low"}
-{"lesson_id": "ffc352b9-b467-4584-b580-35a426129595", "lesson_name": "Learn Consonants 3", "lesson_desc": "Learn how to sign the consonants S, T, V, W, X, Y, and Z in ASL.", "lesson_type": "practice_low"}
+{"lesson_id": "e77556ab-b453-4fd2-93a5-fc2ab2af4a90", "lesson_name": "Learn Vowels", "lesson_desc": "Learn how to sign the vowels A, E, I, O, and U in ASL.", "lesson_type": "practice"}
+{"lesson_id": "fb1559f2-557e-4ab8-b241-466696b8a6aa", "lesson_name": "Learn Consonants 1", "lesson_desc": "Learn how to sign the consonants B, C, D, F, G, H, and J in ASL.", "lesson_type": "practice"}
+{"lesson_id": "524bc609-2035-47e8-9b22-7ffc3385afd8", "lesson_name": "Learn Consonants 2", "lesson_desc": "Learn how to sign the consonants K, L, M, N, P, Q, and R in ASL.", "lesson_type": "practice"}
+{"lesson_id": "ffc352b9-b467-4584-b580-35a426129595", "lesson_name": "Learn Consonants 3", "lesson_desc": "Learn how to sign the consonants S, T, V, W, X, Y, and Z in ASL.", "lesson_type": "practice"}
 {"lesson_id": "391d3b07-d151-4e44-b105-0ecfe9e3cece", "lesson_name": "Final Test 1", "lesson_desc": "Final test for ASL", "lesson_type": "test"}
 {"lesson_id": "e8f4d1e1-67f7-4229-8922-f604d77fe8b9", "lesson_name": "Final Test 2", "lesson_desc": "Final test for ASL", "lesson_type": "test"}
 {"lesson_id": "a7261ab8-d18a-4384-bab9-2773e674d81b", "lesson_name": "Final Test 3", "lesson_desc": "Final test for ASL", "lesson_type": "test"}
 {"lesson_id": "bc9cb634-37a9-402b-a284-bac7fc90897b", "lesson_name": "Final Test 4", "lesson_desc": "Final test for ASL", "lesson_type": "test"}
 {"lesson_id": "c9b12c4e-c826-476e-b0af-e3d5f043f79a", "lesson_name": "Final Test 5", "lesson_desc": "Final test for ASL", "lesson_type": "test"}
 {"lesson_id": "96e36475-f46e-4f53-8158-0b909877b656", "lesson_name": "Final Test 6", "lesson_desc": "Final test for ASL", "lesson_type": "test"}
-{"lesson_id": "dc926461-32d9-4c67-aa8c-7ddbffa1d266", "lesson_name": "High_practice_1", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "a838de9b-81ba-484b-9be7-e773c0b9505e", "lesson_name": "High_practice_2", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "22b8e59f-74eb-460a-8039-5da64bbb04c5", "lesson_name": "High_practice_3", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "422bc9f7-b948-4920-8034-bd0cf154266f", "lesson_name": "High_practice_4", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "2b13f958-1ab3-4f8c-821d-db8e9b18121c", "lesson_name": "High_practice_5", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "af095d5b-f907-4d8c-8ef7-ef8384207bb8", "lesson_name": "High_practice_6", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "4f316622-fcc0-4e7e-86f9-5770402ccec5", "lesson_name": "High_practice_7", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "d894c5b3-c78f-491c-8e90-ee32afe6627d", "lesson_name": "High_practice_8", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "2fb6efd3-041f-4cfd-b684-f9824d5d3dce", "lesson_name": "High_practice_9", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "b0599786-ad5f-4ddd-b6b7-6c3d1759272e", "lesson_name": "High_practice_10", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "b91eb8ac-f3c9-4047-8222-c61f3c000f8f", "lesson_name": "High_practice_1", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "269cbdd4-e4d2-4dce-b72a-435a67bd58da", "lesson_name": "High_practice_2", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "86ceb5b9-1228-433a-9089-253abc91ffa9", "lesson_name": "High_practice_3", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "d684fcc4-e88f-4f4e-8d34-90fafa663f71", "lesson_name": "High_practice_4", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "fea294d3-8e37-4e55-84b7-bf9234b98933", "lesson_name": "High_practice_5", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "90674a51-1e27-4ac5-bb3c-97e2e768eadc", "lesson_name": "High_practice_6", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "70c8da94-8bd9-48cb-b9f6-3b98c9009ce1", "lesson_name": "High_practice_7", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "0178bbf1-bfb8-4c75-b647-6ef5c1864865", "lesson_name": "High_practice_8", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "4f2a46e4-4a30-4929-a7fb-8ab6d21e3e80", "lesson_name": "High_practice_9", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
-{"lesson_id": "54ff38b7-2229-498a-a531-1e7502297b15", "lesson_name": "High_practice_10", "lesson_desc": "High practice lesson", "lesson_type": "practice_high"}
+{"lesson_id": "dc926461-32d9-4c67-aa8c-7ddbffa1d266", "lesson_name": "High_practice_1", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "a838de9b-81ba-484b-9be7-e773c0b9505e", "lesson_name": "High_practice_2", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "22b8e59f-74eb-460a-8039-5da64bbb04c5", "lesson_name": "High_practice_3", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "422bc9f7-b948-4920-8034-bd0cf154266f", "lesson_name": "High_practice_4", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "2b13f958-1ab3-4f8c-821d-db8e9b18121c", "lesson_name": "High_practice_5", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "af095d5b-f907-4d8c-8ef7-ef8384207bb8", "lesson_name": "High_practice_6", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "4f316622-fcc0-4e7e-86f9-5770402ccec5", "lesson_name": "High_practice_7", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "d894c5b3-c78f-491c-8e90-ee32afe6627d", "lesson_name": "High_practice_8", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "2fb6efd3-041f-4cfd-b684-f9824d5d3dce", "lesson_name": "High_practice_9", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "b0599786-ad5f-4ddd-b6b7-6c3d1759272e", "lesson_name": "High_practice_10", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "b91eb8ac-f3c9-4047-8222-c61f3c000f8f", "lesson_name": "High_practice_1", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "269cbdd4-e4d2-4dce-b72a-435a67bd58da", "lesson_name": "High_practice_2", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "86ceb5b9-1228-433a-9089-253abc91ffa9", "lesson_name": "High_practice_3", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "d684fcc4-e88f-4f4e-8d34-90fafa663f71", "lesson_name": "High_practice_4", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "fea294d3-8e37-4e55-84b7-bf9234b98933", "lesson_name": "High_practice_5", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "90674a51-1e27-4ac5-bb3c-97e2e768eadc", "lesson_name": "High_practice_6", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "70c8da94-8bd9-48cb-b9f6-3b98c9009ce1", "lesson_name": "High_practice_7", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "0178bbf1-bfb8-4c75-b647-6ef5c1864865", "lesson_name": "High_practice_8", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "4f2a46e4-4a30-4929-a7fb-8ab6d21e3e80", "lesson_name": "High_practice_9", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "54ff38b7-2229-498a-a531-1e7502297b15", "lesson_name": "High_practice_10", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
+{"lesson_id": "c65d8325-c930-4002-9b8e-1add74d71c7b", "lesson_name": "Lesson 1", "lesson_desc": "Learn how to demonstrate some characters in ASL theoretically", "lesson_type": "learn"}
+{"lesson_id": "fa01686a-8d68-4715-9ced-6c9ec0653993", "lesson_name": "Lesson 2", "lesson_desc": "Learn how to demonstrate some characters in ASL", "lesson_type": "practice"}
+{"lesson_id": "20e4f4fc-304c-4937-ad96-5c9322c9c485", "lesson_name": "Lesson 3", "lesson_desc": "Learn how to differentiate some characters in ASL", "lesson_type": "practice"}
+{"lesson_id": "e3005940-c1ce-49cf-9e56-bcf753893844", "lesson_name": "Lesson 4",  "lesson_desc": "Learn how to differentiate some characters in ASL", "lesson_type": "practice"}
