@@ -30,9 +30,8 @@ Lưu thông tin bài học.
 - lesson_desc
 - lesson_type: Cái này có thể:
     1. "learn": Học một chữ cái (nhiều về lý thuyết), sau đó luyện tạo dáng tay để detect ở cuối. Cho dùng "hint".
-    2. "practice_low": Luyện tạo dáng tay detect (vẫn là 1 chữ), có trắc nghiệm để phân biệt 2 chiều giữa "chữ <-> dáng tay". Cho dùng "hint"
-    3. "practice_high": Luyện tạo dáng tay detect (2-3 chữ), trắc nghiệm phân biệt, thử làm thành cụm từ rất ngắn. Cho dùng "hint"
-    4. "test": Kết thúc 1 phần khóa học, hoặc toàn bộ khóa học. Luyện tạo dáng tay detect với nhiều chữ hơn, trắc nghiệm phân biệt, cụm từ dài. không dùng "hint".
+    2. "practice": Luyện tạo dáng tay detect (vẫn là 1 chữ), có trắc nghiệm để phân biệt 2 chiều giữa "chữ <-> dáng tay". Cho dùng "hint"
+    3. "test": Kết thúc 1 phần khóa học, hoặc toàn bộ khóa học. Luyện tạo dáng tay detect với nhiều chữ hơn, trắc nghiệm phân biệt, cụm từ dài. không dùng "hint".
 
 ## Question
 Lưu thông tin câu hỏi.
