@@ -17,21 +17,6 @@ router = APIRouter(
 
 # --- Lesson Progress Endpoints --- #
 
-@router.post("/lesson/start")
-def start_lesson_progress(user_id: UUID, lesson_id: UUID ,db: Session = Depends(get_db)):
-    """Start tracking progress for a lesson for a user"""
-    data = LessonProgressCreate(user_id=user_id, lesson_id=lesson_id)
-    progress = crud.start_lesson_progress(db, data)
-    if not progress:
-        return {
-            "msg": "error",
-            "data": None
-        }
-    return {
-        "msg": "ok",
-        "data": progress
-    }
-
 @router.post("/progress/lesson")
 def get_lesson_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(get_db)):
     """Retrieve progress record for a specific user and lesson"""
@@ -117,11 +102,28 @@ def get_user_question_answers_by_lesson(progress: GetLessonProgress, db: Session
     """Get all question answers associated with a lesson progress"""
     progress_id = progress.progress_id
     return crud.get_user_question_answers_by_lesson(db, progress_id)
-    
-@router.post("/lesson/recent_progress")
-def get_user_recent_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(get_db)):
-    return crud.get_user_recent_lesson_progress(db, user_id, lesson_id)
-    
+
+@router.post("/lesson/start")
+def start_lesson_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(get_db)):
+    past_progress = crud.get_user_recent_lesson_progress(db, user_id, lesson_id)
+    if past_progress['data']['progress'] is not None:
+        return past_progress
+
+    """Start tracking progress for a lesson for a user"""
+    data = LessonProgressCreate(user_id=user_id, lesson_id=lesson_id)
+    progress = crud.start_lesson_progress(db, data)
+    if not progress:
+        return {
+            "msg": "error",
+            "data": None
+        }
+    return {
+        "msg": "ok",
+        "data": {
+            "progress": progress,
+            "user_answers": []
+        }
+    }
 
 @router.post("/lesson/check")
 def submit_user_answer(data: UserAnswerSubmit, db: Session = Depends(get_db)):

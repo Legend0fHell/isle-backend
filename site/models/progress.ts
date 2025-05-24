@@ -32,14 +32,9 @@ export interface LessonProgressResponse {
 
 // Function to get user's progress across all lessons
 export const getUserProgress = async (user_id: string): Promise<UserLessonProgress[]> => {
-    const payload = { user_id: user_id };
     try {
-        const response = await fetch(`${API_URL}/course/progress`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
+        const response = await fetch(`${API_URL}/course/progress?user_id=${user_id}`, {
+            method: "POST",
         });
 
         if (!response.ok) {
@@ -56,14 +51,9 @@ export const getUserProgress = async (user_id: string): Promise<UserLessonProgre
 
 // Function to get recent progress for a specific lesson
 export const getRecentLessonProgress = async (user_id: string, lesson_id: string): Promise<LessonProgressResponse> => {
-    const payload = { user_id: user_id, lesson_id: lesson_id };
     try {
-        const response = await fetch(`${API_URL}/lesson/recent_progress`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
+        const response = await fetch(`${API_URL}/lesson/recent_progress?user_id=${user_id}&lesson_id=${lesson_id}`, {
+            method: "POST",
         });
 
         if (!response.ok) {
@@ -80,14 +70,9 @@ export const getRecentLessonProgress = async (user_id: string, lesson_id: string
 
 // Function to get progress for specific progress_id
 export const getLessonProgress = async (progress_id: string): Promise<UserQuestionAnswer[]> => {
-    const payload = { progress_id: progress_id };
     try {
-        const response = await fetch(`${API_URL}/lesson/progress`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
+        const response = await fetch(`${API_URL}/lesson/progress?progress_id=${progress_id}`, {
+            method: "POST",
         });
 
         if (!response.ok) {
@@ -107,11 +92,6 @@ export const completeLessonProgress = async (progress_id: string): Promise<void>
     try {
         const response = await fetch(`${API_URL}/progress/${progress_id}/complete`, {
             method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-                // Add Authorization header if your API requires it
-            },
-            // No body needed for this example, but you might send one
         });
 
         if (!response.ok) {
@@ -141,6 +121,43 @@ export const completeLessonProgress = async (progress_id: string): Promise<void>
 
     } catch (error) {
         console.error('Error completing lesson progress:', error);
+        throw error;
+    }
+};
+
+// Interface for the combined response from lesson/start
+export interface LessonStartResponse {
+    progress: LessonProgress;
+    user_answers: UserQuestionAnswer[];
+}
+
+// Function to start a lesson - this handles both new and existing progress
+export const startLesson = async (user_id: string, lesson_id: string): Promise<LessonStartResponse> => {
+    try {
+        const response = await fetch(`${API_URL}/lesson/start?user_id=${user_id}&lesson_id=${lesson_id}`, {
+            method: "POST",
+        });
+
+        if (!response.ok) {
+            let errorMessage = `HTTP error! status: ${response.status}`;
+            try {
+                const errorData = await response.json();
+                if (errorData && errorData.detail) {
+                    errorMessage = `Error: ${errorData.detail}`;
+                } else if (errorData && errorData.message) {
+                    errorMessage = `Error: ${errorData.message}`;
+                }
+            } catch (_e) {
+                // Ignore if response is not JSON or other parsing error
+                console.error('Error parsing error response:', _e);
+            }
+            throw new Error(errorMessage);
+        }
+
+        const data: ApiResponse<LessonStartResponse> = await response.json();
+        return handleApiResponse(data);
+    } catch (error) {
+        console.error('Error starting lesson:', error);
         throw error;
     }
 };

@@ -157,23 +157,29 @@ def get_user_question_answers_by_lesson(db: Session, progress_id: UUID):
     
     
 def submit_user_answer(db: Session, data: UserAnswerSubmit):
- 
-    # Verify answer record exists
-    user_answer = db.query(UserQuestionAnswer).filter(
-        UserQuestionAnswer.progress_id == data.progress_id,
-        UserQuestionAnswer.question_id == data.question_id
-    ).first()
 
-    if not user_answer:
-        return None
-
-    # Verify question exists
+    # Verify question exists    # Verify question exists
     question = db.query(Question).filter(Question.question_id == data.question_id).first()
     if not question:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Question with id {data.question_id} not found"
         )
+    
+    user_answer = db.query(UserQuestionAnswer).filter(
+        UserQuestionAnswer.progress_id == data.progress_id,
+        UserQuestionAnswer.question_id == data.question_id
+    ).first()
+
+    if not user_answer:
+        # Create new user answer
+        user_answer = UserQuestionAnswer(
+            progress_id = data.progress_id,
+            question_id = data.question_id
+        )
+        db.add(user_answer)
+        db.commit()
+        db.refresh(user_answer)
 
     # 4. Check correctness
     is_correct = data.user_choice.strip().lower() == question.question_target.strip().lower()
@@ -262,7 +268,10 @@ def get_user_recent_lesson_progress(db: Session, user_id: UUID, lesson_id: UUID)
     )
 
     if lesson_progress is None: 
-        return {"msg": "ok", "data": {}}
+        return {"msg": "ok", "data": {
+            "progress": None,
+            "user_answers": []
+        }}
 
     question_answers = (
         db.query(UserQuestionAnswer)
@@ -281,7 +290,10 @@ def get_user_recent_lesson_progress(db: Session, user_id: UUID, lesson_id: UUID)
 
     return {
         "msg": "ok",
-        "data": results
+        "data": {
+            "progress": lesson_progress,
+            "user_answers": results
+        }
     }
 
     

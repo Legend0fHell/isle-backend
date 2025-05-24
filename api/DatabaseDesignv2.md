@@ -269,59 +269,24 @@ Lưu thông tin về ký tự trong ngôn ngữ ký hiệu ASL.
 }
 ```
 
-### Lấy ID tiến độ của bài làm của người dùng
-- Request (JSON, GET `/lesson/recent_progress`)
+
+### Bắt đầu bài học (tạo progress), hoặc lấy progress trước
+- Request (Query, POST `/lesson/start`)
 ```
-    "user_id": <user_id>    
-    "lesson_id": <lesson_id>     # ID bài học
+    "user_id": <user_id>
+    "lesson_id": <lesson_id>
 ```
-- Response (JSON) -- `List<UserQuestionAnswer>`
+- Response (JSON) -- `UserLessonProgress`
 ```
 {
     "msg": <status>
     "data": {
-        "progress_id": <progress_id>,    # Tiến độ tương ứng
-        [                                   # Lưu ý: Đây là Mảng tiến độ các câu hỏi của progress_id trên
-            {
-                "question_id": <question_id>
-                "user_choice": <lựa chọn>           # Lựa chọn hiện tại của người dùng
-                "is_correct": <true/false>          # Hiện tại đang trả lời đúng hay sai?
-            }, 
-            {
-                "question_id": <question_id>
-                "user_choice": <lựa chọn>           
-                "is_correct": <true/false>          
-            }, 
-            ...
-        ]
+        "progress": <Progress>,
+        "user_answers": <List<UserQuestionAnswer>>
     }
 }
 ```
 
-### Lấy tiến độ từng câu hỏi của người dùng
-- Request (JSON, GET `/lesson/progress`)
-```
-    "progress_id": <progress_id>    # ID tiến độ, cái này sẽ có nếu gọi `/lesson/list`.
-```
-- Response (JSON) -- `List<UserQuestionAnswer>`
-```
-{
-    "msg": <status>
-    "data": [                                   # Lưu ý: Đây là Mảng tiến độ các câu hỏi
-        {
-            "question_id": <question_id>
-            "user_choice": <lựa chọn>           # Lựa chọn hiện tại của người dùng
-            "is_correct": <true/false>          # Hiện tại đang trả lời đúng hay sai?
-        }, 
-        {
-            "question_id": <question_id>
-            "user_choice": <lựa chọn>           
-            "is_correct": <true/false>          
-        }, 
-        ...
-    ]
-}
-```
 
 ### Kiểm tra đáp án câu hỏi
 - Request (JSON, POST `/lesson/check`)
