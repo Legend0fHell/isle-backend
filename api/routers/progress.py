@@ -17,9 +17,10 @@ router = APIRouter(
 
 # --- Lesson Progress Endpoints --- #
 
-@router.post("/progress/start")
-def start_lesson_progress(data: LessonProgressCreate, db: Session = Depends(get_db)):
+@router.post("/lesson/start")
+def start_lesson_progress(user_id: UUID, lesson_id: UUID ,db: Session = Depends(get_db)):
     """Start tracking progress for a lesson for a user"""
+    data = LessonProgressCreate(user_id=user_id, lesson_id=lesson_id)
     progress = crud.start_lesson_progress(db, data)
     if not progress:
         return {
