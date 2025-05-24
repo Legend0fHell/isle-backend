@@ -262,7 +262,7 @@ def get_user_recent_lesson_progress(db: Session, user_id: UUID, lesson_id: UUID)
     )
 
     if lesson_progress is None: 
-        return {"msg": "error", "data": None}
+        return {"msg": "ok", "data": {}}
 
     question_answers = (
         db.query(UserQuestionAnswer)

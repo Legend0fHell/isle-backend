@@ -1,6 +1,6 @@
+{"course_id": "5206fef3-8800-48fd-b4f7-d8a9180710cc", "course_name": "Course Demo", "course_desc": "Course difficulty level is 1, the purpose of this course is to demonstrate what user will learn in general", "course_difficulty": 1}
 {"course_id": "f6b4fbfe-980d-4b86-8234-a3742e9c881e", "course_name": "Course 1", "course_desc": "Course difficulty level is 1", "course_difficulty": 1}
 {"course_id": "3c83aace-ab3c-4041-b8d2-74ff4f4b7218", "course_name": "Course 2", "course_desc": "Course difficulty level is 2", "course_difficulty": 2}
 {"course_id": "b8f3c39e-efd6-470d-9223-de88d65cafb8", "course_name": "Course 3", "course_desc": "Course difficulty level is 3", "course_difficulty": 3}
 {"course_id": "b293314c-648d-4d8a-a3b6-11583ed00d33", "course_name": "Course 4", "course_desc": "Course difficulty level is 4", "course_difficulty": 4}
 {"course_id": "c40f31d4-7ffa-4b1f-8814-7d7cb0317028", "course_name": "Course 5", "course_desc": "Course difficulty level is 5", "course_difficulty": 5}
-{"course_id": "5206fef3-8800-48fd-b4f7-d8a9180710cc",  "course_name": "Course Demo", "course_desc": "Course difficulty level is 1, the purpose of this course is to demonstrate what user will learn in general", "course_difficulty": 1}

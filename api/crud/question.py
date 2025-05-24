@@ -218,6 +218,7 @@ def get_question_by_lesson(db: Session, lesson_id: UUID):
         results.append({
             "question_id": question.question_id,
             "question_type": question.question_type,
+            "question_target": question.question_target,
             "question_choice": question.question_choice
         })
     return results

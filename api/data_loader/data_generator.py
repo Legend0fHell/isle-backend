@@ -94,6 +94,19 @@ for cl in course_lessons:
     """, (cl['course_lesson_id'], cl['course_id'], cl['lesson_id'], cl['index_in_course']))
     conn.commit()
 
+# 6. ASL
+asl = []
+with open(os.path.join(DATA_DIR, "asl.txt"), "r", encoding="utf-8") as f:
+    for line in f:
+        asl.append(json.loads(line))
+
+for a in asl:
+    cur.execute("""
+        INSERT INTO asl_characters (char_name, char_image_url, char_tutorial_text, char_tutorial_url)
+        VALUES (%s, %s, %s, %s)
+    """, (a['char_name'], a['char_image_url'], a['char_tutorial_text'], a['char_tutorial_url']))
+    conn.commit()
+
 # Đóng kết nối
 cur.close()
 conn.close()

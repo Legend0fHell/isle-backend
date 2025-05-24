@@ -49,3 +49,10 @@ def get_lesson_questions(lesson_id: UUID, db: Session = Depends(get_db)):
 @router.delete("/lesson-question/delete/")
 def delete_lesson_question(lesson_id: UUID, question_id: UUID, db: Session = Depends(get_db)):
     return {"msg": "ok", "data": crud.delete_lesson_questions(db, lesson_id, question_id)}
+
+@router.post("/list")
+def get_questions_in_lesson(lesson_id: UUID, db: Session = Depends(get_db)):
+    questions = crud.get_question_by_lesson(db, lesson_id)
+    if not questions:
+        return {"msg": "error", "data": []}
+    return {"msg": "ok", "data": questions}
