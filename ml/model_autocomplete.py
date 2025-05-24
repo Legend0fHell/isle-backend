@@ -1,5 +1,4 @@
 import os
-
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 from dotenv import load_dotenv
@@ -7,15 +6,15 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
-
+import re
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 def seed_everything(seed=42):
     """Set random seeds for reproducibility."""
-    torch.manual_seed(seed)           # Set seed for CPU
-    np.random.seed(seed)              # Set seed for numpy
+    torch.manual_seed(seed)
+    np.random.seed(seed)
     if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)  # Set seed for all GPUs if available
+        torch.cuda.manual_seed_all(seed)
 
 # Initialize random seeds
 seed_everything()
@@ -23,112 +22,62 @@ seed_everything()
 # Load environment variables from a .env file 
 load_dotenv()
 
-# Path to the directory or model name containing the LSTM model
-load_path = "./lstm_autocomplete_model"
-
-
 class AutoCompleteModel:
-
-    _instance = None
-
-    def __new__(cls, *args, **kwargs):
-        # Ensure only one instance (singleton) of AutoCompleteModel is created
-        if cls._instance is None:
-            cls._instance = super(AutoCompleteModel, cls).__new__(cls)
-            cls._instance._initialized = False
-        return cls._instance
-
-    def __init__(self):
-        # Prevent re-initialization on multiple instantiations
-        if self._initialized:
-            return
-
-        # Use GPU if available, else fallback to CPU
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-        # Placeholders for model and tokenizer
-        self._model = None
-        self._tokenizer = None
-
-
-        self._initialize_model()
-
-        self._initialized = True
-
-    def _initialize_model(self):
-        print("Loading LSTM language model...")
-
-        self._tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-        self._model = GPT2LMHeadModel.from_pretrained("gpt2").to(self.device)
-        self._model.eval()  # Set model to evaluation mode
-
-        self._tokenizer.pad_token = self._tokenizer.eos_token
-
-    def predict(self, text: str, num_suggestions: int = 3) -> list[str]:
+    def __init__(self, model_name="roneneldan/TinyStories-33M", device=None):
         """
-        Generate autocomplete suggestions for the input text.
+        Initialize the tokenizer and model for TinyStories.
 
         Args:
-            text (str): The input text prompt.
+            model_name (str): Huggingface model name or path.
+            device (str or torch.device): device to run the model on. 
+                Defaults to CUDA if available, else CPU.
+        """
+        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name).to(self.device)
+        self.model.eval()
+
+    def predict(self, text, max_new_tokens=10, num_suggestions=5):
+        """
+        Generate multiple autocomplete suggestions given an input text.
+
+        Args:
+            text (str): Input prompt to autocomplete.
+            max_new_tokens (int): Max tokens to generate per suggestion.
             num_suggestions (int): Number of suggestions to generate.
 
         Returns:
-            list[str]: List of suggested next tokens/words.
+            List[str]: Cleaned list of suggested completions.
         """
-        # Return a placeholder if input is empty or only whitespace
-        if not text.strip():
-            return ["<no input>"]
+        input_ids = self.tokenizer.encode(text, return_tensors="pt").to(self.device)
 
-        # Tokenize input text, return PyTorch tensors, pad sequences, and move to correct device
-        inputs = self._tokenizer(text, return_tensors="pt", padding=True).to(self.device)
-        input_ids = inputs["input_ids"]
-        attention_mask = inputs["attention_mask"]
-
-        # Use model.generate() with sampling to get multiple possible continuations
         with torch.no_grad():
-            outputs = self._model.generate(
-                input_ids=input_ids,
-                attention_mask=attention_mask,
-                max_length=input_ids.shape[1] + 10,  # Generate up to 10 tokens beyond input length
-                num_return_sequences=num_suggestions,
-                do_sample=True,           # Enable sampling for diversity
-                top_k=50,                 # Top-K filtering for sampling
-                top_p=0.95,               # Top-p (nucleus) filtering for sampling
-                temperature=0.8,          # Sampling temperature for creativity
-                pad_token_id=self._tokenizer.eos_token_id  # Pad token for generation stopping
+            outputs = self.model.generate(
+                input_ids,
+                max_new_tokens=max_new_tokens,
+                do_sample=True,
+                top_k=50,
+                top_p=0.95,
+                temperature=0.4,
+                pad_token_id=self.tokenizer.eos_token_id,
+                num_return_sequences=num_suggestions
             )
 
         suggestions = []
         for output in outputs:
-            # Decode generated token IDs back to string, skip special tokens
-            decoded = self._tokenizer.decode(output, skip_special_tokens=True)
-
-            # Extract the newly generated text portion after the original input
-            completion = decoded[len(text):].strip()
-
-            # If the completion is non-empty, return the first word as suggestion
-            if completion:
-                suggestions.append(completion.split()[0])
-            else:
-                suggestions.append("<none>")  # Placeholder if no completion
+            decoded = self.tokenizer.decode(output, skip_special_tokens=True)
+            suggestion = decoded[len(text):].strip()
+            if suggestion:
+                # Keep only alphabetic words
+                words = re.findall(r'\b[a-zA-Z]+\b', suggestion)
+                if words:
+                    suggestion = ' '.join(words)
+                else:
+                    suggestion = "<none>"
+                suggestions.append(suggestion)
 
         return suggestions
 
 
-# Create a singleton instance of the model for use
-auto_complete_model = AutoCompleteModel()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+auto_complete = AutoCompleteModel()
