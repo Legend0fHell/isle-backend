@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR)
+DATA_DIR = os.path.join(BASE_DIR,"data_loader")
 
 # Load environment variables từ .env
 load_dotenv()
@@ -37,6 +37,8 @@ with open(os.path.join(DATA_DIR, "questions.txt"), "r", encoding="utf-8") as f:
 
 for q in questions:
     cur.execute("""
+
+                    
         INSERT INTO questions (question_id, question_type, question_target, question_choice)
         VALUES (%s, %s, %s, %s)
     """, (q['question_id'], q['question_type'], q['question_target'], q['question_choice']))
