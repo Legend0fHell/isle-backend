@@ -16,7 +16,7 @@ router = APIRouter(prefix="/lesson", tags=["Lessons"])
 def create_lesson(lesson: LessonCreate, db: Session = Depends(get_db)):
     return {"msg": "ok", "data": crud.create_lesson(db, lesson)}
 
-@router.get("/info")
+@router.post("/info")
 def get_lesson(lesson_id: UUID, db: Session = Depends(get_db)):
     lesson_data = crud.get_lesson(db, lesson_id)
     if lesson_data is None:
@@ -39,7 +39,7 @@ def create_lesson_question(lq: LessonQuestionCreate, db: Session = Depends(get_d
         return {"msg": "error", "data": lesson_question_data}
     return {"msg": "ok", "data": lesson_question_data}
 
-@router.get("/lesson-question")
+@router.post("/lesson-question")
 def get_lesson_questions(lesson_id: UUID, db: Session = Depends(get_db)):
     lesson_question_data = crud.get_lesson_questions(db, lesson_id)
     if lesson_question_data is None:

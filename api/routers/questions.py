@@ -19,7 +19,7 @@ def create_question(question: QuestionCreate, db: Session = Depends(get_db)):
     
     return {"msg": "ok", "data": question_data}
 
-@router.get("/question/info/{question_id}")
+@router.post("/question/info/{question_id}")
 def get_question(question_id: UUID, db: Session = Depends(get_db)):
     question_data = crud.get_question(db, question_id)
     if question_data is None: 
@@ -43,7 +43,7 @@ def delete_question(question_id: UUID, db: Session = Depends(get_db)):
     
     return {"msg": "ok", "data": None}
 
-@router.get("/lessons/list")
+@router.post("/lessons/list")
 def get_questions_in_lesson(lesson_id: UUID, db: Session = Depends(get_db)):
     questions = crud.get_question_by_lesson(db, lesson_id)
     if not questions:

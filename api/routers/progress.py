@@ -51,7 +51,7 @@ def get_lesson_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(ge
         }
     } 
 
-@router.get("/course/progress")
+@router.post("/course/progress")
 def get_all_lesson_progress(user_id: UUID, db: Session = Depends(get_db)):
     """Retrieve all lesson progress records for a given user"""
     progress_list = crud.get_lesson_progress_by_user(db, user_id)
@@ -92,7 +92,7 @@ def create_user_question_answer(data: UserAnswerCreate, db: Session = Depends(ge
         }
     }
 
-@router.get("/user/answer")
+@router.post("/user/answer")
 def get_user_question_answer(progress_id: UUID, question_id: UUID, db: Session = Depends(get_db)):
     """Get user's answer details for a specific question in a progress"""
     answer = crud.get_user_question_answer(db, progress_id, question_id)

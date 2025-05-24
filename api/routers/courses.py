@@ -21,14 +21,14 @@ def create_course(course: CourseCreate, db: Session = Depends(get_db)):
     
     return {"msg": "ok", "data": course_data}
 
-@router.get("/course")
+@router.post("/course")
 def get_course(course_id: UUID, db: Session = Depends(get_db)):
     course_data = crud.get_course(db, course_id)
     if course_data is None:
         return {"msg": "error", "data": None}
     return {"msg": "ok", "data": course_data}
 
-@router.get("/list/")
+@router.post("/list/")
 def get_all_courses(db: Session = Depends(get_db)):
     return crud.get_all_courses(db)
 
@@ -44,7 +44,7 @@ def update_course(course: CourseUpdate, db: Session = Depends(get_db)):
 def delete_course(course_id: UUID, db: Session = Depends(get_db)):
     return {"msg": "Course deleted", "data": crud.delete_course(db, course_id)}
 
-@router.get("/{course_id}/lesson")
+@router.post("/{course_id}/lesson")
 def get_lessons_in_course(course_id: UUID, db: Session = Depends(get_db)):
     lessons = crud.get_lesson_by_course(db, course_id)
     
@@ -64,7 +64,7 @@ def create_course_lesson(cl: CourseLessonCreate, db: Session = Depends(get_db)):
     return {"msg": "ok", "data": course_lesson}
 
 
-@router.get("/course-lesson")
+@router.post("/course-lesson")
 def get_course_lessons(course_id: UUID, db: Session = Depends(get_db)):
     course_lesson = crud.get_course_lessons(db, course_id)
     if course_lesson is None:
