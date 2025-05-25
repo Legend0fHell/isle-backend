@@ -202,6 +202,7 @@ def submit_user_answer(db: Session, data: UserAnswerSubmit):
     # 5. Update user answer
     user_answer.user_choice = data.user_choice
     user_answer.is_correct = is_correct
+    
 
     # 6. Update lesson progress
     lesson_progress = db.query(UserLessonProgress).filter(
@@ -212,12 +213,14 @@ def submit_user_answer(db: Session, data: UserAnswerSubmit):
         return None
 
     
-    update_progress_correct_questions(db, lesson_progress.progress_id)
+    
+    
 
     lesson_progress.last_activity_at = datetime.utcnow()
 
     # 7. Commit changes
     db.commit()
+    update_progress_correct_questions(db, lesson_progress.progress_id)
     db.refresh(user_answer)
 
     return {"msg": "ok", "data": is_correct}
