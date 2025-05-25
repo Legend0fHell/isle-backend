@@ -54,7 +54,7 @@ const Navbar = () => {
                                 <div className="h-8 w-8 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-800 font-semibold">
                                     {(currentUser.name?.charAt(0) || 'U').toUpperCase()}
                                 </div>
-                                <button 
+                                <button
                                     onClick={handleLogout}
                                     className="ml-2 px-3 py-1 bg-red-600 text-white rounded-md text-sm hover:bg-red-700 transition-colors"
                                 >
@@ -66,13 +66,13 @@ const Navbar = () => {
                                 <Link href="/login" className="px-3 py-1 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
                                     Log In
                                 </Link>
-                                <Link href="/register" className="px-3 py-1 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700">
+                                <Link href="/signup" className="px-3 py-1 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700">
                                     Sign Up
                                 </Link>
                             </div>
                         )}
                     </div>
-                    
+
                     {/* Mobile menu button */}
                     <div className="flex items-center sm:hidden">
                         <button
@@ -98,7 +98,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
-            
+
             {/* Mobile menu, show/hide based on menu state */}
             <div className={`sm:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
                 <div className="pt-2 pb-3 space-y-1">
@@ -112,7 +112,7 @@ const Navbar = () => {
                         About
                     </Link>
                     {currentUser ? (
-                        <button 
+                        <button
                             onClick={handleLogout}
                             className="w-full text-left text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white block pl-3 pr-4 py-2 text-base font-medium border-l-4 border-transparent"
                         >
