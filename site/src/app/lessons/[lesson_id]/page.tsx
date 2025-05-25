@@ -4,15 +4,77 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 import { Question, getLessonQuestions, checkQuestionAnswer } from '../../../../models/questions'; 
-import { getRecentLessonProgress, LessonProgressResponse, completeLessonProgress } from '../../../../models/progress'; 
-import { getLessonDetails, LessonDetails } from '../../../../models/course'; // Removed LessonType as it's unused
-// User model import is no longer needed here as it comes from AuthContext
+import { completeLessonProgress, startLesson } from '../../../../models/progress'; 
+import { LessonType, getAllCourses, LessonSummary } from '../../../../models/course'; // Import getAllCourses
 import QuestionDisplay from '../../../components/QuestionComponents/QuestionDisplay';
 import HintPopup from '../../../components/HintPopup';
 import { useAuth } from '../../../contexts/AuthContext'; // Import useAuth
+import Navbar from '../../../components/navbar';
+
+// Define LessonDetails interface locally since it's no longer in course.ts
+export interface LessonDetails {
+    lesson_id: string;
+    name: string;
+    description: string;
+    lesson_type: LessonType;
+    next_lesson_id?: string;
+}
+
+// Implement getLessonDetails function that uses the course list API
+const getLessonDetails = async (lessonId: string): Promise<LessonDetails> => {
+    try {
+        // Get all courses with their lessons
+        const courses = await getAllCourses();
+        
+        // Find the lesson with the matching lesson_id
+        let foundLesson: LessonSummary | null = null;
+        let nextLessonId: string | undefined = undefined;
+        
+        // Search through all courses and their lessons
+        for (const course of courses) {
+            for (let i = 0; i < course.course_lessons.length; i++) {
+                const lesson = course.course_lessons[i];
+                if (lesson.lesson_id === lessonId) {
+                    foundLesson = lesson;
+                    // Check if there's a next lesson in this course
+                    if (i < course.course_lessons.length - 1) {
+                        nextLessonId = course.course_lessons[i + 1].lesson_id;
+                    }
+                    break;
+                }
+            }
+            if (foundLesson) break;
+        }
+        
+        if (!foundLesson) {
+            throw new Error(`Lesson with ID ${lessonId} not found in any course`);
+        }
+        
+        // Transform the LessonSummary to LessonDetails
+        const lessonDetails: LessonDetails = {
+            lesson_id: foundLesson.lesson_id,
+            name: foundLesson.lesson_name,
+            description: foundLesson.lesson_desc,
+            lesson_type: foundLesson.lesson_type as LessonType,
+            next_lesson_id: nextLessonId
+        };
+        
+        return lessonDetails;
+    } catch (error) {
+        console.error('Error fetching lesson details:', error);
+        throw error;
+    }
+};
 
 interface UserAnswersMap {
     [questionId: string]: { user_choice: string; is_correct: boolean };
+}
+
+// New interface for course display in sidebar
+interface CourseWithLessons {
+    course_id: string;
+    course_name: string;
+    course_lessons: LessonSummary[];
 }
 
 const LessonPage = () => {
@@ -29,14 +91,21 @@ const LessonPage = () => {
     const [progressId, setProgressId] = useState<string | null>(null);
     const [isLoadingPageData, setIsLoadingPageData] = useState(true); // Renamed to avoid conflict with authLoading
     const [pageError, setPageError] = useState<string | null>(null); // Renamed
+    const [successMessage, setSuccessMessage] = useState<string | null>(null); // Add success message state
     
     const [isHintOpen, setIsHintOpen] = useState(false);
     const [hintCharacterName, setHintCharacterName] = useState<string | null>(null);
     const [isSubmittingLesson, setIsSubmittingLesson] = useState(false); // New state for submission loading
     // currentLessonType will now come from lessonDetails.lesson_type
 
+    // New state for storing all courses and lessons
+    const [coursesWithLessons, setCoursesWithLessons] = useState<CourseWithLessons[]>([]);
+
     const handleAnswerSubmit = useCallback(async (questionId: string, userAnswer: string, isCorrectProvided?: boolean) => {
+        console.log(`Answer submit called: questionId=${questionId}, userAnswer="${userAnswer}", isCorrectProvided=${isCorrectProvided}`);
+        
         if (!currentUser || !currentUser.user_id) {
+            console.log("No current user, not sending to backend");
             setPageError("You must be logged in to submit answers.");
              // If not logged in, still update UI for immediate feedback for choice/learn questions, but don't save.
             if (isCorrectProvided !== undefined) {
@@ -57,13 +126,17 @@ const LessonPage = () => {
             }
             return; 
         }
+        
         if (!progressId) {
+            console.log("No progressId found, not sending to backend");
             setPageError("Progress ID not found. Cannot submit answer.");
             return;
         }
 
         try {
-            const isCorrect = isCorrectProvided !== undefined ? isCorrectProvided : await checkQuestionAnswer(progressId, questionId, userAnswer);
+            const isCorrect = await checkQuestionAnswer(progressId, questionId, userAnswer);
+            
+            // Update local state
             setUserAnswers(prevAnswers => ({
                 ...prevAnswers,
                 [questionId]: { user_choice: userAnswer, is_correct: isCorrect }
@@ -90,7 +163,19 @@ const LessonPage = () => {
             setIsLoadingPageData(true);
             setPageError(null);
             try {
-                // Fetch lesson details first
+                // Fetch all courses first to build the sidebar
+                const allCourses = await getAllCourses();
+                setCoursesWithLessons(allCourses);
+                
+                // Find which course contains the current lesson
+                for (const course of allCourses) {
+                    const foundLesson = course.course_lessons.find(lesson => lesson.lesson_id === lessonId);
+                    if (foundLesson) {
+                        break;
+                    }
+                }
+                
+                // Continue with existing logic to fetch lesson details
                 const details = await getLessonDetails(lessonId);
                 setLessonDetails(details);
 
@@ -99,27 +184,56 @@ const LessonPage = () => {
                 
                 let initialQuestionIndex = 0;
                 if (currentUser && currentUser.user_id) {
-                    const recentProgress: LessonProgressResponse = await getRecentLessonProgress(currentUser.user_id, lessonId);
-                    if (recentProgress && recentProgress.progress_id) {
-                        setProgressId(recentProgress.progress_id);
-                        const answersMap: UserAnswersMap = {};
-                        recentProgress.questions.forEach(ans => {
-                            answersMap[ans.question_id] = { user_choice: ans.user_choice, is_correct: ans.is_correct };
-                        });
-                        setUserAnswers(answersMap);
+                    try {
+                        // Call lesson/start to either create new progress or get existing progress
+                        const lessonStartData = await startLesson(currentUser.user_id, lessonId);
                         
-                        for (let i = 0; i < fetchedQuestions.length; i++) {
-                            if (!answersMap[fetchedQuestions[i].question_id]) {
-                                initialQuestionIndex = i;
-                                break;
+                        // Extract progress data
+                        if (lessonStartData.progress && lessonStartData.progress.progress_id) {
+                            const pid = lessonStartData.progress.progress_id;
+                            console.log(`Setting progressId: ${pid}`);
+                            setProgressId(pid);
+                    
+                            // Process any existing user answers
+                            if (lessonStartData.user_answers && lessonStartData.user_answers.length > 0) {
+                                console.log(`Found ${lessonStartData.user_answers.length} existing answers`);
+                                const answersMap: UserAnswersMap = {};
+                                lessonStartData.user_answers.forEach(ans => {
+                                    answersMap[ans.question_id] = { 
+                                        user_choice: ans.user_choice, 
+                                        is_correct: ans.is_correct 
+                                    };
+                                });
+                                setUserAnswers(answersMap);
+                                
+                                // Find the first unanswered question
+                                let foundUnanswered = false;
+                                for (let i = 0; i < fetchedQuestions.length; i++) {
+                                    if (!answersMap[fetchedQuestions[i].question_id]) {
+                                        initialQuestionIndex = i;
+                                        foundUnanswered = true;
+                                        break;
+                                    }
+                                }
+                                
+                                // If all questions have answers, stay on the last one
+                                if (!foundUnanswered && fetchedQuestions.length > 0) {
+                                    initialQuestionIndex = fetchedQuestions.length - 1;
+                                }
+                            } else {
+                                console.log("No existing answers found");
                             }
-                            // If all questions have answers, stay on the last one or first based on preference
-                            if (i === fetchedQuestions.length - 1) initialQuestionIndex = i; 
+                        } else {
+                            console.error("Invalid response from lesson/start: Missing progress data");
+                            setPageError("Failed to start lesson: Invalid server response");
                         }
+                    } catch (progressError) {
+                        console.error("Error starting lesson:", progressError);
+                        setPageError(`Error starting lesson: ${progressError instanceof Error ? progressError.message : 'Unknown error'}`);
                     }
                 } else {
                     console.log("User not logged in, progress will not be tracked or loaded.");
-                     // For non-logged in users, start at the beginning
+                    // For non-logged in users, start at the beginning
                 }
                 setCurrentQuestionIndex(initialQuestionIndex);
 
@@ -132,6 +246,16 @@ const LessonPage = () => {
         };
         fetchData();
     }, [lessonId, currentUser, authLoading]); // Added currentUser and authLoading as dependencies
+
+    useEffect(() => {
+        // Hide success message after 5 seconds
+        if (successMessage) {
+            const timer = setTimeout(() => {
+                setSuccessMessage(null);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [successMessage]);
 
     const navigateToQuestion = useCallback(async (index: number) => {
         if (index >= 0 && index < questions.length) {
@@ -148,15 +272,7 @@ const LessonPage = () => {
             }
             setCurrentQuestionIndex(index);
         }
-    }, [questions, currentQuestionIndex, userAnswers]); // Removed handleAnswerSubmit from deps to avoid loops
-
-    const handleNextQuestion = () => {
-        navigateToQuestion(currentQuestionIndex + 1);
-    };
-
-    const handlePrevQuestion = () => {
-        navigateToQuestion(currentQuestionIndex - 1);
-    };
+    }, [questions, currentQuestionIndex, userAnswers]);
 
     const handleOpenHint = () => {
         if (questions.length > 0 && currentQuestionIndex < questions.length) {
@@ -198,11 +314,36 @@ const LessonPage = () => {
         }
     };
 
-    if (authLoading || isLoadingPageData || !lessonDetails) return <div className="container mx-auto p-4 text-center">Loading lesson...</div>;
-    if (authError) return <div className="container mx-auto p-4 text-center text-red-500">Authentication Error: {authError}</div>;
-    if (pageError) return <div className="container mx-auto p-4 text-center text-red-500">Error: {pageError}</div>;
-    if (questions.length === 0 && !isLoadingPageData) return <div className="container mx-auto p-4 text-center">No questions found for this lesson.</div>;
-    if (questions.length === 0) return <div className="container mx-auto p-4 text-center">Preparing lesson content...</div>;
+    if (authLoading || isLoadingPageData || !lessonDetails) return (
+        <>
+            <Navbar />
+            <div className="container mx-auto p-4 text-center mt-16">Loading lesson...</div>
+        </>
+    );
+    if (authError) return (
+        <>
+            <Navbar />
+            <div className="container mx-auto p-4 text-center mt-16 text-red-500">Authentication Error: {authError}</div>
+        </>
+    );
+    if (pageError) return (
+        <>
+            <Navbar />
+            <div className="container mx-auto p-4 text-center mt-16 text-red-500">Error: {pageError}</div>
+        </>
+    );
+    if (questions.length === 0 && !isLoadingPageData) return (
+        <>
+            <Navbar />
+            <div className="container mx-auto p-4 text-center mt-16">No questions found for this lesson.</div>
+        </>
+    );
+    if (questions.length === 0) return (
+        <>
+            <Navbar />
+            <div className="container mx-auto p-4 text-center mt-16">Preparing lesson content...</div>
+        </>
+    );
 
     const currentQuestion = questions[currentQuestionIndex];
     const currentAnswerData = userAnswers[currentQuestion.question_id];
@@ -211,89 +352,124 @@ const LessonPage = () => {
     const isTestLesson = currentLessonType === 'test';
 
     return (
-        <div className="container mx-auto p-4 flex flex-col min-h-screen">
-            <header className="mb-6">
-                <h1 className="text-3xl font-bold text-center">{lessonDetails.name} (Type: {currentLessonType})</h1>
-                {currentUser && progressId && <p className="text-sm text-center text-gray-600">Progress ID: {progressId}</p>}
-                {!currentUser && <p className="text-sm text-center text-yellow-600">You are not logged in. Progress will not be saved.</p>}
-            </header>
+        <div className="flex flex-col h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
+            <Navbar />
+            
+            <div className="flex flex-col flex-1 mt-16 overflow-hidden">
+                <header className="px-4 py-3 bg-white dark:bg-gray-900 shadow-sm">
+                    <h1 className="text-3xl font-bold text-center">{lessonDetails.name}</h1>
+                    {!currentUser && <p className="text-sm text-center text-yellow-600">You are not logged in. Progress will not be saved.</p>}
+                    {successMessage && (
+                        <div className="mt-2 p-2 bg-green-100 text-green-800 rounded-md text-center">
+                            {successMessage}
+                        </div>
+                    )}
+                </header>
 
-            <div className="flex flex-1">
-                <aside className="w-1/4 pr-4 border-r overflow-y-auto" style={{maxHeight: 'calc(100vh - 200px)'}}>
-                    <h2 className="text-xl font-semibold mb-3 sticky top-0 bg-white py-2">Questions</h2>
-                    <ul className="space-y-2">
-                        {questions.map((q, index) => (
-                            <li key={q.question_id}>
-                                <button 
-                                    onClick={() => navigateToQuestion(index)}
-                                    className={`w-full text-left p-2 rounded ${index === currentQuestionIndex ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200'} ${userAnswers[q.question_id]?.is_correct === true ? 'border-l-4 border-green-500' : userAnswers[q.question_id]?.is_correct === false ? 'border-l-4 border-red-500' : 'border-l-4 border-transparent'}`}
-                                >
-                                    Question {index + 1}{userAnswers[q.question_id]?.is_correct === true ? " ✓" : userAnswers[q.question_id]?.is_correct === false ? " ✗" : ""}
-                                </button>
-                            </li>
+                <div className="flex flex-1 overflow-hidden">
+                    <aside className="w-1/4 p-4 border-r overflow-y-auto bg-gray-50 dark:bg-gray-950">
+                        <h2 className="text-xl font-semibold mb-3 sticky top-0 bg-gray-50 dark:bg-gray-950 py-2">Course Navigation</h2>
+                        
+                        {coursesWithLessons.map(course => (
+                            <div key={course.course_id} className="mb-4">
+                                <h3 className="font-semibold text-lg pl-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">
+                                    {course.course_name}
+                                </h3>
+                                <ul className="mt-2 space-y-1 pl-4">
+                                    {course.course_lessons.map(lesson => (
+                                        <li key={lesson.lesson_id}>
+                                            <button 
+                                                onClick={() => router.push(`/lessons/${lesson.lesson_id}`)}
+                                                className={`w-full text-left p-2 rounded text-sm
+                                                    ${lesson.lesson_id === lessonId 
+                                                        ? 'bg-blue-500 text-white' 
+                                                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+                                            >
+                                                {lesson.lesson_name}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         ))}
-                    </ul>
-                </aside>
+                    </aside>
 
-                <main className="w-3/4 pl-4 flex-1 flex flex-col">
-                    <div className="bg-white shadow p-6 rounded-lg flex-1">
-                        {currentQuestion && (
-                            <QuestionDisplay 
-                                question={currentQuestion} 
-                                currentAnswerData={currentAnswerData} 
-                                onAnswerSubmit={handleAnswerSubmit} 
-                            />
-                        )}
-                    </div>
-                </main>
-            </div>
-
-            <footer className="mt-6 p-4 border-t flex justify-between items-center sticky bottom-0 bg-white z-10">
-                <button 
-                    onClick={handlePrevQuestion} 
-                    disabled={currentQuestionIndex === 0}
-                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
-                >
-                    Previous
-                </button>
-                
-                <div className="flex items-center"> {/* Group Hint, Submit, and Next Lesson buttons */} 
-                    {canShowHint && (
-                        <button 
-                            onClick={handleOpenHint}
-                            className="px-4 py-2 bg-yellow-400 rounded hover:bg-yellow-500 mr-2"
-                        >
-                            Hint
-                        </button>
-                    )}
-                    {isTestLesson && currentQuestionIndex === questions.length - 1 && (
-                         <button 
-                            onClick={handleCompleteTest}
-                            disabled={isSubmittingLesson}
-                            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-75 disabled:cursor-not-allowed mr-2"
-                        >
-                            {isSubmittingLesson ? 'Submitting...' : 'Submit Lesson'}
-                        </button>
-                    )}
-                    {/* "Next Lesson" button - shown if next_lesson_id exists */} 
-                    {lessonDetails?.next_lesson_id && (
-                        <button 
-                            onClick={() => router.push(`/lessons/${lessonDetails.next_lesson_id}`)}
-                            className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-                        >
-                            Next Lesson
-                        </button>
-                    )}
+                    <main className="w-3/4 p-4 flex-1 overflow-hidden flex flex-col">
+                        <div className="bg-white dark:bg-gray-800 shadow p-6 rounded-lg flex-1 overflow-hidden">
+                            {currentQuestion && (
+                                <QuestionDisplay 
+                                    question={currentQuestion} 
+                                    currentAnswerData={currentAnswerData} 
+                                    onAnswerSubmit={handleAnswerSubmit}
+                                />
+                            )}
+                        </div>
+                    </main>
                 </div>
 
-                <button 
-                    onClick={handleNextQuestion} 
-                    disabled={currentQuestionIndex === questions.length - 1} // Simplified: Next Lesson button handles moving to next lesson
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
-                >
-                    Next Question
-                </button>
-            </footer>
+                <footer className="p-4 border-t flex justify-between items-center bg-white dark:bg-gray-900 z-10">
+                    {/* Question navigation boxes on the left */}
+                    <div className="flex flex-wrap gap-2">
+                        {questions.map((q, index) => {
+                            // Determine button color based on answer status
+                            let buttonClass = "w-10 h-10 flex items-center justify-center rounded-lg";
+                            
+                            if (userAnswers[q.question_id]?.is_correct === true) {
+                                buttonClass += " bg-green-500 text-white"; // Correct answer
+                            } else if (userAnswers[q.question_id]?.is_correct === false) {
+                                buttonClass += " bg-red-500 text-white"; // Wrong answer
+                            } else if (index === currentQuestionIndex) {
+                                buttonClass += " bg-blue-500 text-white"; // Current question
+                            } else {
+                                buttonClass += " bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"; // Unanswered
+                            }
+                            
+                            return (
+                                <button 
+                                    key={q.question_id}
+                                    onClick={() => navigateToQuestion(index)}
+                                    className={buttonClass}
+                                    aria-label={`Question ${index + 1}`}
+                                    aria-current={index === currentQuestionIndex ? "true" : "false"}
+                                >
+                                    {index + 1}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    
+                    {/* Action buttons on the right */}
+                    <div className="flex items-center space-x-3">
+                        {canShowHint && (
+                            <button 
+                                onClick={handleOpenHint}
+                                className="px-4 py-2 bg-yellow-400 rounded hover:bg-yellow-500"
+                            >
+                                Hint
+                            </button>
+                        )}
+                        
+                        {isTestLesson && currentQuestionIndex === questions.length - 1 && (
+                            <button 
+                                onClick={handleCompleteTest}
+                                disabled={isSubmittingLesson}
+                                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-75 disabled:cursor-not-allowed"
+                            >
+                                {isSubmittingLesson ? 'Submitting...' : 'Submit Lesson'}
+                            </button>
+                        )}
+                        
+                        {lessonDetails?.next_lesson_id && (
+                            <button 
+                                onClick={() => router.push(`/lessons/${lessonDetails.next_lesson_id}`)}
+                                className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+                            >
+                                Next Lesson
+                            </button>
+                        )}
+                    </div>
+                </footer>
+            </div>
 
             {isHintOpen && hintCharacterName && (
                 <HintPopup 

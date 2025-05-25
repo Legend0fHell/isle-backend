@@ -94,7 +94,7 @@ export const getUser = async (user_id: string): Promise<User> => {
     const payload = { user_id: user_id };
     try {
         const response = await fetch(`${API_URL}/user/info`, {
-            method: "GET",
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -111,4 +111,24 @@ export const getUser = async (user_id: string): Promise<User> => {
         console.error('Error fetching user details:', error);
         throw error;
     }
+};
+
+// Function to log out a user (client-side only)
+export const logout = async (): Promise<void> => {
+    try {
+        // Clear user from localStorage
+        localStorage.removeItem('user');
+        
+        // Clear any auth tokens if they exist
+        localStorage.removeItem('authToken');
+        
+        // No need to call the backend as specified
+        console.log('User logged out successfully');
+        
+        return Promise.resolve();
+    } catch (error) {
+        console.error('Error during logout:', error);
+        return Promise.reject(error);
+    }
 }; 
+

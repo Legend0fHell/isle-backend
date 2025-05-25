@@ -56,14 +56,9 @@ export const checkQuestionAnswer = async (
 
 // Function to get lesson questions
 export const getLessonQuestions = async (lesson_id: string): Promise<Question[]> => {
-    const payload = { lesson_id: lesson_id };
     try {
-        const response = await fetch(`${API_URL}/lesson/list`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
+        const response = await fetch(`${API_URL}/lesson/list?lesson_id=${lesson_id}`, {
+            method: "POST",
         });
 
         if (!response.ok) {

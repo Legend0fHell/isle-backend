@@ -1,15 +1,14 @@
 'use client';
 
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
-import { User } from '../../models/user'; // Assuming User model path
+import { User, logout as userLogout } from '../../models/user'; // Import the logout function
 
 interface AuthContextType {
     currentUser: User | null;
     isLoading: boolean;
     error: string | null;
     setCurrentUser: (user: User | null) => void; // Allow manual setting, e.g., after login/logout
-    // login: (credentials: any) => Promise<void>; // Placeholder for actual login function
-    // logout: () => Promise<void>; // Placeholder for actual logout function
+    logout: () => Promise<void>; // Add logout function to the interface
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -56,9 +55,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    // Placeholder login/logout - implement with API calls
-    // const login = async (credentials) => { ... ; setCurrentUser(userData); ... };
-    // const logout = async () => { ... ; setCurrentUser(null); ... };
+    // Implement logout function using the imported userLogout
+    const logout = async () => {
+        try {
+            await userLogout();
+            setCurrentUserInternal(null); // Clear user from context
+            return Promise.resolve();
+        } catch (error) {
+            console.error("Error during logout:", error);
+            return Promise.reject(error);
+        }
+    };
 
     return (
         <AuthContext.Provider value={{
@@ -66,8 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             isLoading,
             error,
             setCurrentUser,
-            // login, 
-            // logout
+            logout
         }}>
             {children}
         </AuthContext.Provider>

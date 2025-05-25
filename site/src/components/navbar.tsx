@@ -3,13 +3,24 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
-    const { currentUser } = useAuth();
+    const { currentUser, logout } = useAuth();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const router = useRouter();
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(prev => !prev);
+    };
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            router.push('/'); // Redirect to home page after logout
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
     };
 
     return (
@@ -36,13 +47,19 @@ const Navbar = () => {
                     </div>
                     <div className="hidden sm:ml-6 sm:flex sm:items-center">
                         {currentUser ? (
-                            <div className="relative flex items-center gap-2">
+                            <div className="relative flex items-center gap-4">
                                 <span className="text-sm text-gray-700 dark:text-gray-300">
                                     {currentUser.email || 'User'}
                                 </span>
                                 <div className="h-8 w-8 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-800 font-semibold">
                                     {(currentUser.email?.charAt(0) || 'U').toUpperCase()}
                                 </div>
+                                <button 
+                                    onClick={handleLogout}
+                                    className="ml-2 px-3 py-1 bg-red-600 text-white rounded-md text-sm hover:bg-red-700 transition-colors"
+                                >
+                                    Logout
+                                </button>
                             </div>
                         ) : (
                             <div className="flex space-x-2">
@@ -94,7 +111,14 @@ const Navbar = () => {
                     <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white block pl-3 pr-4 py-2 text-base font-medium border-l-4 border-transparent">
                         About
                     </Link>
-                    {!currentUser && (
+                    {currentUser ? (
+                        <button 
+                            onClick={handleLogout}
+                            className="w-full text-left text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white block pl-3 pr-4 py-2 text-base font-medium border-l-4 border-transparent"
+                        >
+                            Logout
+                        </button>
+                    ) : (
                         <>
                             <Link href="/login" className="text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white block pl-3 pr-4 py-2 text-base font-medium border-l-4 border-transparent">
                                 Log In
