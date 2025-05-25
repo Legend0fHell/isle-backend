@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 import { Question, getLessonQuestions, checkQuestionAnswer } from '../../../../models/questions'; 
-import { completeLessonProgress, startLesson } from '../../../../models/progress'; 
+import { startLesson } from '../../../../models/progress'; 
 import { LessonType, getAllCourses, LessonSummary } from '../../../../models/course'; // Import getAllCourses
 import QuestionDisplay from '../../../components/QuestionComponents/QuestionDisplay';
 import HintPopup from '../../../components/HintPopup';
@@ -77,6 +77,64 @@ interface CourseWithLessons {
     course_lessons: LessonSummary[];
 }
 
+// Define interfaces for test results
+interface TestResult {
+    question_id: string;
+    is_correct: boolean;
+}
+
+// Custom modal for test results
+const TestResultsModal: React.FC<{
+    isOpen: boolean;
+    onClose: () => void;
+    results: TestResult[];
+    totalQuestions: number;
+}> = ({ isOpen, onClose, results, totalQuestions }) => {
+    if (!isOpen) return null;
+    
+    const correctAnswers = results.filter(r => r.is_correct).length;
+    const score = Math.round((correctAnswers / totalQuestions) * 100);
+    
+    return (
+        <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex">
+            <div className="relative p-8 bg-white dark:bg-gray-800 w-full max-w-md m-auto rounded-lg shadow-xl">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold mb-4">Test Results</h2>
+                    
+                    <div className="mb-6">
+                        <div className="text-5xl font-bold mb-2">{score}%</div>
+                        <p className="text-lg">
+                            You got <span className="font-bold text-green-600">{correctAnswers}</span> out of <span className="font-bold">{totalQuestions}</span> questions correct
+                        </p>
+                    </div>
+                    
+                    <div className="space-y-3 mb-6 max-h-60 overflow-y-auto">
+                        {results.map((result, index) => (
+                            <div 
+                                key={index} 
+                                className={`p-2 rounded-md flex justify-between items-center
+                                    ${result.is_correct 
+                                        ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' 
+                                        : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'}`}
+                            >
+                                <span>Question {index + 1}</span>
+                                <span>{result.is_correct ? '✓ Correct' : '✗ Incorrect'}</span>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <button
+                        onClick={onClose}
+                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const LessonPage = () => {
     const params = useParams();
     const lessonId = params.lesson_id as string;
@@ -100,6 +158,11 @@ const LessonPage = () => {
 
     // New state for storing all courses and lessons
     const [coursesWithLessons, setCoursesWithLessons] = useState<CourseWithLessons[]>([]);
+
+    // Add these variables to the LessonPage component state
+    const [isResultsPopupOpen, setIsResultsPopupOpen] = useState<boolean>(false);
+    const [testSubmitted, setTestSubmitted] = useState<boolean>(false);
+    const [testResults, setTestResults] = useState<TestResult[]>([]);
 
     const handleAnswerSubmit = useCallback(async (questionId: string, userAnswer: string, isCorrectProvided?: boolean) => {
         console.log(`Answer submit called: questionId=${questionId}, userAnswer="${userAnswer}", isCorrectProvided=${isCorrectProvided}`);
@@ -206,6 +269,20 @@ const LessonPage = () => {
                                 });
                                 setUserAnswers(answersMap);
                                 
+                                // Check if all questions are answered in a test lesson
+                                if (details.lesson_type === 'test' && 
+                                    lessonStartData.user_answers.length === fetchedQuestions.length) {
+                                    // All questions answered in a test = test submitted
+                                    setTestSubmitted(true);
+                                    
+                                    // Create typed test results
+                                    const typedResults: TestResult[] = lessonStartData.user_answers.map(ans => ({
+                                        question_id: ans.question_id,
+                                        is_correct: ans.is_correct
+                                    }));
+                                    setTestResults(typedResults);
+                                }
+                                
                                 // Find the first unanswered question
                                 let foundUnanswered = false;
                                 for (let i = 0; i < fetchedQuestions.length; i++) {
@@ -300,12 +377,21 @@ const LessonPage = () => {
         setIsSubmittingLesson(true);
         setPageError(null);
         try {
-            await completeLessonProgress(progressId);
-            // Handle successful submission
-            // For example, show a success message, navigate away, or update UI
-            alert("Lesson completed and submitted successfully!"); 
-            // Optionally, navigate to a results page or back to courses
-            // router.push('/courses'); 
+            // For test lessons, calculate and show results
+            if (isTestLesson) {
+                // Create results array in the order of questions
+                const results: TestResult[] = questions.map(q => ({
+                    question_id: q.question_id,
+                    is_correct: userAnswers[q.question_id]?.is_correct || false
+                }));
+                
+                setTestResults(results);
+                setTestSubmitted(true);
+                setIsResultsPopupOpen(true);
+            } else {
+                // For non-test lessons, just show a success message
+                alert("Lesson completed and submitted successfully!");
+            }
         } catch (err) {
             console.error("Error submitting lesson:", err);
             setPageError(err instanceof Error ? err.message : 'Failed to submit lesson');
@@ -348,8 +434,8 @@ const LessonPage = () => {
     const currentQuestion = questions[currentQuestionIndex];
     const currentAnswerData = userAnswers[currentQuestion.question_id];
     const currentLessonType = lessonDetails.lesson_type;
-    const canShowHint = currentLessonType === 'learn' || currentLessonType === 'practice';
     const isTestLesson = currentLessonType === 'test';
+    const canShowHint = !isTestLesson;
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
@@ -367,8 +453,8 @@ const LessonPage = () => {
                 </header>
 
                 <div className="flex flex-1 overflow-hidden">
-                    <aside className="w-1/4 p-4 border-r overflow-y-auto bg-gray-50 dark:bg-gray-950">
-                        <h2 className="text-xl font-semibold mb-3 sticky top-0 bg-gray-50 dark:bg-gray-950 py-2">Course Navigation</h2>
+                    <aside className="w-1/4 px-4 border-r overflow-y-auto bg-gray-50 dark:bg-gray-950">
+                        <h2 className="text-xl font-semibold mb-3 sticky top-0 p-0 bg-gray-50 dark:bg-gray-950 py-1">Course Navigation</h2>
                         
                         {coursesWithLessons.map(course => (
                             <div key={course.course_id} className="mb-4">
@@ -401,6 +487,8 @@ const LessonPage = () => {
                                     question={currentQuestion} 
                                     currentAnswerData={currentAnswerData} 
                                     onAnswerSubmit={handleAnswerSubmit}
+                                    lessonType={currentLessonType}
+                                    isTestSubmitted={testSubmitted}
                                 />
                             )}
                         </div>
@@ -414,14 +502,28 @@ const LessonPage = () => {
                             // Determine button color based on answer status
                             let buttonClass = "w-10 h-10 flex items-center justify-center rounded-lg";
                             
-                            if (userAnswers[q.question_id]?.is_correct === true) {
-                                buttonClass += " bg-green-500 text-white"; // Correct answer
-                            } else if (userAnswers[q.question_id]?.is_correct === false) {
-                                buttonClass += " bg-red-500 text-white"; // Wrong answer
-                            } else if (index === currentQuestionIndex) {
-                                buttonClass += " bg-blue-500 text-white"; // Current question
+                            // In test mode, only show colors after submission
+                            if (isTestLesson && !testSubmitted) {
+                                // In test mode before submission, only show attempted/not attempted
+                                if (userAnswers[q.question_id]) {
+                                    // Question has been answered but don't show if correct/incorrect
+                                    buttonClass += " bg-blue-200 text-blue-700"; // Attempted but result hidden
+                                } else if (index === currentQuestionIndex) {
+                                    buttonClass += " bg-blue-500 text-white"; // Current question
+                                } else {
+                                    buttonClass += " bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"; // Unanswered
+                                }
                             } else {
-                                buttonClass += " bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"; // Unanswered
+                                // Normal mode or test mode after submission - show actual results
+                                if (userAnswers[q.question_id]?.is_correct === true) {
+                                    buttonClass += " bg-green-500 text-white"; // Correct answer
+                                } else if (userAnswers[q.question_id]?.is_correct === false) {
+                                    buttonClass += " bg-red-500 text-white"; // Wrong answer
+                                } else if (index === currentQuestionIndex) {
+                                    buttonClass += " bg-blue-500 text-white"; // Current question
+                                } else {
+                                    buttonClass += " bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"; // Unanswered
+                                }
                             }
                             
                             return (
@@ -455,7 +557,7 @@ const LessonPage = () => {
                                 disabled={isSubmittingLesson}
                                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-75 disabled:cursor-not-allowed"
                             >
-                                {isSubmittingLesson ? 'Submitting...' : 'Submit Lesson'}
+                                {testSubmitted ? 'Show Results' : isSubmittingLesson ? 'Submitting...' : 'Submit Test'}
                             </button>
                         )}
                         
@@ -476,6 +578,15 @@ const LessonPage = () => {
                     isOpen={isHintOpen} 
                     characterName={hintCharacterName} 
                     onClose={handleCloseHint} 
+                />
+            )}
+
+            {isTestLesson && (
+                <TestResultsModal
+                    isOpen={isResultsPopupOpen}
+                    onClose={() => setIsResultsPopupOpen(false)}
+                    results={testResults}
+                    totalQuestions={questions.length}
                 />
             )}
         </div>

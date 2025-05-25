@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image'; // Import next/image
 import { Question } from '../../../models/questions';
 import { useASLCharacters } from '../../contexts/ASLCharacterContext'; // Adjusted path
@@ -7,12 +7,20 @@ interface LearnQuestionComponentProps {
     question: Question;
     onAnswerSubmit: (questionId: string, userAnswer: string) => Promise<void>;
     currentAnswerData?: { user_choice: string; is_correct: boolean } | null;
+     
+    lessonType?: string;
+     
+    isTestSubmitted?: boolean;
 }
 
 const LearnQuestionComponent: React.FC<LearnQuestionComponentProps> = ({ 
     question, 
     onAnswerSubmit,
-    currentAnswerData 
+    currentAnswerData,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    lessonType,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isTestSubmitted
 }) => {
     const { getCharacter, isLoading: aslLoading, error: aslError } = useASLCharacters();
     const characterData = getCharacter(question.question_target);
@@ -20,6 +28,11 @@ const LearnQuestionComponent: React.FC<LearnQuestionComponentProps> = ({
     
     // Check if the question has already been answered
     const isAlreadyAnswered = !!currentAnswerData;
+
+    // Reset hasSubmitted state when question changes
+    useEffect(() => {
+        setHasSubmitted(false);
+    }, [question.question_id]);
 
     const handleReviewed = async () => {
         await onAnswerSubmit(question.question_id, question.question_target);

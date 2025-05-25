@@ -7,16 +7,21 @@ interface ChoiceQuestionComponentProps {
     question: Question;
     currentAnswerData?: { user_choice: string; is_correct: boolean };
     onAnswerSubmit: (questionId: string, userAnswer: string) => Promise<void>;
+    lessonType?: string; // Add lesson type
+    isTestSubmitted?: boolean; // Add test submission status
 }
 
 const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({ 
     question, 
     currentAnswerData, 
-    onAnswerSubmit 
+    onAnswerSubmit,
+    lessonType = 'practice',
+    isTestSubmitted = false
 }) => {
     const { getCharacter, isLoading: aslLoading, error: aslError } = useASLCharacters();
     const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
     const [feedback, setFeedback] = useState<{ choice: string; is_correct: boolean } | null>(null);
+    const isTestMode = lessonType === 'test';
 
     const questionTargetCharacter = getCharacter(question.question_target);
     const choiceCharacters = question.question_choice.split('').map(char => getCharacter(char));
@@ -31,22 +36,30 @@ const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({
     useEffect(() => {
         if (currentAnswerData) {
             setSelectedChoice(currentAnswerData.user_choice);
-            setFeedback({ 
-                choice: currentAnswerData.user_choice, 
-                is_correct: currentAnswerData.is_correct 
-            });
+            
+            // Only show feedback for test lessons if the test has been submitted
+            if (!isTestMode || (isTestMode && isTestSubmitted)) {
+                setFeedback({ 
+                    choice: currentAnswerData.user_choice, 
+                    is_correct: currentAnswerData.is_correct 
+                });
+            }
         }
-    }, [currentAnswerData]);
+    }, [currentAnswerData, isTestMode, isTestSubmitted]);
 
     const handleChoiceClick = async (choice: string) => {
-        // Allow reattempting even after getting it wrong
+        // Always set the selected choice for visual feedback
         setSelectedChoice(choice);
         
         try {
+            // Always submit to backend
             await onAnswerSubmit(question.question_id, choice);
-            // Check if it's the right answer
-            const isCorrect = choice === question.question_target;
-            setFeedback({ choice, is_correct: isCorrect });
+            
+            // Only show feedback for non-test lessons or if test is submitted
+            if (!isTestMode) {
+                const isCorrect = choice === question.question_target;
+                setFeedback({ choice, is_correct: isCorrect });
+            }
         } catch (err) {
             console.error("Error submitting answer:", err);
         }
@@ -80,6 +93,14 @@ const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({
         
         const isSelected = selectedChoice === choiceValue;
         
+        // In test mode without submission, only show selection state
+        if (isTestMode && !isTestSubmitted) {
+            return isSelected 
+                ? `${baseClass} bg-blue-200 ring-blue-400` 
+                : `${baseClass} bg-white hover:bg-gray-100`;
+        }
+        
+        // Non-test mode or submitted test
         if (isSelected && feedback) {
             // Show correct/incorrect for the selected choice only
             return `${baseClass} ${feedback.is_correct ? 'bg-green-500 text-white ring-green-600' : 'bg-red-500 text-white ring-red-600'}`;
@@ -102,7 +123,7 @@ const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({
             </h3>
 
             {question.question_type === 'choice_to_char' && questionTargetCharacter && (
-                <div className="mb-6 flex justify-center items-center relative h-64 md:h-72">
+                <div className="mb-6 flex justify-center items-center relative">
                     <Image 
                         src={`/asl_example/${questionTargetCharacter.char_name}.jpg`} 
                         alt={`Sign for ${questionTargetCharacter.char_name}`}
@@ -118,11 +139,15 @@ const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({
                 {question.question_choice.split('').map((charChoice, index) => {
                     const choiceData = choiceCharacters[index];
                     const choiceImagePath = choiceData ? `/asl_example/${choiceData.char_name}.jpg` : null;
+                    const isDisabled = isTestMode 
+                        ? false // Never disable buttons in test mode to allow changing answers
+                        : (selectedChoice === charChoice && feedback?.is_correct === true); // Only disable when correct in practice mode
+                    
                     return (
                         <button
                             key={charChoice}
                             onClick={() => handleChoiceClick(charChoice)}
-                            disabled={selectedChoice === charChoice && feedback?.is_correct === true} // Only disable when correct
+                            disabled={isDisabled}
                             className={`${getButtonClass(charChoice)} flex flex-col justify-center items-center p-2`}
                         >
                             {question.question_type === 'choice_to_image' && choiceImagePath ? (
@@ -143,15 +168,16 @@ const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({
                 })}
             </div>
 
-            {feedback && (
+            {/* Only show feedback for non-test or submitted tests */}
+            {feedback && (!isTestMode || (isTestMode && isTestSubmitted)) && (
                 <div className="mt-6 flex flex-col items-center">
                     <div className={`p-3 rounded-lg text-lg font-medium ${feedback.is_correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                         {feedback.is_correct 
                             ? 'Correct!' 
-                            : 'Incorrect. Try again!'}
+                            : 'Incorrect!'} {!feedback.is_correct && !isTestMode && ' Try again!'}
                     </div>
                     
-                    {!feedback.is_correct && (
+                    {!feedback.is_correct && !isTestMode && (
                         <button
                             onClick={handleRetry}
                             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
@@ -159,6 +185,13 @@ const ChoiceQuestionComponent: React.FC<ChoiceQuestionComponentProps> = ({
                             Try Again
                         </button>
                     )}
+                </div>
+            )}
+
+            {/* In test mode, show selection confirmation without correctness */}
+            {isTestMode && !isTestSubmitted && selectedChoice && !feedback && (
+                <div className="mt-6">
+                    <p className="text-blue-600">Answer selected</p>
                 </div>
             )}
         </div>

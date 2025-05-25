@@ -40,7 +40,7 @@
 {"lesson_id": "0178bbf1-bfb8-4c75-b647-6ef5c1864865", "lesson_name": "High_practice_8", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
 {"lesson_id": "4f2a46e4-4a30-4929-a7fb-8ab6d21e3e80", "lesson_name": "High_practice_9", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
 {"lesson_id": "54ff38b7-2229-498a-a531-1e7502297b15", "lesson_name": "High_practice_10", "lesson_desc": "High practice lesson", "lesson_type": "practice"}
-{"lesson_id": "c65d8325-c930-4002-9b8e-1add74d71c7b", "lesson_name": "Lesson 1", "lesson_desc": "Learn how to demonstrate some characters in ASL theoretically", "lesson_type": "learn"}
-{"lesson_id": "fa01686a-8d68-4715-9ced-6c9ec0653993", "lesson_name": "Lesson 2", "lesson_desc": "Learn how to demonstrate some characters in ASL", "lesson_type": "practice"}
-{"lesson_id": "20e4f4fc-304c-4937-ad96-5c9322c9c485", "lesson_name": "Lesson 3", "lesson_desc": "Learn how to differentiate some characters in ASL", "lesson_type": "practice"}
-{"lesson_id": "e3005940-c1ce-49cf-9e56-bcf753893844", "lesson_name": "Lesson 4",  "lesson_desc": "Learn how to differentiate some characters in ASL", "lesson_type": "practice"}
+{"lesson_id": "c65d8325-c930-4002-9b8e-1add74d71c7b", "lesson_name": "Learning lesson", "lesson_desc": "Learn how to demonstrate some characters in ASL theoretically", "lesson_type": "learn"}
+{"lesson_id": "fa01686a-8d68-4715-9ced-6c9ec0653993", "lesson_name": "Practice handsign", "lesson_desc": "Learn how to demonstrate some characters in ASL", "lesson_type": "practice"}
+{"lesson_id": "20e4f4fc-304c-4937-ad96-5c9322c9c485", "lesson_name": "Practice differentiating", "lesson_desc": "Learn how to differentiate some characters in ASL", "lesson_type": "practice"}
+{"lesson_id": "e3005940-c1ce-49cf-9e56-bcf753893844", "lesson_name": "Final test",  "lesson_desc": "Learn how to differentiate some characters in ASL", "lesson_type": "test"}

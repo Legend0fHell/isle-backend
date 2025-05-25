@@ -33,7 +33,7 @@ export const login = async (email: string, password: string): Promise<User> => {
                 if (errorData && errorData.detail) { // FastAPI often puts validation errors in 'detail'
                     errorMessage = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
                 } else if (errorData && errorData.msg) {
-                    errorMessage = errorData.msg;
+                    errorMessage = errorData.msg.substring(6);
                 }
             } catch {
                 // Error parsing the error response body, proceed with generic HTTP error

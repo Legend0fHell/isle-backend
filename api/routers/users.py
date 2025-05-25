@@ -51,7 +51,7 @@ def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
     print(credentials)
     user = user_crud.authenticate_user(db, credentials)
     if not user:
-        return {"msg": "error", "data": None}
+        return {"msg": "error Invalid email or password!", "data": None}
     return {"msg": "ok", "data": UserData.from_orm(user)}
 
 # ----------------------------

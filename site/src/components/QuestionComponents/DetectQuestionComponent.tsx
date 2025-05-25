@@ -6,6 +6,8 @@ interface DetectQuestionComponentProps {
     question: Question;
     onAnswerSubmit: (questionId: string, userAnswer: string, isCorrect?: boolean) => Promise<void>;
     currentAnswerData?: { user_choice: string; is_correct: boolean } | null;
+    lessonType?: string;
+    isTestSubmitted?: boolean;
 }
 
 // Increase threshold to match detecting mode for more reliable detection
@@ -14,7 +16,7 @@ const CONSECUTIVE_THRESHOLD = 6;
 const DetectQuestionComponent: React.FC<DetectQuestionComponentProps> = ({ 
     question, 
     onAnswerSubmit,
-    currentAnswerData
+    currentAnswerData,
 }) => {
     const [currentDetectedSign, setCurrentDetectedSign] = useState<string | null>(null);
     const [consecutiveCount, setConsecutiveCount] = useState<number>(0);
@@ -188,7 +190,7 @@ const DetectQuestionComponent: React.FC<DetectQuestionComponentProps> = ({
                         
                         {feedbackMessage && (
                             <div className={`mx-4 p-3 rounded-lg ${
-                                hasSubmitted && feedbackMessage.includes('Correct') 
+                                hasSubmitted && feedbackMessage.includes('correct') 
                                 ? 'bg-green-100 text-green-700 dark:bg-green-900/70 dark:text-green-300' 
                                 : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/70 dark:text-yellow-300'
                             }`}>

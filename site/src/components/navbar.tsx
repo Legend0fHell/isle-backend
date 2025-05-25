@@ -29,7 +29,7 @@ const Navbar = () => {
                 <div className="flex justify-between h-16">
                     <div className="flex">
                         <div className="flex-shrink-0 flex items-center">
-                            <Link href="/" className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
+                            <Link href={currentUser ? "/dashboard" : "/"} className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
                                 ISLE
                             </Link>
                         </div>
@@ -49,10 +49,10 @@ const Navbar = () => {
                         {currentUser ? (
                             <div className="relative flex items-center gap-4">
                                 <span className="text-sm text-gray-700 dark:text-gray-300">
-                                    {currentUser.email || 'User'}
+                                    {currentUser.name || 'User'}
                                 </span>
                                 <div className="h-8 w-8 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-800 font-semibold">
-                                    {(currentUser.email?.charAt(0) || 'U').toUpperCase()}
+                                    {(currentUser.name?.charAt(0) || 'U').toUpperCase()}
                                 </div>
                                 <button 
                                     onClick={handleLogout}
