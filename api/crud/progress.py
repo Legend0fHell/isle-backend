@@ -154,7 +154,22 @@ def get_user_question_answers_by_lesson(db: Session, progress_id: UUID):
     
     return {"msg": "ok", "data": results}
 
+def update_progress_correct_questions(db: Session, progress_id: UUID):
+    progress = db.query(UserLessonProgress).filter(UserLessonProgress.progress_id == progress_id).first()
     
+    if not progress:
+        return None
+    
+    correct_count = db.query(UserQuestionAnswer).filter(
+        UserQuestionAnswer.progress_id == progress_id,
+        UserQuestionAnswer.is_correct == True
+    ).count()
+    
+    progress.correct_questions = correct_count
+    db.commit()
+    db.refresh(progress)
+    
+    return progress
     
 def submit_user_answer(db: Session, data: UserAnswerSubmit):
 
@@ -196,8 +211,8 @@ def submit_user_answer(db: Session, data: UserAnswerSubmit):
     if not lesson_progress:
         return None
 
-    if is_correct:
-        lesson_progress.correct_questions += 1
+    
+    update_progress_correct_questions(db, lesson_progress.progress_id)
 
     lesson_progress.last_activity_at = datetime.utcnow()
 
@@ -241,6 +256,7 @@ def track_user_progress(db: Session, user_id: UUID):
         .all()
     )
 
+    
     progress_list = []
     for progress in user_progress:
         progress_list.append({
