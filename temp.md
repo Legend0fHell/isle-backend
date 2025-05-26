@@ -6,16 +6,16 @@
 <h4 align="center">Hệ thống Nhận diện, hỗ trợ học tập Ký hiệu ngôn ngữ</h4>
 
 <p align="center">
-  <a href="https://github.com/sleepifoxx/park-scan">
+  <a href="">
     <img src="https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white">
   </a>
-  <a href="https://hub.docker.com/r/sleepifoxx/backend">
+  <a href="">
     <img src="https://img.shields.io/badge/backend-docker-blue?logo=docker">
   </a>
-  <a href="https://hub.docker.com/r/sleepifoxx/services">
+  <a href="">
     <img src="https://img.shields.io/badge/services-docker-blue?logo=docker">
   </a>
-  <a href="https://hub.docker.com/r/sleepifoxx/frontend">
+  <a href="">
     <img src="https://img.shields.io/badge/frontend-docker-blue?logo=docker">
   </a>
 </p>
@@ -24,10 +24,13 @@
   <a href="#mô-tả-dự-án"> Mô tả dự án</a> •
   <a href="#tính-năng">Tính năng</a> •
   <a href="#hướng-dẫn-cài-đặt">Hướng dẫn cài đặt</a> •
-  <a href="#link">Link</a> •
   <a href="#cấu-trúc-dự-án">Cấu trúc dự án</a> •
   <a href="#thành-viên-phát-triển">Thành viên phát triển</a>
 </p>
+
+---
+
+<img src='site\public\ISLE Introduce.png'>
 
 ---
 
@@ -80,13 +83,6 @@ Truy cập các phần của website:
 - **Đăng kí**: http://localhost:3000/signup
 - **Khóa học**: http://localhost:3000/courses
 - **Trang nhận diện tay**: http://localhost:3000/detecting-mode
----
-
-## Link
-### a. DockerHub
-- Backend: [`sleepifoxx/backend`](https://hub.docker.com/r/sleepifoxx/backend)
-### b. GitHub
-- GitHub dự án: [`GitHub dự án`](https://github.com/sleepifoxx/park-scan)
 ---
 
 ## Cấu trúc dự án
