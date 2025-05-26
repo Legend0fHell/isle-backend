@@ -24,7 +24,7 @@ services:
       context: ./api
       dockerfile: Dockerfile
     env_file:
-      - ./api/.env.example
+      - ./api/.env
     # Override CMD from Dockerfile for development with reload
     command: uvicorn main:app --host 0.0.0.0 --port 8000
     # Uncomment volumes below for development hot-reloading
@@ -44,7 +44,7 @@ services:
       context: ./ml
       dockerfile: Dockerfile
     env_file:
-      - ./ml/.env.example
+      - ./ml/.env
     # command: python main.py  # Will use CMD from Dockerfile
     volumes:
       - ./ml:/app # For model updates without rebuilding
