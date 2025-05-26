@@ -38,7 +38,7 @@ class AutoCompleteModel:
         self.model = AutoModelForCausalLM.from_pretrained(model_name).to(self.device)
         self.model.eval()
 
-    def predict(self, text, max_new_tokens=10, num_suggestions=5):
+    def predict(self, text, max_new_tokens=2, num_suggestions=3):
         """
         Generate multiple autocomplete suggestions given an input text.
 
