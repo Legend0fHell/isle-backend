@@ -7,7 +7,7 @@ export interface User {
     name: string;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 // Function to log in a user
 export const login = async (email: string, password: string): Promise<User> => {

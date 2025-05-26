@@ -41,7 +41,7 @@ export interface UserLessonProgress {
  */
 export type LessonType = 'learn' | 'practice' | 'test';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 /**
  * Get all courses with their lessons

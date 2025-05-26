@@ -1,6 +1,6 @@
 import { ApiResponse, handleApiResponse, UUID } from "../utils/apiUtils";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 // Progress interfaces based on the database design
 export interface UserLessonProgress {

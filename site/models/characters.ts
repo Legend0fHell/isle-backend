@@ -14,7 +14,7 @@ export interface ASL {
 // Re-export the ASL interface as ASLCharacter for backward compatibility
 export type ASLCharacter = ASL;
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 // Function to get all ASL character information
 export const getASLCharacters = async (): Promise<ASLCharacter[]> => {
