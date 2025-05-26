@@ -49,7 +49,7 @@ const AboutPage = () => {
                             <span className="absolute top-[276px] left-[0px] text-black w-[624px] h-[36px]"
                                 style={{ fontSize: "24px", fontWeight: 400 }}>
                                 Description: <br />
-                                Welcome to my intro page. I'm currently an university student, majoring in Artificial Intelligence. I also do Competitive Programming, making (award-winning) projects, and random hobby stuff.
+                                Welcome to my intro page. I&apos;m currently an university student, majoring in Artificial Intelligence. I also do Competitive Programming, making (award-winning) projects, and random hobby stuff.
                             </span>
                         </div>
                     </div>
@@ -85,7 +85,7 @@ const AboutPage = () => {
                             <span className="absolute top-[276px] left-[0px] text-black w-[624px] h-[36px]"
                                 style={{ fontSize: "24px", fontWeight: 400 }}>
                                 Description: <br />
-                                I'm Bui Minh Quan, a student at the University of Engineer and Technology, VNU. I am currently working on AI development and back-end development. I have a passion for learning new technologies and applying them to real-world problems.
+                                I&apos;m Bui Minh Quan, a student at the University of Engineer and Technology, VNU. I am currently working on AI development and back-end development. I have a passion for learning new technologies and applying them to real-world problems.
                             </span>
                         </div>
                     </div>
@@ -121,7 +121,7 @@ const AboutPage = () => {
                             <span className="absolute top-[276px] left-[0px] text-black w-[624px] h-[36px]"
                                 style={{ fontSize: "24px", fontWeight: 400 }}>
                                 Description: <br />
-                                Hello, guys! Phan Quang Truong here. Right now, I'm a student at the University of Engineer and Technology, VNU. I am currently working on front-end development and merging with back-end. I love AI and web development, and I am always looking for new challenges to improve my skills and also vibe coding too.</span>
+                                Hello, guys! Phan Quang Truong here. Right now, I&apos;m a student at the University of Engineer and Technology, VNU. I am currently working on front-end development and merging with back-end. I love AI and web development, and I am always looking for new challenges to improve my skills and also vibe coding too.</span>
                         </div>
                     </div>
                 </div>
