@@ -7,6 +7,9 @@ WORKDIR /api_app
 # Copy requirements first for better caching
 COPY requirements.txt .
 
+# Make a copy of .env.example
+COPY .env.example .env
+
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 

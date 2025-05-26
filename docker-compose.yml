@@ -1,8 +1,10 @@
 services:
   db:
     image: postgres:17-bookworm
-    env_file:
-      - ./api/.env.example
+    environment:
+      POSTGRES_USER: isle_user
+      POSTGRES_PASSWORD: isle_password
+      POSTGRES_DB: asl_db
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -24,7 +26,7 @@ services:
     env_file:
       - ./api/.env.example
     # Override CMD from Dockerfile for development with reload
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
     # Uncomment volumes below for development hot-reloading
     # volumes:
     #   - ./api:/api_app
@@ -103,7 +105,7 @@ services:
       site:
         condition: service_started
       ml:
-        condition: service_started
+        condition: service_healthy
       db:
         condition: service_healthy
     networks:
