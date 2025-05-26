@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const ws_url = process.env.NEXT_PUBLIC_WEBSOCKET_URL || "/ml";
+const ws_url = process.env.NEXT_PUBLIC_WEBSOCKET_URL || "/";
 
 // Create socket with explicit transport settings and reconnection options
 export const socket = io(ws_url, { 
