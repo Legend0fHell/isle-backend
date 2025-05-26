@@ -2,9 +2,9 @@ services:
   db:
     image: postgres:17-bookworm
     environment:
-      POSTGRES_USER: isle_user
-      POSTGRES_PASSWORD: isle_password
-      POSTGRES_DB: asl_db
+      - POSTGRES_USER=isle_user
+      - POSTGRES_PASSWORD=isle_password
+      - POSTGRES_DB=asl_db
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -64,12 +64,12 @@ services:
     build:
       context: ./site
       dockerfile: Dockerfile
-    env_file:
-      - ./site/.env.example
+    environment:
+      - NEXT_PUBLIC_API_URL=http://nginx/api
+      - NEXT_PUBLIC_WEBSOCKET_URL=http://nginx/ml
+      - NODE_ENV=production
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV=production
     restart: unless-stopped
     volumes:
       - ./site:/app
@@ -104,3 +104,4 @@ volumes:
 networks:
   isle-network:
     driver: bridge
+

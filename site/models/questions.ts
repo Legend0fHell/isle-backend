@@ -8,7 +8,7 @@ export interface Question {
     question_choice: string;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
 // Function to check answer for a question
 export const checkQuestionAnswer = async (
