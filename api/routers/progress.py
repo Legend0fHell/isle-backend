@@ -17,7 +17,7 @@ router = APIRouter(
 
 # --- Lesson Progress Endpoints --- #
 
-@router.post("/lesson/progress")
+@router.get("/progress/lesson")
 def get_lesson_progress(user_id: UUID = Body(..., embed=True), lesson_id: UUID = Body(..., embed=True), db: Session = Depends(get_db)):
     """Retrieve progress record for a specific user and lesson"""
     progress = crud.get_lesson_progress(db, user_id, lesson_id)
@@ -37,7 +37,7 @@ def get_lesson_progress(user_id: UUID = Body(..., embed=True), lesson_id: UUID =
         }
     } 
 
-@router.post("/course/progress")
+@router.get("/progress/course")
 def get_all_lesson_progress(user_id: UUID, db: Session = Depends(get_db)):
     """Retrieve all lesson progress records for a given user"""
     progress_list = crud.get_lesson_progress_by_user(db, user_id)
@@ -98,5 +98,3 @@ def submit_user_answer(data: UserAnswerSubmit, db: Session = Depends(get_db)):
             "data": None 
         }
     return feedback
-
-

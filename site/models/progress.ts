@@ -25,8 +25,8 @@ export interface LessonProgressResponse {
 // Function to get user's progress across all lessons
 export const getUserProgress = async (user_id: string): Promise<UserLessonProgress[]> => {
     try {
-        const response = await fetch(`${API_URL}/course/progress?user_id=${user_id}`, {
-            method: "POST",
+        const response = await fetch(`${API_URL}/progress/course?user_id=${user_id}`, {
+            method: "GET",
         });
 
         if (!response.ok) {
@@ -37,25 +37,6 @@ export const getUserProgress = async (user_id: string): Promise<UserLessonProgre
         return handleApiResponse(data);
     } catch (error) {
         console.error('Error fetching user progress:', error);
-        throw error;
-    }
-};
-
-// Function to get progress for specific progress_id
-export const getLessonProgress = async (progress_id: string): Promise<UserQuestionAnswer[]> => {
-    try {
-        const response = await fetch(`${API_URL}/lesson/progress?progress_id=${progress_id}`, {
-            method: "POST",
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data: ApiResponse<UserQuestionAnswer[]> = await response.json();
-        return handleApiResponse(data);
-    } catch (error) {
-        console.error('Error fetching lesson progress:', error);
         throw error;
     }
 };

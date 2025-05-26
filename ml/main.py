@@ -53,14 +53,15 @@ async def handle_hand_sign_detection(sid, data):
         log_error(f"Client {sid}: Error during hand sign prediction: {e}. No action taken for client.", verbose)
         return # Silent: Do not emit to client
 
-    if max_prob < float(os.getenv("HANDSIGN_MIN_CONFIDENCE", "0.5")):
+    if max_prob < float(os.getenv("HANDSIGN_MIN_CONFIDENCE", "0.65")):
         log_warning(f"Client {sid}: Hand sign prediction probability is too low ({max_prob}). No action taken for client.", verbose)
         return # Silent: Do not emit to client
 
     # Calculate the inference time in milliseconds
-    inference_time = time.time() * 1000 - start_time
+    end_time = time.time() * 1000
+    inference_time = end_time - start_time
     if predicted_char is not None:
-        response_data = {'time': int(start_time), 'pred': predicted_char, 'prob': max_prob, 'infer': int(inference_time)}
+        response_data = {'time': int(end_time), 'pred': predicted_char, 'prob': max_prob, 'infer': int(inference_time)}
         log_sending_message(sid, 'res_handsign', response_data, verbose)
         await sio_server.emit('res_handsign', response_data, room=sid)
     else:

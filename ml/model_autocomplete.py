@@ -3,8 +3,6 @@ os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 from dotenv import load_dotenv
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 import numpy as np
 import re
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -59,7 +57,7 @@ class AutoCompleteModel:
                 do_sample=True,
                 top_k=50,
                 top_p=0.95,
-                temperature=0.4,
+                temperature=0.3,
                 pad_token_id=self.tokenizer.eos_token_id,
                 num_return_sequences=num_suggestions
             )
@@ -69,13 +67,11 @@ class AutoCompleteModel:
             decoded = self.tokenizer.decode(output, skip_special_tokens=True)
             suggestion = decoded[len(text):].strip()
             if suggestion:
-                # Keep only alphabetic words
-                words = re.findall(r'\b[a-zA-Z]+\b', suggestion)
-                if words:
-                    suggestion = ' '.join(words)
-                else:
-                    suggestion = "<none>"
-                suggestions.append(suggestion)
+                # filter out non-alphabetic characters, exclude space
+                suggestion = re.sub(r'[^a-zA-Z\s]', '', suggestion)
+                # if exists in suggestions, skip
+                if suggestion != "<none>" and suggestion not in suggestions:
+                    suggestions.append(suggestion)
 
         return suggestions
 

@@ -53,7 +53,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const getAllCourses = async (): Promise<Course[]> => {
     try {
         const response = await fetch(`${API_URL}/course/list`, {
-            method: "POST", // According to the docs this is a POST request
+            method: "GET", // According to the docs this is a POST request
         });
 
         if (!response.ok) {
@@ -67,28 +67,3 @@ export const getAllCourses = async (): Promise<Course[]> => {
         throw error;
     }
 };
-
-/**
- * Get progress of a user's lessons
- * Endpoint: /course/progress
- * 
- * Request: { user_id: UUID }
- * Response: List<UserLessonProgress>
- */
-export const getUserCourseProgress = async (userId: UUID): Promise<UserLessonProgress[]> => {
-    try {
-        const response = await fetch(`${API_URL}/course/progress?user_id=${userId}`, {
-            method: "POST", // According to the docs this is a POST request
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data: ApiResponse<UserLessonProgress[]> = await response.json();
-        return handleApiResponse(data);
-    } catch (error) {
-        console.error('Error fetching user course progress:', error);
-        throw error;
-    }
-}; 

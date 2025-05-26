@@ -10,7 +10,7 @@ router = APIRouter(prefix="/asl", tags=["ASL Characters"])
 
 # --- ASL Characters Endpoints --- #
 
-@router.post("/")
+@router.get("/")
 def get_all_asl_letters(db: Session = Depends(get_db)):
     """
     Retrieve all ASL letters.
