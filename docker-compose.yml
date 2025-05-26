@@ -1,27 +1,75 @@
 services:
+  db:
+    image: postgres:17-bookworm
+    env_file:
+      - ./api/.env.example
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - isle-network
+    expose:
+      - "5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
   api:
     build:
       context: ./api
       dockerfile: Dockerfile
     env_file:
-      - ./api/.env
-    # If you have a requirements.txt for the api, uncomment the next line
-    # command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      - ./api/.env.example
+    # Override CMD from Dockerfile for development with reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    # Uncomment volumes below for development hot-reloading
     # volumes:
-    #   - ./api:/app # Mount the api directory for hot-reloading (development)
+    #   - ./api:/api_app
     expose:
       - "8000"
     depends_on:
-      - db # API depends on the database
+      db:
+        condition: service_healthy
     networks:
       - isle-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  ml:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    env_file:
+      - ./ml/.env.example
+    # command: python main.py  # Will use CMD from Dockerfile
+    volumes:
+      - ./ml:/app # For model updates without rebuilding
+    expose:
+      - "15100"
+    networks:
+      - isle-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import requests; requests.get('http://localhost:15100/health')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   site:
     build:
       context: ./site
       dockerfile: Dockerfile
     env_file:
-      - ./site/.env
+      - ./site/.env.example
     expose:
       - "3000"
     environment:
@@ -29,42 +77,19 @@ services:
     restart: unless-stopped
     volumes:
       - ./site:/app
+      - /app/node_modules # Anonymous volume to prevent node_modules override
+      - /app/.next # Anonymous volume for Next.js build cache
     networks:
       - isle-network
-
-  ml:
-    build:
-      context: ./ml
-      dockerfile: Dockerfile
-    env_file:
-      - ./ml/.env
-    # command: python main.py # Command to run the ML WebSocket server
-    volumes:
-      - ./ml:/app # Mount the ml directory (useful if you want to update models without rebuilding)
-      # Ensure your models are copied to ml/models_store on the host
-      # Or, manage models as part of the Docker image build process
-    expose:
-      - "15100"
-    networks:
-      - isle-network
-
-  db:
-    image: postgres:17-bookworm
-    env_file:
-      - ./api/.env
-    volumes:
-      - pgdata:/var/lib/postgresql/data # Persist data
-    networks:
-      - isle-network
-    # No ports exposed to the host by default.
-    # If you need to access the DB from your host machine during development, uncomment and use:
-    expose:
-      - "5432"
+    depends_on:
+      api:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   nginx:
     image: nginx:alpine
@@ -83,10 +108,12 @@ services:
         condition: service_healthy
     networks:
       - isle-network
+    restart: unless-stopped
 
-volumes: # Define the named volume for data persistence
+volumes:
   pgdata:
+
 
 networks:
   isle-network:
-    driver: bridge 
+    driver: bridge
