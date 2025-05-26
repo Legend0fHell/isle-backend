@@ -1,7 +1,17 @@
 import { io } from "socket.io-client";
 
 const ws_url = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
-export const socket = io(ws_url, { autoConnect: false });
+
+// Create socket with explicit transport settings and reconnection options
+export const socket = io(ws_url, { 
+    autoConnect: false,
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    timeout: 20000,
+    transports: ['websocket', 'polling'] // Try websocket first, fall back to polling
+});
 
 // Debug info
 console.log("WebSocket initialized at: ", ws_url);
@@ -9,6 +19,8 @@ console.log("WebSocket initialized at: ", ws_url);
 // Connection state management
 let isConnected = false;
 let showConnectionError = false;
+let connectionAttempts = 0;
+const MAX_RECONNECTION_ATTEMPTS = 5;
 
 // Observer pattern - subscribers will be notified when connection state changes
 type ConnectionStateListener = (state: { isConnected: boolean; showConnectionError: boolean }) => void;
@@ -43,17 +55,44 @@ export const getConnectionState = () => ({
 
 // Set up connection event handlers
 socket.on("connect", () => {
-    console.log("Socket connected");
+    console.log("Socket connected with ID:", socket.id);
     isConnected = true;
     showConnectionError = false;
+    connectionAttempts = 0;
     notifyListeners();
 });
 
-socket.on("disconnect", () => {
-    console.log("Socket disconnected");
+socket.on("disconnect", (reason) => {
+    console.log("Socket disconnected. Reason:", reason);
     isConnected = false;
-    showConnectionError = true;
+    
+    // Don't show error for normal disconnects
+    if (reason === 'io client disconnect' || reason === 'io server disconnect') {
+        showConnectionError = false;
+    } else {
+        connectionAttempts++;
+        showConnectionError = connectionAttempts >= MAX_RECONNECTION_ATTEMPTS;
+    }
+    
     notifyListeners();
+});
+
+socket.on("connect_error", (error) => {
+    console.error("Socket connection error:", error.message);
+    connectionAttempts++;
+    isConnected = false;
+    showConnectionError = connectionAttempts >= MAX_RECONNECTION_ATTEMPTS;
+    notifyListeners();
+    
+    // Attempt to reconnect with a delay
+    if (connectionAttempts < MAX_RECONNECTION_ATTEMPTS) {
+        setTimeout(() => {
+            if (!socket.connected) {
+                console.log(`Reconnection attempt ${connectionAttempts}...`);
+                socket.connect();
+            }
+        }, 2000);
+    }
 });
 
 socket.on("connection_ack", (data) => {
@@ -75,13 +114,21 @@ export const closeConnectionError = () => {
 };
 
 export const reconnect = () => {
-    socket.connect();
-    showConnectionError = false;
-    notifyListeners();
+    // Reset connection attempts on manual reconnect
+    connectionAttempts = 0;
+    
+    // Ensure we're not already connected
+    if (socket.connected) {
+        socket.disconnect();
+    }
+    
+    // Small delay to ensure clean disconnect before reconnecting
+    setTimeout(() => {
+        socket.connect();
+        showConnectionError = false;
+        notifyListeners();
+    }, 500);
 };
-
-// Connect socket when this module is imported
-socket.connect();
 
 // Utility to ensure socket is connected
 export const ensureSocketConnected = () => {
@@ -90,4 +137,10 @@ export const ensureSocketConnected = () => {
     }
     return socket.connected;
 };
+
+// Connect socket when this module is imported
+// Add small delay to ensure browser environment is ready
+setTimeout(() => {
+    ensureSocketConnected();
+}, 100);
 

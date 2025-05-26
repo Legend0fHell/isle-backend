@@ -30,6 +30,8 @@ const HandDetectionCamera: React.FC<HandDetectionCameraProps> = ({
   const [showPulse, setShowPulse] = useState(false);
   const [lastDetectionTime, setLastDetectionTime] = useState<number>(0);
   const [currentDetection, setCurrentDetection] = useState<HandSignResponse | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const maxRetries = 3;
   
   const {
     startDetection,
@@ -53,15 +55,39 @@ const HandDetectionCamera: React.FC<HandDetectionCameraProps> = ({
   // Start detection when the component mounts and WebSocket is connected
   useEffect(() => {
     let startTimeoutId: NodeJS.Timeout;
+    
     if (isConnectedToWebSocket && !isDetecting && !cameraError) {
+      // Reset retry count when successfully connected
+      setRetryCount(0);
+      
       startTimeoutId = setTimeout(() => {
-        startDetection();
-      }, 100);
+        startDetection().catch(err => {
+          console.error("Failed to start detection:", err);
+        });
+      }, 500); // Increased delay for stability
     }
+    
     return () => {
       if (startTimeoutId) clearTimeout(startTimeoutId);
     };
   }, [isConnectedToWebSocket, isDetecting, cameraError, startDetection]);
+  
+  // Handle reconnection attempts when WebSocket disconnects
+  useEffect(() => {
+    let reconnectTimer: NodeJS.Timeout;
+    
+    if (!isConnectedToWebSocket && retryCount < maxRetries) {
+      reconnectTimer = setTimeout(() => {
+        console.log(`Attempting to reconnect WebSocket (attempt ${retryCount + 1}/${maxRetries})...`);
+        reconnectWebSocket();
+        setRetryCount(prev => prev + 1);
+      }, 2000 * (retryCount + 1)); // Exponential backoff
+    }
+    
+    return () => {
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+    };
+  }, [isConnectedToWebSocket, retryCount, reconnectWebSocket]);
   
   // Update detection data and trigger pulse effect
   useEffect(() => {
@@ -94,6 +120,15 @@ const HandDetectionCamera: React.FC<HandDetectionCameraProps> = ({
     return () => clearInterval(interval);
   }, [lastDetectionTime, currentDetection]);
   
+  // Handle manual retry
+  const handleRetry = () => {
+    setRetryCount(0);
+    reconnectWebSocket();
+    setTimeout(() => {
+      startDetection().catch(console.error);
+    }, 1000);
+  };
+  
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -108,7 +143,7 @@ const HandDetectionCamera: React.FC<HandDetectionCameraProps> = ({
           <div className="text-center">
             <p className="mb-2">{cameraError}</p>
             <button 
-              onClick={startDetection} 
+              onClick={handleRetry} 
               className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
             >
               Retry
@@ -181,15 +216,31 @@ const HandDetectionCamera: React.FC<HandDetectionCameraProps> = ({
           )}
           
           {/* Status overlays */}
-          {!isCameraReady && !isDetecting && (
+          {!isCameraReady && !isDetecting && !isConnectedToWebSocket && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 rounded-lg">
-              <p className="text-white text-xl text-center p-4">Camera will start when WebSocket connects.</p>
+              <div className="text-center">
+                <p className="text-white text-xl mb-4">Waiting for connection...</p>
+                {retryCount >= maxRetries && (
+                  <button 
+                    onClick={handleRetry}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  >
+                    Retry Connection
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {!isCameraReady && !isDetecting && isConnectedToWebSocket && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 rounded-lg">
+              <p className="text-white text-xl text-center p-4">Initializing camera...</p>
             </div>
           )}
           
           {isDetecting && !isCameraReady && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 rounded-lg">
-              <p className="text-white text-xl text-center p-4">Initializing Camera...</p>
+              <p className="text-white text-xl text-center p-4">Starting camera...</p>
             </div>
           )}
           
@@ -207,7 +258,7 @@ const HandDetectionCamera: React.FC<HandDetectionCameraProps> = ({
                     Dismiss
                   </button>
                   <button 
-                    onClick={reconnectWebSocket}
+                    onClick={handleRetry}
                     className="px-3 py-1 bg-red-600 rounded-md hover:bg-red-500"
                   >
                     Reconnect

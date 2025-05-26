@@ -2,9 +2,6 @@ import os
 import re
 import numpy as np
 from collections import Counter
-from nltk.corpus import words
-
-english_vocab = set(w.lower() for w in words.words())
 
 # Load corpus and build frequency counter
 with open("big.txt", "r", encoding="utf-8") as f:
@@ -102,7 +99,7 @@ class AutoCompleteModel:
         self.model = AutoModelForCausalLM.from_pretrained(model_name).to(self.device)
         self.model.eval()
 
-    def predict(self, text, max_new_tokens=2, num_suggestions=3):
+    def predict(self, text, max_new_tokens=2, num_suggestions=7):
         """
         Generate autocomplete suggestions for incomplete or complete last word.
         Returns only alphabetic characters (no numbers, no punctuation).
@@ -135,7 +132,7 @@ class AutoCompleteModel:
                     do_sample=True,
                     top_k=50,
                     top_p=0.95,
-                    temperature=0.4,
+                    temperature=0.5,
                     pad_token_id=self.tokenizer.eos_token_id,
                     num_return_sequences=num_suggestions
                 )

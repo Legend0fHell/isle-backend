@@ -3,123 +3,115 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Image from "next/image";
 
-
-
 const AboutPage = () => {
-
-
     return (
-        <div>
+        <div className="min-h-screen flex flex-col">
             <Navbar />
-
-            {/* About Us */}
-            <section className="relative top-[94px] left-[90px] w-[1282px] h-[2343px]">
-                <span className="absolute top-[0px] left-[0px] text-black w-[1282px] h-[77px]"
-                    style={{ fontSize: "64px", fontWeight: 700 }}>
+            
+            <main className="flex-grow container mx-auto px-4 md:px-8 py-24 md:py-28 max-w-7xl">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-16 text-black">
                     About Us
-                </span>
-
-                <div className="absolute top-[157px] left-[0px] w-[1282px] h-[617px]">
-                    <Image className="absolute top-[25px] left-[661px] bg-gray-300 rounded-lg"
-                        src="/Pham Nhat Quang.jpg"
-                        alt="about"
-                        width={617} height={617} />
-                    <div className="absolute top-[0px] left-[0px] w-[624px] h-[617px]">
-                        <span className="absolute top-[0px] left-[0px] text-black w-[624px] h-[77px]"
-                            style={{ fontSize: "64px", fontWeight: 700 }}>
-                            Pham Nhat Quang
-                        </span>
-                        <div className="absolute top-[101px] left-[0px] w-[624px] h-[516px]">
-                            <span className="absolute top-[0px] left-[0px] text-black w-[624px] h-[36px] opacity-60"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
+                </h1>
+                
+                {/* Team Member Cards */}
+                <div className="flex flex-col space-y-20">
+                    {/* First Team Member */}
+                    <div className="flex flex-col lg:flex-row gap-8">
+                        <div className="flex-1">
+                            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-black">
+                                Pham Nhat Quang
+                            </h2>
+                            <p className="text-lg md:text-xl mb-6 text-black opacity-60">
                                 Job: Leader, AI researcher, ML & Database backend developer
-                            </span>
-                            <span className="absolute top-[156px] left-[0px] text-black w-[624px] h-[36px] opacity-60"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
+                            </p>
+                            <p className="text-lg md:text-xl mb-4 text-black opacity-60">
                                 - Github:
-                            </span>
-                            <span className="absolute top-[216px] left-[0px] text-black w-[624px] h-[36px] opacity-60"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
+                            </p>
+                            <p className="text-lg md:text-xl mb-6 text-black opacity-60">
                                 - Facebook:
-                            </span>
-                            <span className="absolute top-[276px] left-[0px] text-black w-[624px] h-[36px]"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
-                                Description: <br />
-                                Welcome to my intro page. I&apos;m currently an university student, majoring in Artificial Intelligence. I also do Competitive Programming, making (award-winning) projects, and random hobby stuff.
-                            </span>
+                            </p>
+                            <div className="text-lg md:text-xl text-black">
+                                <p className="font-normal">Description: </p>
+                                <p>Welcome to my intro page. I&apos;m currently an university student, majoring in Artificial Intelligence. I also do Competitive Programming, making (award-winning) projects, and random hobby stuff.</p>
+                            </div>
+                        </div>
+                        <div className="flex-1 flex justify-center lg:justify-end">
+                            <Image
+                                src="/Pham Nhat Quang.jpg"
+                                alt="Pham Nhat Quang"
+                                width={500}
+                                height={500}
+                                className="rounded-lg object-cover"
+                            />
                         </div>
                     </div>
-                </div>
 
-                <div className="absolute top-[943px] left-[0px] w-[1282px] h-[617px]">
-                    <Image className="absolute top-[25px] left-[0px] bg-gray-300 rounded-lg"
-                        src="/Bui Minh Quan.jpg"
-                        alt="about"
-                        width={617} height={617} />
-                    <div className="absolute top-[0px] left-[661px] w-[624px] h-[617px]">
-                        <span className="absolute top-[0px] left-[0px] text-black w-[624px] h-[77px]"
-                            style={{ fontSize: "64px", fontWeight: 700 }}>
-                            Bui Minh Quan
-                        </span>
-                        <div className="absolute top-[101px] left-[0px] w-[624px] h-[516px]">
-                            <span className="absolute top-[0px] left-[0px] text-black w-[624px] h-[36px] opacity-60"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
+                    {/* Second Team Member */}
+                    <div className="flex flex-col lg:flex-row-reverse gap-8">
+                        <div className="flex-1">
+                            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-black">
+                                Bui Minh Quan
+                            </h2>
+                            <p className="text-lg md:text-xl mb-6 text-black opacity-60">
                                 Job: AI researcher, Database & Backend developer
-                            </span>
-                            <span className="absolute top-[156px] left-[0px] text-black w-[624px] h-[36px] opacity-60"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
+                            </p>
+                            <p className="text-lg md:text-xl mb-4 text-black opacity-60">
                                 - Github:
-                            </span>
-                            <span className="absolute top-[216px] left-[0px] text-black w-[624px] h-[36px] opacity-60"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
+                            </p>
+                            <p className="text-lg md:text-xl mb-6 text-black opacity-60">
                                 - Facebook:
-                            </span>
-                            <span className="absolute top-[276px] left-[0px] text-black w-[624px] h-[36px]"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
-                                Description: <br />
-                                I&apos;m Bui Minh Quan, a student at the University of Engineer and Technology, VNU. I am currently working on AI development and back-end development. I have a passion for learning new technologies and applying them to real-world problems.
-                            </span>
+                            </p>
+                            <div className="text-lg md:text-xl text-black">
+                                <p className="font-normal">Description: </p>
+                                <p>I&apos;m Bui Minh Quan, a student at the University of Engineer and Technology, VNU. I am currently working on AI development and back-end development. I have a passion for learning new technologies and applying them to real-world problems.</p>
+                            </div>
+                        </div>
+                        <div className="flex-1 flex justify-center lg:justify-start">
+                            <Image
+                                src="/Bui Minh Quan.jpg"
+                                alt="Bui Minh Quan"
+                                width={500}
+                                height={500}
+                                className="rounded-lg object-cover"
+                            />
                         </div>
                     </div>
-                </div>
 
-                <div className="absolute top-[1726px] left-[0px] w-[1282px] h-[617px]">
-                    <Image className="absolute top-[25px] left-[661px] bg-gray-300 rounded-lg"
-                        src="/Phan Quang Truong.jpg"
-                        alt="about"
-                        width={617} height={617} />
-                    <div className="absolute top-[0px] left-[0px] w-[624px] h-[617px]">
-                        <span className="absolute top-[0px] left-[0px] text-black w-[624px] h-[77px]"
-                            style={{ fontSize: "64px", fontWeight: 700 }}>
-                            Phan Quang Truong
-                        </span>
-                        <div className="absolute top-[101px] left-[0px] w-[624px] h-[516px]">
-                            <span className="absolute top-[0px] left-[0px] text-black w-[624px] h-[36px] opacity-60"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
+                    {/* Third Team Member */}
+                    <div className="flex flex-col lg:flex-row gap-8">
+                        <div className="flex-1">
+                            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-black">
+                                Phan Quang Truong
+                            </h2>
+                            <p className="text-lg md:text-xl mb-6 text-black opacity-60">
                                 Job: FE Developer, Document & Report writer
-                            </span>
-                            <span className="absolute top-[156px] left-[0px] text-black w-[624px] h-[36px] opacity-60"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
+                            </p>
+                            <p className="text-lg md:text-xl mb-4 text-black opacity-60">
                                 - Github:
-                            </span>
-                            <span className="absolute top-[216px] left-[0px] text-black w-[624px] h-[36px] opacity-60"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
+                            </p>
+                            <p className="text-lg md:text-xl mb-6 text-black opacity-60">
                                 - Facebook:
-                            </span>
-                            <span className="absolute top-[276px] left-[0px] text-black w-[624px] h-[36px]"
-                                style={{ fontSize: "24px", fontWeight: 400 }}>
-                                Description: <br />
-                                Hello, guys! Phan Quang Truong here. Right now, I&apos;m a student at the University of Engineer and Technology, VNU. I am currently working on front-end development and merging with back-end. I love AI and web development, and I am always looking for new challenges to improve my skills and also vibe coding too.</span>
+                            </p>
+                            <div className="text-lg md:text-xl text-black">
+                                <p className="font-normal">Description: </p>
+                                <p>Hello, guys! Phan Quang Truong here. Right now, I&apos;m a student at the University of Engineer and Technology, VNU. I am currently working on front-end development and merging with back-end. I love AI and web development, and I am always looking for new challenges to improve my skills and also vibe coding too.</p>
+                            </div>
+                        </div>
+                        <div className="flex-1 flex justify-center lg:justify-end">
+                            <Image
+                                src="/Phan Quang Truong.jpg"
+                                alt="Phan Quang Truong"
+                                width={500}
+                                height={500}
+                                className="rounded-lg object-cover"
+                            />
                         </div>
                     </div>
                 </div>
-            </section>
-
-            {/* Footer */}
-            <div className="absolute top-[2781px] left-[0px]">
-                <Footer />
-            </div>
-        </div >
+            </main>
+            
+            <Footer />
+        </div>
     );
 }
 

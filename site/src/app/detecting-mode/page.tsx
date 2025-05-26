@@ -1,12 +1,25 @@
 'use client';
 import { useState, useCallback, useEffect } from 'react';
 import React from "react";
-import { X, ArrowRight, Trash2, Check } from "lucide-react";
+import { X, ArrowRight, Trash2, Delete } from "lucide-react";
 import Navbar from "../../components/navbar";
 import HandDetectionCamera from "@/components/HandDetectionCamera";
 import { socket } from "models/wsEventListener";
 
 const CONSECUTIVE_THRESHOLD = 6;
+
+// Custom Tooltip component
+const Tooltip = ({ children, text }: { children: React.ReactNode, text: string }) => {
+    return (
+        <div className="relative flex group">
+            {children}
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
+                {text}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+            </div>
+        </div>
+    );
+};
 
 const DetectingModePage = () => {
     const [showPopup, setShowPopup] = useState(false);
@@ -56,7 +69,7 @@ const DetectingModePage = () => {
 
     // Handle suggestion selection
     const selectSuggestion = useCallback((suggestion: string) => {
-        setCurrentUserText(currentText => currentText.toLowerCase() + suggestion + " ");
+        setCurrentUserText(currentText => (currentText.toLowerCase() + suggestion + " ").replace("  ", " "));
         setSuggestions([]);
         setInlineSuggestion("");
         setSelectedSuggestionIndex(-1);
@@ -69,11 +82,6 @@ const DetectingModePage = () => {
         setSelectedSuggestionIndex(-1);
     }, []);
 
-    const acceptText = useCallback(() => {
-        // Here you would handle saving or processing the final text
-        console.log("Text accepted:", currentUserText.toLowerCase());
-        // Could add animation or feedback here
-    }, [currentUserText]);
 
     const acceptInlineSuggestion = useCallback(() => {
         if (inlineSuggestion) {
@@ -118,6 +126,10 @@ const DetectingModePage = () => {
             }
         }
     }, [lastDetectedChar, consecutiveCount, suggestions, selectedSuggestionIndex, selectSuggestion, inlineSuggestion, acceptInlineSuggestion]);
+
+    const handleBackspace = useCallback(() => {
+        setCurrentUserText(prev => prev.slice(0, -1));
+    }, []);
 
     const closePopup = () => {
         setShowPopup(false);
@@ -181,18 +193,18 @@ const DetectingModePage = () => {
                     
                     <div className="flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
                         {/* Left column: Camera */}
-                        <div className="lg:w-3/5">
+                        <div className="lg:w-4/5">
                             {/* Hand Detection Camera */}
                             <HandDetectionCamera
                                 onDetectionResult={handleDetectionResult}
                                 consecutiveCount={consecutiveCount}
                                 consecutiveThreshold={CONSECUTIVE_THRESHOLD}
-                                className="w-full h-full min-h-[400px] rounded-lg overflow-hidden"
+                                className="w-full h-full min-h-[500px] rounded-lg overflow-hidden"
                             />
                         </div>
                         
                         {/* Right column: Text input with suggestions */}
-                        <div className="lg:w-2/5 flex flex-col">
+                        <div className="lg:w-1/5 flex flex-col">
                             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 flex-grow flex flex-col">
                                 {/* Text input area with browser-like suggestions */}
                                 <div className="flex flex-col h-full">
@@ -201,20 +213,24 @@ const DetectingModePage = () => {
                                             Text Input
                                         </h2>
                                         <div className="flex space-x-2">
-                                            <button 
-                                                onClick={clearText}
-                                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                                                title="Clear text"
-                                            >
-                                                <Trash2 className="h-5 w-5" />
-                                            </button>
-                                            <button 
-                                                onClick={acceptText}
-                                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                                                title="Accept text"
-                                            >
-                                                <Check className="h-5 w-5" />
-                                            </button>
+                                            <Tooltip text="Delete last character">
+                                                <button 
+                                                    onClick={handleBackspace}
+                                                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                                                >
+                                                    <Delete className="h-5 w-5" />
+                                                </button>
+                                            </Tooltip>
+                                            
+                                            <Tooltip text="Clear all text">
+                                                <button 
+                                                    onClick={clearText}
+                                                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                                                >
+                                                    <Trash2 className="h-5 w-5" />
+                                                </button>
+                                            </Tooltip>
+                                        
                                         </div>
                                     </div>
                                     
@@ -271,18 +287,18 @@ const DetectingModePage = () => {
                                     {/* Gesture hint */}
                                     <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
                                         <h3 className="font-medium text-sm text-gray-600 dark:text-gray-300 mb-2">Gesture Hints:</h3>
-                                        <div className="grid grid-cols-3 gap-2 text-sm">
+                                        <div className="flex flex-col gap-3 text-sm">
                                             <div className="flex items-center space-x-1">
-                                                <span className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-1.5 py-0.5 rounded text-xs">Space</span>
+                                                <span className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-1.5 py-0.5 rounded text-xs">space</span>
                                                 <span>Add space</span>
                                             </div>
                                             <div className="flex items-center space-x-1">
-                                                <span className="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-1.5 py-0.5 rounded text-xs">Delete</span>
-                                                <span>Delete char</span>
+                                                <span className="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-1.5 py-0.5 rounded text-xs">delete</span>
+                                                <span>Delete last character</span>
                                             </div>
                                             <div className="flex items-center space-x-1">
-                                                <span className="bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 px-1.5 py-0.5 rounded text-xs">Autocmp</span>
-                                                <span>Use suggestion</span>
+                                                <span className="bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 px-1.5 py-0.5 rounded text-xs">autocmp</span>
+                                                <span>Use first suggestion</span>
                                             </div>
                                         </div>
                                     </div>
