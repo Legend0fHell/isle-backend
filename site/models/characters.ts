@@ -19,7 +19,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 // Function to get all ASL character information
 export const getASLCharacters = async (): Promise<ASLCharacter[]> => {
     try {
-        const response = await fetch(`${API_URL}/asl`, {
+        const response = await fetch(`${API_URL}/asl/`, {
             method: "GET",
         });
 
