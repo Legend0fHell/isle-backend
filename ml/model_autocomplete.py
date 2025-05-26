@@ -80,4 +80,4 @@ class AutoCompleteModel:
         return suggestions
 
 
-auto_complete = AutoCompleteModel()
+auto_complete_model = AutoCompleteModel()

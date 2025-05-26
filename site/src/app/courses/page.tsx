@@ -60,7 +60,7 @@ const ProgressIndicator = ({ progress, total }: { progress: number; total: numbe
                 className="bg-green-600 h-2.5 rounded-full" 
                 style={{ width: `${percentage}%` }}
             ></div>
-            <span className="text-xs text-gray-600">{progress}/{total} questions correct</span>
+            <span className="text-xs text-gray-600">{progress}/{total} correct questions</span>
         </div>
     );
 };
@@ -133,19 +133,26 @@ const CoursesPage = () => {
             return { completed: 0, total: 0 };
         }
         
-        const totalLessons = course.course_lessons.length;
-        let completedLessons = 0;
-        
-        course.course_lessons.forEach(lesson => {
+        // calculate sum of correct questions / sum of total questions every lesson in the course
+        const totalCorrectQuestions = course.course_lessons.reduce((sum, lesson) => {
             const progress = userProgress.find(p => p.lesson_id === lesson.lesson_id);
-            if (progress && progress.correct_questions > 0) {
-                if (lesson.lesson_num_question > 0 && progress.correct_questions >= lesson.lesson_num_question) {
-                    completedLessons++;
-                }
-            }
-        });
+            return sum + (progress?.correct_questions || 0);
+        }, 0);
+        const totalQuestions = course.course_lessons.reduce((sum, lesson) => sum + lesson.lesson_num_question, 0);
+
+        // const totalLessons = course.course_lessons.length;
+        // let completedLessons = 0;
         
-        return { completed: completedLessons, total: totalLessons };
+        // course.course_lessons.forEach(lesson => {
+        //     const progress = userProgress.find(p => p.lesson_id === lesson.lesson_id);
+        //     if (progress && progress.correct_questions > 0) {
+        //         if (lesson.lesson_num_question > 0 && progress.correct_questions >= lesson.lesson_num_question) {
+        //             completedLessons++;
+        //         }
+        //     }
+        // });
+        
+        return { completed: totalCorrectQuestions, total: totalQuestions };
     };
 
     return (
