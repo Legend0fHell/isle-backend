@@ -28,8 +28,8 @@ services:
     # Override CMD from Dockerfile for development with reload
     command: uvicorn main:app --host 0.0.0.0 --port 8000
     # Uncomment volumes below for development hot-reloading
-    # volumes:
-    #   - ./api:/api_app
+    volumes:
+       - ./api:/app
     expose:
       - "8000"
     depends_on:

@@ -2,7 +2,7 @@
 FROM python:3.12-slim
 
 # Set working directory
-WORKDIR /api_app
+WORKDIR /app
 
 # Copy requirements first for better caching
 COPY requirements.txt .
