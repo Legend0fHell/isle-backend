@@ -54,6 +54,42 @@ def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
         return {"msg": "error Invalid email or password!", "data": None}
     return {"msg": "ok", "data": UserData.from_orm(user)}
 
+@router.post("/admin/login")
+def admin_login_user(credentials: UserLogin, db: Session = Depends(get_db)):
+    """
+    Authenticate admin user credentials and return user info if valid.
+    """
+    user = user_crud.authenticate_admin_user(db, credentials)
+    if not user:
+        return {"msg": "error Invalid email or password!", "data": None}
+    return {"msg": "ok", "data": UserData.from_orm(user)}
+
+# ----------------------------
+# Update user information
+# ----------------------------
+@router.put("/update")
+def update_user(user: UserUpdate, db: Session = Depends(get_db)):
+    """
+    Update user information.
+    """
+    updated_user = user_crud.update_user(db, user)
+    if not updated_user:
+        return {"msg": "error", "data": None}
+    return {"msg": "ok", "data": UserData.from_orm(updated_user)}
+
+
+# ----------------------------
+# Delete a user
+# ----------------------------
+@router.delete("/delete")
+def delete_user(user_id: UUID, db: Session = Depends(get_db)):
+    """
+    Delete a user by ID.
+    """
+    user_crud.delete_user(db, user_id)
+    return {"msg": "ok", "data": None}
+
+
 # ----------------------------
 # Retrieve a list of users (pagination support)
 # ----------------------------

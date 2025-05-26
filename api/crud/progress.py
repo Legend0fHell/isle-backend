@@ -126,9 +126,9 @@ def create_user_question_answer(db: Session, user_data: UserAnswerCreate):
     return new_user_answer
 
 
-def get_user_question_answer(db: Session, progress_id: UUID, question_id: UUID):
+def get_user_question_answer(db: Session, user_id: UUID, question_id: UUID):
     answer = db.query(UserQuestionAnswer).filter(
-        UserQuestionAnswer.progress_id == progress_id,
+        UserQuestionAnswer.user_id == user_id,
         UserQuestionAnswer.question_id == question_id
     ).first()
     

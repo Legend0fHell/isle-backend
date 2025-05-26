@@ -20,7 +20,7 @@ def get_all_asl_letters(db: Session = Depends(get_db)):
         "data": crud.get_all_letters(db)
     }
 
-@router.post("/info")
+@router.get("/info")
 def get_asl_letter(letter: str, db: Session = Depends(get_db)):
     """
     Retrieve details of a specific ASL letter (case-insensitive).

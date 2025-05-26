@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -17,8 +17,8 @@ router = APIRouter(
 
 # --- Lesson Progress Endpoints --- #
 
-@router.post("/progress/lesson")
-def get_lesson_progress(user_id: UUID, lesson_id: UUID, db: Session = Depends(get_db)):
+@router.post("/lesson/progress")
+def get_lesson_progress(user_id: UUID = Body(..., embed=True), lesson_id: UUID = Body(..., embed=True), db: Session = Depends(get_db)):
     """Retrieve progress record for a specific user and lesson"""
     progress = crud.get_lesson_progress(db, user_id, lesson_id)
     if not progress:
@@ -61,46 +61,9 @@ def get_all_lesson_progress(user_id: UUID, db: Session = Depends(get_db)):
 
 # --- User Question Answer Endpoints --- #
 
-@router.post("/user-answer/create")
-def create_user_question_answer(data: UserAnswerCreate, db: Session = Depends(get_db)):
-    """Create a new user question answer record (start answering a question)"""
-    answer = crud.create_user_question_answer(db, data)
-    if not answer:
-        return {
-            "msg": "error",
-            "data": None 
-        }
-    return {
-        "msg": "ok",
-        "data": {
-            "progress_id": answer.progress_id,
-            "question_id": answer.question_id
-        }
-    }
-
-@router.post("/user/answer")
-def get_user_question_answer(progress_id: UUID, question_id: UUID, db: Session = Depends(get_db)):
-    """Get user's answer details for a specific question in a progress"""
-    answer = crud.get_user_question_answer(db, progress_id, question_id)
-    if answer is None:
-        return {
-            "msg": "error",
-            "data": None
-        }
-    return {
-        "msg": "ok",
-        "data": {
-            "progress_id": answer.progress_id,
-            "question_id": answer.question_id,
-            "user_choice": answer.user_choice,
-            "is_correct": answer.is_correct
-        }
-    }
-
-@router.post("/lesson/progress")
-def get_user_question_answers_by_lesson(progress: GetLessonProgress, db: Session = Depends(get_db)):
+@router.get("/progress/{progress_id}/answers")
+def get_user_question_answers_by_progress(progress_id: UUID, db: Session = Depends(get_db)):
     """Get all question answers associated with a lesson progress"""
-    progress_id = progress.progress_id
     return crud.get_user_question_answers_by_lesson(db, progress_id)
 
 @router.post("/lesson/start")
@@ -135,7 +98,5 @@ def submit_user_answer(data: UserAnswerSubmit, db: Session = Depends(get_db)):
             "data": None 
         }
     return feedback
-@router.post("/course/progress")
-def get_user_course_progress(user_id: UUID, db: Session = Depends(get_db)):
-    """Get aggregated progress of a user across all lessons in courses"""
-    return crud.track_user_progress(db, user_id)
+
+

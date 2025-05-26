@@ -1,1 +1,0 @@
-chạy lệnh: uvicorn api.main:app --reload

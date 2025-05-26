@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
 from models.user import User
-from models.user import UserCreate, UserLogin, UserUpdate
+from models.user import UserCreate, UserLogin, UserUpdate, UserLessonProgress, UserQuestionAnswer
 
 
 
@@ -85,10 +85,20 @@ def authenticate_user(db: Session, login_data: UserLogin):
 
 def delete_user(db: Session, user_id: str):
     db_user = get_user(db, user_id)
-    if db_user:
-        db.delete(db_user)
-        db.commit()
-    return db_user
+    if not db_user:
+        return None 
+    
+    # Delete UserLessonProgress and UserQuestionAnswer records
+    progress = db.query(UserLessonProgress).filter(UserLessonProgress.user_id == user_id)
+    for p in progress.all():
+        db.query(UserQuestionAnswer).filter(UserQuestionAnswer.progress_id == p.progress_id).delete()
+        
+    progress.delete(synchronize_session=False)
+    db.delete(db_user)
+    db.commit()
+    
+    
+    return None
 
 def get_all_users(db: Session):
     return db.query(User).all()

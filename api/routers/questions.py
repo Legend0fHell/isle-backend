@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -19,7 +19,7 @@ def create_question(question: QuestionCreate, db: Session = Depends(get_db)):
     
     return {"msg": "ok", "data": question_data}
 
-@router.post("/info/{question_id}")
+@router.get("/{question_id}/info")
 def get_question(question_id: UUID, db: Session = Depends(get_db)):
     question_data = crud.get_question(db, question_id)
     if question_data is None: 
@@ -27,7 +27,7 @@ def get_question(question_id: UUID, db: Session = Depends(get_db)):
     return {"msg": "ok", "data": question_data}
 
 
-@router.put("/update/")
+@router.put("/update")
 def update_question(question: QuestionUpdate, db: Session = Depends(get_db)):
     question_data = crud.update_question(db, question)
     if question_data is None:
