@@ -7,6 +7,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+COPY .env.example .env
+
 # Copy source code
 COPY . .
 

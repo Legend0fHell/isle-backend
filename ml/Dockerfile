@@ -4,6 +4,8 @@ FROM python:3.12-slim
 # Set working directory
 WORKDIR /app
 
+COPY .env.example .env
+
 # Copy requirements first for better caching
 COPY requirements.txt .
 
