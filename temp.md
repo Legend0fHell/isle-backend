@@ -9,13 +9,19 @@
   <a href="">
     <img src="https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white">
   </a>
-  <a href="">
+  <a href="https://hub.docker.com/r/legend0fhell/api">
     <img src="https://img.shields.io/badge/backend-docker-blue?logo=docker">
   </a>
-  <a href="">
+  <a href="https://hub.docker.com/r/legend0fhell/ml">
     <img src="https://img.shields.io/badge/services-docker-blue?logo=docker">
   </a>
-  <a href="">
+  <a href="https://hub.docker.com/r/legend0fhell/site">
+    <img src="https://img.shields.io/badge/frontend-docker-blue?logo=docker">
+  </a>
+  <a href="https://hub.docker.com/r/legend0fhell/db">
+    <img src="https://img.shields.io/badge/frontend-docker-blue?logo=docker">
+  </a>
+  <a href="https://hub.docker.com/r/legend0fhell/nginx">
     <img src="https://img.shields.io/badge/frontend-docker-blue?logo=docker">
   </a>
 </p>
@@ -24,6 +30,7 @@
   <a href="#mô-tả-dự-án"> Mô tả dự án</a> •
   <a href="#tính-năng">Tính năng</a> •
   <a href="#hướng-dẫn-cài-đặt">Hướng dẫn cài đặt</a> •
+  <a href="#link">Link</a> •
   <a href="#cấu-trúc-dự-án">Cấu trúc dự án</a> •
   <a href="#thành-viên-phát-triển">Thành viên phát triển</a>
 </p>
@@ -85,10 +92,21 @@ Truy cập các phần của website:
 - **Trang nhận diện tay**: http://localhost:3000/detecting-mode
 ---
 
+## Link
+### a. DockerHub
+- API: [`legend0fhell/api`](https://hub.docker.com/r/legend0fhell/api)
+- ML: [`legend0fhell/ml`](https://hub.docker.com/r/legend0fhell/ml)
+- UI/UX: [`legend0fhell/site`](https://hub.docker.com/r/legend0fhell/site)
+- Databse:[`legend0fhell/db`](https://hub.docker.com/r/legend0fhell/db)
+- NGINX:[`legend0fhell/nginx`](https://hub.docker.com/r/legend0fhell/nginx)
+### b. GitHub
+- GitHub dự án: [`GitHub dự án`]()
+---
+
 ## Cấu trúc dự án
 
 ```
-park-scan/
+ISLE/
 ├── api/
 ├── ml/
 ├── nginx/
