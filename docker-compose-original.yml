@@ -1,6 +1,6 @@
 services:
   db:
-    image: legend0fhell/db:latest
+    image: postgres:17-bookworm
     environment:
       - POSTGRES_USER=isle_user
       - POSTGRES_PASSWORD=isle_password
@@ -20,7 +20,16 @@ services:
     restart: unless-stopped
 
   api:
-    image: legend0fhell/api:latest
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    env_file:
+      - ./api/.env.example
+    # Override CMD from Dockerfile for development with reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    # Uncomment volumes below for development hot-reloading
+    volumes:
+       - ./api:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -31,15 +40,30 @@ services:
     restart: unless-stopped
 
   ml:
-    image: legend0fhell/ml:latest
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    env_file:
+      - ./ml/.env.example
+    # command: python main.py  # Will use CMD from Dockerfile
+    volumes:
+      - ./ml:/app # For model updates without rebuilding
     ports:
       - "15100:15100"
     networks:
       - isle-network
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import requests; requests.get('http://localhost:15100/health')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   site:
-    image: legend0fhell/site:latest
+    build:
+      context: ./site
+      dockerfile: Dockerfile
     environment:
       - NEXT_PUBLIC_API_URL=http://nginx/api
       - NEXT_PUBLIC_WEBSOCKET_URL=http://nginx
@@ -48,10 +72,16 @@ services:
       - "3000:3000"
     restart: unless-stopped
     volumes:
+      - ./site:/app
+      - /app/node_modules # Anonymous volume to prevent node_modules override
+      - /app/.next # Anonymous volume for Next.js build cache
+    networks:
       - isle-network
 
   nginx:
-    image: legend0fhell/nginx:latest
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
     depends_on:
