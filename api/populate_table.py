@@ -12,25 +12,30 @@ db_url = os.getenv("DATABASE_URL")
 parsed_url = urlparse(db_url)
 
 # Connect to default postgres database to drop/create asl_db
-conn_psql = psycopg2.connect(
-    database="postgres",
-    user=parsed_url.username,
-    password=parsed_url.password,
-    host=parsed_url.hostname,
-    port=parsed_url.port
-)
-conn_psql.autocommit = True
-cur_psql = conn_psql.cursor()
+try:
+    conn_psql = psycopg2.connect(
+        database="postgres",
+        user=parsed_url.username,
+        password=parsed_url.password,
+        host=parsed_url.hostname,
+        port=parsed_url.port
+    )
+    conn_psql.autocommit = True
+    cur_psql = conn_psql.cursor()
 
-# Drop database if exists
-cur_psql.execute("DROP DATABASE IF EXISTS asl_db")
+    # Drop database if exists
+    cur_psql.execute("DROP DATABASE IF EXISTS asl_db")
 
-# Create new database
-cur_psql.execute("CREATE DATABASE asl_db")
+    # Create new database
+    cur_psql.execute("CREATE DATABASE asl_db")
 
-# Close connection
-cur_psql.close()
-conn_psql.close()
+    # Close connection
+    cur_psql.close()
+    conn_psql.close()
+except Exception as e:
+    print(f"Error: {e}")
+    # Maybe the database already exists, but still proceed to create tables
+    pass
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models.question import Question, LessonQuestion 

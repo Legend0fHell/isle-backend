@@ -5,8 +5,6 @@ services:
       - POSTGRES_USER=isle_user
       - POSTGRES_PASSWORD=isle_password
       - POSTGRES_DB=asl_db
-    volumes:
-      - pgdata:/var/lib/postgresql/data
     networks:
       - isle-network
     ports:
@@ -53,12 +51,6 @@ services:
     networks:
       - isle-network
     restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "python", "-c", "import requests; requests.get('http://localhost:15100/health')" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   site:
     build:
@@ -71,6 +63,11 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
+    depends_on:
+      ml:
+        condition: service_started
+      api:
+        condition: service_started
     volumes:
       - ./site:/app
       - /app/node_modules # Anonymous volume to prevent node_modules override
@@ -98,10 +95,6 @@ services:
     networks:
       - isle-network
     restart: unless-stopped
-
-volumes:
-  pgdata:
-
 
 networks:
   isle-network:

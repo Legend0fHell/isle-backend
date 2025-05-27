@@ -30,6 +30,10 @@ def check_and_populate_database():
             populate_script = os.path.join(os.path.dirname(__file__), "populate_table.py")
             result = subprocess.run(["python", populate_script], capture_output=True, text=True)
             
+            # Push result to populated.txt
+            with open(populate_marker, "w") as f:
+                f.write(result.stdout)
+
             if result.returncode == 0:
                 logger.info("Database populated successfully.")
                 logger.info(result.stdout)

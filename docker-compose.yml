@@ -5,8 +5,6 @@ services:
       - POSTGRES_USER=isle_user
       - POSTGRES_PASSWORD=isle_password
       - POSTGRES_DB=asl_db
-    volumes:
-      - pgdata:/var/lib/postgresql/data
     networks:
       - isle-network
     ports:
@@ -46,6 +44,11 @@ services:
       - NODE_ENV=production
     ports:
       - "3000:3000"
+    depends_on:
+      api:
+        condition: service_started
+      ml:
+        condition: service_started
     restart: unless-stopped
     networks:
       - isle-network
@@ -66,10 +69,6 @@ services:
     networks:
       - isle-network
     restart: unless-stopped
-
-volumes:
-  pgdata:
-
 
 networks:
   isle-network:
